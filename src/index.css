@@ -1,3 +1,36 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+.active {
+    color: #fff;
+    cursor: default;
+    font-weight: 500;
+}
+
+.search-icon {
+    transform: translateX(-30px);
+    font-weight: 700;
+}
+
+.input-search {
+    transition: width 0.5s;
+    padding: 10px 40px 10px 14px;
+    width: 280px;
+    opacity: 1;
+    cursor: text;
+    border-radius: 8px;
+    background: transparent;
+    z-index: 0;
+    border: 2px solid #939393;
+    outline: none;
+    color: white;
+    font-weight: 400;
+}
