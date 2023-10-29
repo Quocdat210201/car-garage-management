@@ -4,11 +4,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 function Register() {
   return (
     <>
-      <div
-        className="text-white h-[100vh] flex justify-center items-center bg-no-repeat bg-cover object-cover"
-        style={{
-          backgroundImage: "url('../src/assets/images/bg-login.png')",
-        }}>
+      <div className="text-white h-[100vh] flex justify-center items-center bg-no-repeat bg-cover object-cover">
         <div className="bg-[#072F48] min-w-[500px] min-h-[620px] flex flex-col items-center rounded-md p-8">
           <h1 className="text-[32px] uppercase font-semibold pt-5 pb-6">
             Đăng Ký
