@@ -16,7 +16,7 @@ function Header() {
   return (
     <div className="relative">
       <div className="header">
-        <div className="header-top w-full h-14 bg-[#3E3E3E] flex justify-end items-center text-[#a8a8a8] px-16">
+        <div className="header-top w-full h-14 bg-[#3E3E3E] flex justify-end items-center text-[#a8a8a8] px-24">
           <div className="flex mr-16">
             <FaPhone className="pt-[3px] text-[22px]" />
             <span className="block ml-2 text-[16px]">+84 123 456 789</span>
@@ -57,7 +57,7 @@ function Header() {
           </div>
         </div>
         <div
-          className="navbar w-full h-28 bg-[#000000d9] opacity-80 justify-between flex items-center text-[#a8a8a8] px-12 bg-no-repeat bg-cover"
+          className="navbar w-full h-28 bg-[#000000d9] opacity-80 justify-between flex items-center text-[#a8a8a8] px-20 bg-no-repeat bg-cover"
           style={{
             backgroundImage: "url('../../src/assets/images/image 1.png')",
           }}>
@@ -122,7 +122,7 @@ function Header() {
               </ul>
             </div>
           </div>
-          <div className="search">
+          <div className="search ">
             <div className="text-[var(--white-color)] flex justify-end items-center">
               <input
                 type="text"
