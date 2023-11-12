@@ -44,7 +44,7 @@ const services = [
   },
   {
     image: service5,
-    name: "Lắp đặt phụ kiện, đồ chơi trên xe ô tô",
+    name: "Lắp phụ kiện, đồ chơi trên xe ô tô",
     desc: "Hiện nay, việc trang bị đồ chơi độ xe hơi, độ ô tô đang dần trở nên phổ biến và được nhiều người biết đến. Với hơn 10 năm kinh nghiệm trong nghề, chúng tôi đã trở thành điểm đến tin cậy của nhiều người yêu xe.",
     price: 499.999,
     rating: 5,
@@ -68,7 +68,7 @@ function Services() {
   };
   return (
     <>
-      <div className="px-24 bg-[#F2F2F2] rounded-md pb-24">
+      <div className="px-24 bg-[#F2F2F2] rounded-md pb-32">
         <h1 className="w-full text-center pt-8 mb-12 text-[28px] font-medium">
           DỊCH VỤ NỔI BẬT{" "}
         </h1>

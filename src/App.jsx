@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import routerConfig from "./config";
 import Header from "./components/Header/header";
 import Home from "./pages/Home/home";
+import Footer from "./components/Footer/footer";
 function App() {
   return (
     <>
@@ -21,6 +22,7 @@ function App() {
             <Route exact path={routerConfig.aboutUs} element={<Introduce />} />
             <Route exact path={routerConfig.contact} element={<Contact />} />
           </Routes>
+          <Footer />
         </BrowserRouter>
       </div>
 
