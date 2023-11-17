@@ -4,26 +4,45 @@ import Appointment from "./pages/Appointment/appointment";
 import Service from "./pages/Services/services";
 import Contact from "./pages/Contact/contact";
 import Introduce from "./pages/Introduce/introduce";
+import Profile from "./pages/profile/profile";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import routerConfig from "./config";
 import Header from "./components/Header/header";
 import Home from "./pages/Home/home";
 import Footer from "./components/Footer/footer";
+import { useState } from "react";
+
 function App() {
+  const [user, setUser] = useState(false);
+
   return (
-    <>
+    <div className="">
       <div className="app">
-        <BrowserRouter> 
-          <Header />
-          <Routes>
-            <Route exact path={routerConfig.home} element={<Home />} />
-            <Route exact path={routerConfig.appointment} element={<Appointment />} />
-            <Route exact path={routerConfig.services} element={<Service />} />
-            <Route exact path={routerConfig.aboutUs} element={<Introduce />} />
-            <Route exact path={routerConfig.contact} element={<Contact />} />
-          </Routes>
-          <Footer />
-        </BrowserRouter>
+        {user ? (
+          // <Dashboard />
+          <></>
+        ) : (
+          <BrowserRouter>
+            <Header />
+            <Routes>
+              <Route exact path={routerConfig.home} element={<Home />} />
+              <Route
+                exact
+                path={routerConfig.appointment}
+                element={<Appointment />}
+              />
+              <Route exact path={routerConfig.services} element={<Service />} />
+              <Route
+                exact
+                path={routerConfig.aboutUs}
+                element={<Introduce />}
+              />
+              <Route exact path={routerConfig.contact} element={<Contact />} />
+              <Route exact path={routerConfig.profile} element={<Profile />} />
+            </Routes>
+            <Footer />
+          </BrowserRouter>
+        )}
       </div>
 
       {/* <div className="app">
@@ -39,7 +58,7 @@ function App() {
           </Routes>
         </div>
       </div> */}
-    </>
+    </div>
   );
 }
 

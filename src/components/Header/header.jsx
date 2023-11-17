@@ -3,16 +3,32 @@ import { IoMdMail, IoMdNotifications } from "react-icons/io";
 import { Link, NavLink } from "react-router-dom";
 import routerConfig from "../../config";
 import { GoSearch } from "react-icons/go";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Login from "../../Layout/Login/login";
 import * as React from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
 function Header() {
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState(true);
+  const [modalUser, setmodalUser] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
   const [actions, setActions] = useState("login");
+
+  let menuRef = useRef();
+  useEffect(() => {
+    let handler = (e) => {
+      if (!menuRef.current.contains(e.target)) {
+        setmodalUser(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handler);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  });
+
   return (
     <div className="relative">
       <div className="header">
@@ -38,12 +54,13 @@ function Header() {
               1
             </span>
           </div>
-          <div className="">
+          <div className="relative">
             {user ? (
               <img
-                src="https://scontent.fhan14-1.fna.fbcdn.net/v/t39.30808-6/300580997_379131041059355_962345080393080109_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=5f2048&_nc_ohc=eG0jtaIzu0kAX9ryslN&_nc_ht=scontent.fhan14-1.fna&oh=00_AfBs4fft8d9UJYZS0fBwk37ZqAq35pFVH5oYvNhDo0vSuA&oe=653E2E3A"
+                src="https://www.shareicon.net/data/512x512/2016/05/24/770117_people_512x512.png"
                 alt=""
-                className="w-10 h-10 rounded-full object-cover"
+                className="w-10 h-10 rounded-full object-cover cursor-pointer"
+                onClick={() => setmodalUser((prev) => !prev)}
               />
             ) : (
               <Link>
@@ -54,6 +71,37 @@ function Header() {
                 </button>
               </Link>
             )}
+          </div>
+          <div
+            className={`menu-user absolute bg-[#7c7c7c] w-60 h-60 top-16 right-20 z-50 text-white rounded ${
+              modalUser ? "menu-active" : "menu-inactive"
+            }`}
+            ref={menuRef}>
+            <div className="flex justify-start items-center mx-3 py-4 border-bottom">
+              <a href="">
+                <img
+                  src="https://www.shareicon.net/data/512x512/2016/05/24/770117_people_512x512.png"
+                  alt=""
+                  className="w-14 h-14 rounded-full object-cover cursor-pointer"
+                />
+              </a>
+              <div className="pl-4">
+                <span className="font-medium">Dat Phan</span>
+                <br></br>
+                <span>@datphan212</span>
+              </div>
+            </div>
+            <ul className="list pt-3">
+              <li className="py-2.5 px-3 hover:bg-[#989898] hover:cursor-pointer">
+                <Link to={routerConfig.profile}>Thông tin cá nhân</Link>
+              </li>
+              <li className="py-2.5 px-3 hover:bg-[#989898] hover:cursor-pointer">
+                Lịch sử
+              </li>
+              <li className="py-2.5 px-3 hover:bg-[#989898] hover:cursor-pointer">
+                Đăng xuất
+              </li>
+            </ul>
           </div>
         </div>
         <div
@@ -144,7 +192,7 @@ function Header() {
                   <div
                     className="absolute right-3 top-3 w-9 h-9 flex items-center justify-center z-20 bg-[#181818] cursor-pointer rounded-full text-[2.4rem] text-[var(--white-color)]"
                     onClick={() => setModalLogin((prev) => !prev)}>
-                    <IoIosClose className="hover:opacity-80"/>
+                    <IoIosClose className="hover:opacity-80" />
                   </div>
                   <h1 className="text-[32px] uppercase font-semibold pt-5 pb-6">
                     Đăng Nhập
@@ -200,7 +248,7 @@ function Header() {
                   <div
                     className="absolute right-3 top-3 w-9 h-9 flex items-center justify-center z-20 bg-[#181818] cursor-pointer rounded-full text-[2.4rem] text-[var(--white-color)]"
                     onClick={() => setModalLogin((prev) => !prev)}>
-                    <IoIosClose className="hover:opacity-80"/>
+                    <IoIosClose className="hover:opacity-80" />
                   </div>
                   <h1 className="text-[32px] uppercase font-semibold pt-5 pb-6">
                     Đăng Ký

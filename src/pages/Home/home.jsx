@@ -8,6 +8,11 @@ import Rating from "../../components/rating/rating";
 import { Link, NavLink } from "react-router-dom";
 import routerConfig from "../../config";
 
+import { useScrollTop } from "../../components/hook";
+
+import { FaAngleUp } from "react-icons/fa";
+import { useEffect, useState } from "react";
+
 import carLogo1 from "../../assets/images/logo-car-1.png";
 import carLogo2 from "../../assets/images/logo-car2.webp";
 import carLogo3 from "../../assets/images/logo-car-3.png";
@@ -29,8 +34,14 @@ const logoCars = [
 ];
 
 function Home() {
+  const [scroll] = useScrollTop();
+
+  const scrollUp = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+  };
+
   return (
-    <>
+    <div className="relative">
       <div>
         <div className="home relative">
           <div className="content absolute bg-[#0000004d] z-10 w-full h-full text-white flex flex-col justify-center px-24">
@@ -102,14 +113,24 @@ function Home() {
         <div className="car-logo w-full my-6">
           <div className="w-3/4 mx-auto flex justify-between items-center">
             {logoCars.map((car, i) => (
-              <div key={i} className="logo-image w-36 h-[140px] flex items-center">
+              <div
+                key={i}
+                className="logo-image w-36 h-[140px] flex items-center">
                 <img src={car} alt="" />
               </div>
             ))}
           </div>
         </div>
       </div>
-    </>
+      <div
+        className="fixed bg-[red] text-[46px] text-white w-16 h-16 rounded-full bottom-16 right-16 z-50 flex items-center justify-center transition cursor-pointer"
+        onClick={scrollUp}
+        style={{
+          visibility: `${scroll > 200 ? "visible" : "hidden"}`,
+        }}>
+        <FaAngleUp />
+      </div>
+    </div>
   );
 }
 

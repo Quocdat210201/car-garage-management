@@ -2,11 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+}
+
+:root {
+    --speed: 500ms;
 }
 
 .font-arial {
@@ -16,6 +19,23 @@
 .w-90 {
     width: 90%;
 }
+
+.border-bottom {
+    border-bottom: 1px solid #fff
+}
+
+.clip-path {
+    clip-path: polygon(50% 75%, 0% 100%, 100% 100%);
+}
+
+.transition {
+    transition: all .3s linear;
+}
+
+.pr-14 {
+    padding-right: 56px !important;
+}
+
 
 
 
@@ -80,6 +100,7 @@
     border-radius: 6px;
 }
 
+.service:hover,
 .slick-slide>div:hover {
     cursor: pointer;
     transform: translateY(-10px);
@@ -153,7 +174,7 @@
     border-color: #fff
 }
 
-.custom-text {
+.custom-text-desc {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 3;
@@ -255,7 +276,7 @@
 /* introduce */
 .area-bg__inner {
     position: relative;
-    z-index: 110;
+    z-index: 30;
 }
 
 .b-title-page__wrap {
@@ -278,7 +299,7 @@
 .b-title-page {
     margin-top: 0;
     margin-bottom: 0;
-    font-size:30px;
+    font-size: 30px;
     font-weight: 600;
     color: #fff;
 }
@@ -292,7 +313,7 @@
     justify-content: center;
 }
 
-.breadcrumb-item + .breadcrumb-item::before {
+.breadcrumb-item+.breadcrumb-item::before {
     display: inline-block;
     padding-right: 0.5rem;
     padding-left: 0.5rem;
@@ -301,4 +322,52 @@
     color: #ffffff;
     font-size: 16px;
     vertical-align: -13%;
+}
+
+.menu-user::before {
+    position: absolute;
+    content: "";
+    clip-path: polygon(51% 75%, 0% 100%, 100% 100%);
+    background: #7c7c7c;
+    width: 80px;
+    height: 90px;
+    top: -77px;
+    left: 161px;
+    z-index: 1000;
+}
+
+.menu-user.menu-active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition: var(--speed) ease
+}
+
+.menu-user.menu-inactive {
+    opacity: 0;
+    visibility: visible;
+    transform: translateY(-20px);
+    transition: var(--speed) ease
+}
+
+.custom-text {
+    font-size: 18px;
+    width: 160px;
+    font-weight: 500;
+}
+
+.custom-input {
+    border: none;
+    padding: 16px 16px;
+    outline: none;
+    border-radius: 4px;
+    color: #000;
+    background-color: #fff;
+    margin-bottom: 0;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+}
+
+.action>button{
+    padding: 8px 20px;
+    font-size:20px;
 }

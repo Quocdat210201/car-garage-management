@@ -6,6 +6,7 @@ const routes = {
   services: "/services",
   appointment: "/appointment",
   contact: "/contact",
+  profile: "/profile",
 };
 
 export default routes;

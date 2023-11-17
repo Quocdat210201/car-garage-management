@@ -208,7 +208,7 @@ function Introduce() {
 
           <h3 className="text-center mt-10">
             <span className="text-[#FF0000] text-[30px]">
-              <strong>Chúc Quý khách Thượng lộ Bình An!</strong>
+              <strong>Chúc Quý Khách Thượng Lộ Bình An!</strong>
             </span>
           </h3>
         </div>
