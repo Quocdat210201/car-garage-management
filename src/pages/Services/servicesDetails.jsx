@@ -55,7 +55,7 @@ const services = [
   },
 ];
 
-function Service() {
+function ServiceDetails() {
   return (
     <div>
       <div className="area-bg__inner">
@@ -81,49 +81,9 @@ function Service() {
           </div>
         </div>
       </div>
-      <div className="list px-60 py-12 grid grid-cols-3 gap-14 bg-[#f2f2f2]">
-        {services.map((service, index) => (
-          <NavLink to={routerConfig.servicesDetails} className="bg-white item rounded-md service" key={index}>
-            <img
-              src={service.image}
-              alt=""
-              className="w-full h-[275px] rounded-t-md"
-            />
-            <div className="body px-5 pt-5">
-              <h1 className="title text-[20px] font-medium">{service.name}</h1>
-              <p className="pt-2 text-[17px] custom-text-desc overflow-hidden">
-                {service.desc}
-              </p>
-              <div className="flex justify-between items-center pt-4 px-2">
-                <span className="text-[#FF0000] text-[18px] font-medium">
-                  {service.price} VND
-                </span>
-                <div className="flex text-yellow-400 justify-around w-24">
-                  <FaStar />
-                  <FaStar />
-                  <FaStar />
-                  <FaStar />
-                  <FaStar />
-                </div>
-              </div>
-            </div>
-            <div className="flex w-full justify-center items-center py-6">
-              <NavLink
-                to={routerConfig.appointment}
-                className={`${({ isActive }) =>
-                  isActive ? "active" : null} w-full px-5 pt-10`}>
-                <button
-                  className="btn btn-primary mr-3 w-full"
-                  style={{ fontSize: "18px" }}>
-                  Đặt lịch hẹn
-                </button>
-              </NavLink>
-            </div>
-          </NavLink>
-        ))}
-      </div>
+      <div>chi tieets</div>
     </div>
   );
 }
 
-export default Service;
+export default ServiceDetails;

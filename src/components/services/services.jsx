@@ -85,7 +85,7 @@ function Services() {
                   <h1 className="title text-[20px] font-medium">
                     {service.name}
                   </h1>
-                  <p className="pt-2 text-[17px] custom-text overflow-hidden">
+                  <p className="pt-2 text-[17px] custom-text-desc overflow-hidden">
                     {service.desc}
                   </p>
                   <div className="flex justify-between items-center pt-4 px-2">

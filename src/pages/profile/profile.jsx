@@ -62,7 +62,7 @@ function Profile() {
                 <input
                   type="text"
                   placeholder="Họ và tên"
-                  className="custom-input"
+                  className="custom-input-profile"
                 />
               </div>
               <div className="flex items-center mb-6 text-black">
@@ -70,7 +70,7 @@ function Profile() {
                 <input
                   type="text"
                   placeholder="Số điện thoại"
-                  className="custom-input"
+                  className="custom-input-profile"
                 />
               </div>
               <div className="flex items-center mb-6 text-black relative">
@@ -78,7 +78,7 @@ function Profile() {
                 <input
                   type="text"
                   placeholder="Ngày sinh"
-                  className="custom-input pr-14"
+                  className="custom-input-profile pr-14"
                 />
                 <MdOutlineCalendarMonth className="absolute right-4 text-[26px]" />
               </div>
@@ -87,7 +87,7 @@ function Profile() {
                 <input
                   type="text"
                   placeholder="Email"
-                  className="custom-input"
+                  className="custom-input-profile"
                 />
               </div>
               <div className="flex items-center mb-6 text-black">
@@ -95,7 +95,7 @@ function Profile() {
                 <input
                   type="text"
                   placeholder="Địa chỉ"
-                  className="custom-input"
+                  className="custom-input-profile"
                 />
               </div>
             </form>

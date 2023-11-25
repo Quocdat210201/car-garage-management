@@ -9,6 +9,7 @@ import Introduce from '../pages/Introduce/introduce'
 import Appointment from '../pages/Appointment/appointment'
 import Contact from '../pages/Contact/contact'
 import Service from '../pages/Services/services'
+import ServiceDetails from '../pages/Services/servicesDetails'
 import Profile from '../pages/profile/profile';
 
 // Public Routes
@@ -20,6 +21,7 @@ const publciRoutes = [
     { path: routesConfig.appointment, component: Appointment },
     { path: routesConfig.contact, component: Contact },
     { path: routesConfig.services, component: Service },
+    { path: routesConfig.servicesDetails, component: ServiceDetails },
     { path: routesConfig.profile, component: Profile },
 ];
 

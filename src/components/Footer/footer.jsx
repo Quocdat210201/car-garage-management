@@ -46,7 +46,7 @@ function Footer() {
             <FaInstagram className="social-icon" />
           </div>
         </div>
-        <div className="service w-1/4">
+        <div className=" w-1/4">
           <h1 className="text-[26px] font-medium tracking-wider">Dịch vụ</h1>
           <ul className="service-detail pr-24 pt-6">
             <li>
@@ -107,20 +107,20 @@ function Footer() {
               type="text"
               name="name"
               placeholder="Họ và tên "
-              className="custom-input"
+              className="custom-input mb-2"
             />
             <input
               type="text"
               name="email"
               placeholder="Email "
-              className="custom-input"
+              className="custom-input mb-2"
             />
             <textarea
               name="desc"
               id="desc"
               rows="2"
               placeholder="Nội dung "
-              className="custom-input"
+              className="custom-input mb-2"
             />
             <NavLink
               to={routerConfig.appointment}

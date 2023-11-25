@@ -10,7 +10,7 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 
 function Header() {
-  const [user, setUser] = useState(true);
+  const [user, setUser] = useState(false);
   const [modalUser, setmodalUser] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
   const [actions, setActions] = useState("login");
@@ -22,7 +22,6 @@ function Header() {
         setmodalUser(false);
       }
     };
-
     document.addEventListener("mousedown", handler);
     return () => {
       document.removeEventListener("mousedown", handler);
@@ -115,9 +114,9 @@ function Header() {
                 <img src="../../../src/assets/images/image 2.png" alt="" />
               </Link>
             </div>
-            <div className="navbar_list ">
+            <div className="navbar_list ml-10">
               <ul className="flex text-[#e5e5e5]">
-                <li className="text-[21px] font-normal cursor-pointer menu-items transition">
+                <li className="text-[24px] font-normal cursor-pointer menu-items transition">
                   <NavLink
                     to={routerConfig.home}
                     className={`${({ isActive }) =>
@@ -127,7 +126,7 @@ function Header() {
                     Trang chủ
                   </NavLink>
                 </li>
-                <li className="text-[21px] font-normal cursor-pointer menu-items transition">
+                <li className="text-[24px] font-normal cursor-pointer menu-items transition">
                   <NavLink
                     to={routerConfig.aboutUs}
                     className={`${({ isActive }) =>
@@ -137,7 +136,7 @@ function Header() {
                     Giới thiệu
                   </NavLink>
                 </li>
-                <li className="text-[21px] font-normal cursor-pointer menu-items transition">
+                <li className="text-[24px] font-normal cursor-pointer menu-items transition">
                   <NavLink
                     to={routerConfig.services}
                     className={`${({ isActive }) =>
@@ -147,7 +146,7 @@ function Header() {
                     Dịch vụ
                   </NavLink>
                 </li>
-                <li className="text-[21px] font-normal cursor-pointer menu-items transition">
+                <li className="text-[24px] font-normal cursor-pointer menu-items transition">
                   <NavLink
                     to={routerConfig.appointment}
                     className={`${({ isActive }) =>
@@ -157,7 +156,7 @@ function Header() {
                     Đặt lịch hẹn
                   </NavLink>
                 </li>
-                <li className="text-[21px] font-normal cursor-pointer menu-items transition">
+                {/* <li className="text-[24px] font-normal cursor-pointer menu-items transition">
                   <NavLink
                     to={routerConfig.contact}
                     className={`${({ isActive }) =>
@@ -166,7 +165,7 @@ function Header() {
                         : null} ml-16 flex items-center h-full relative text-[#b3b3b3] transition-colors`}>
                     Liên hệ
                   </NavLink>
-                </li>
+                </li> */}
               </ul>
             </div>
           </div>

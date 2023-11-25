@@ -1,7 +1,46 @@
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+
+
+
+/* -----------------ADMIN-------------------- */
+
+html,
+body,
+#root,
+.app,
+.content {
+  height: 100vh;
+  width: 100%;
+  font-family: "Source Sans Pro", sans-serif;
+}
+
+.app {
+  position: relative;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #e0e0e0;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+/* ----------------USER--------- */
 * {
     padding: 0;
     margin: 0;
@@ -10,10 +49,6 @@
 
 :root {
     --speed: 500ms;
-}
-
-.font-arial {
-    font-family: Arial, Helvetica, sans-serif;
 }
 
 .w-90 {
@@ -356,7 +391,7 @@
     font-weight: 500;
 }
 
-.custom-input {
+.custom-input-profile{
     border: none;
     padding: 16px 16px;
     outline: none;
@@ -365,9 +400,24 @@
     background-color: #fff;
     margin-bottom: 0;
     box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    width: 100%;
 }
 
 .action>button{
     padding: 8px 20px;
     font-size:20px;
 }
+
+
+.input-appoint{
+    padding: 12px 10px;
+    margin-bottom: 18px;
+    border: none;
+    outline: none;
+    border-radius: 6px;
+    width: 100%;
+    font-size: 18px;
+    background: #f1f1f1;
+    color: rgb(0, 0, 0);
+}
+
