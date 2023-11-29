@@ -108,12 +108,14 @@ function Footer() {
               name="name"
               placeholder="Họ và tên "
               className="custom-input mb-2"
+              required
             />
             <input
               type="text"
               name="email"
               placeholder="Email "
               className="custom-input mb-2"
+              required
             />
             <textarea
               name="desc"
@@ -121,17 +123,15 @@ function Footer() {
               rows="2"
               placeholder="Nội dung "
               className="custom-input mb-2"
+              required
             />
-            <NavLink
-              to={routerConfig.appointment}
-              className={`${({ isActive }) =>
-                isActive ? "active" : null}`}>
-              <button
-                className="btn btn-primary w-90 mt-3"
-                style={{ fontSize: "18px" }}>
-                Đặt lịch hẹn
-              </button>
-            </NavLink>
+
+            <button
+              className="btn btn-primary w-90 mt-3 hover:opacity-75"
+              style={{ fontSize: "18px" }}
+              type="submit">
+              Gửi thông tin
+            </button>
           </div>
         </div>
       </div>

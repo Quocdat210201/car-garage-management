@@ -93,70 +93,77 @@ function SideBar() {
           <Box paddingLeft={isCollapsed ? undefined : "10%"} fontSize={"20px"}>
             <Item
               title="Tổng quan"
-              to="/"
+              to="/admin"
+              icon={<HomeOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Cá nhân"
+              to="/admin/profile"
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Xe"
-              to="/car"
+              to="/admin/car"
               icon={<ToysIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Lịch hẹn"
-              to="/contacts"
+              to="/admin/apointments"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
               />
             <Item
               title="Nhân viên"
-              to="/star"
+              to="/admin/star"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Khách hàng"
-              to="/form"
+              to="/admin/customer"
               icon={<PersonOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Lịch làm việc"
-              to="/calendar"
+              to="/admin/calendar"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Hóa đơn"
-              to="/faq"
+              to="/admin/bill"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Kho phụ tùng"
-              to="/bar"
+              to="/admin/warehouse"
               icon={<PieChartOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
               />
             <Item
               title="Thống kê"
-              to="/pie"
+              to="/admin/pie"
               icon={<BarChartOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Tài khoản"
-              to="/accounts"
+              to="/admin/accounts"
               icon={<BarChartOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

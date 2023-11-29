@@ -1,44 +1,42 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../../../theme";
+import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
+import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
+import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
+import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
-import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
 
-export const mockDataCar = [
+export const mockDataListCustomer = [
   {
     id: 1,
-    license: "92L1-11271",
-    name: "Phan Quoc Dat",
-    carCompany: "Audi",
-    origin: "Đức",
-    year: 2010,
-    status: "Bảo dưỡng",
+    name: "Jon Snow",
+    phone: "(665)121-5454",
+    email: "jonsnow@gmail.com",
+    dateOfBirth: "21/02/2001",
     action: "",
   },
   {
     id: 2,
-    license: "92L1-11271",
-    name: "Phan Quoc Dat",
-    carCompany: "Audi",
-    origin: "Đức",
-    year: 2010,
-    status: "Bảo dưỡng",
+    name: "Jon Snow",
+    phone: "(665)121-5454",
+    email: "jonsnow@gmail.com",
+    dateOfBirth: "21/02/2001",
     action: "",
   },
 ];
-
-function Star() {
+function Customer() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   return (
     <div className="m-5">
       <div className="flex justify-between ">
-        <Header title="XE" subtitle="Quản lý xe" />
+        <Header title="KHÁCH HÀNG" subtitle="Quản lý thông tin khách hàng" />
         <div color={colors.grey[100]}>
           <button
             style={{
@@ -51,7 +49,7 @@ function Star() {
               alignItems: "center",
             }}>
             <AddIcon />
-            <span className="ml-1">Thêm mới xe</span>
+            <span className="ml-1">Thêm mới khách hàng</span>
           </button>
           <button
             style={{
@@ -90,28 +88,22 @@ function Star() {
                 STT
               </th>
               <th scope="col" className="px-6 py-3">
-                Biển số xe
-              </th>
-              <th scope="col" className="px-6 py-3">
                 Tên khách hàng
               </th>
               <th scope="col" className="px-6 py-3">
-                Hãng xe
+                Số điện thoại
               </th>
               <th scope="col" className="px-6 py-3">
-                Nơi sản xuất
+                Email
               </th>
               <th scope="col" className="px-6 py-3">
-                Năm sản xuất
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Trạng thái
+                Ngày sinh
               </th>
               <th scope="col" className="px-6 py-3"></th>
             </tr>
           </thead>
           <tbody>
-            {mockDataCar.map((data, index) => (
+            {mockDataListCustomer.map((data, index) => (
               <tr
                 className=""
                 style={{ backgroundColor: colors.primary[400] }}
@@ -139,32 +131,22 @@ function Star() {
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.license}
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
                   {data.name}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.carCompany}
+                  {data.phone}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.origin}
+                  {data.email}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.year}
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  {data.status}
+                  {data.dateOfBirth}
                 </td>
                 <td className="px-6 py-4">
                   <button>
@@ -186,4 +168,4 @@ function Star() {
   );
 }
 
-export default Star;
+export default Customer;

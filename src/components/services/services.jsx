@@ -75,7 +75,7 @@ function Services() {
         <div className="list px-10 pt-3">
           <Slider {...settings}>
             {services.map((service, index) => (
-              <div className="bg-white item rounded-md" key={index} >
+              <NavLink to={routerConfig.servicesDetails} className="bg-white item rounded-md" key={index} >
                 <img
                   src={service.image}
                   alt=""
@@ -111,7 +111,7 @@ function Services() {
                     </button>
                   </NavLink>
                 </div>
-              </div>
+              </NavLink>
             ))}
           </Slider>
         </div>

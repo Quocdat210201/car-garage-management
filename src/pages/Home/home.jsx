@@ -44,7 +44,7 @@ function Home() {
     <div className="relative">
       <div>
         <div className="home relative">
-          <div className="content absolute bg-[#0000004d] z-10 w-full h-full text-white flex flex-col justify-center px-24">
+          <div className="absolute bg-[#0000004d] z-10 w-full h-full text-white flex flex-col justify-center px-24">
             <h1 className="text-[60px] font-black leading-10">
               GARRA Ô TÔ MIỀN TRUNG
             </h1>

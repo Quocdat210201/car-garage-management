@@ -8,7 +8,9 @@ import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
-import Header from "../../components/header";
+import FileUploadIcon from "@mui/icons-material/FileUpload";
+import Header from "../../components/Header";
+import { red } from "@mui/material/colors";
 
 export const mockDataTeam = [
   {
@@ -70,98 +72,12 @@ export const mockDataTeam = [
 function Accounts() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const columns = [
-    { field: "id", headerName: "STT" },
-    {
-      field: "name",
-      headerName: "Họ và tên",
-      flex: 1,
-      cellClassName: "name-column--cell",
-    },
-    {
-      field: "dateOfBirth",
-      headerName: "Ngày sinh",
-      type: "number",
-      headerAlign: "left",
-      align: "left",
-    },
-    {
-      field: "phone",
-      headerName: "Số điện thoại",
-      flex: 1,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-    },
-    {
-      field: "accessLevel",
-      headerName: "Quyền",
-      flex: 1,
-      renderCell: ({ row: { access } }) => {
-        return (
-          <Box
-            width="60%"
-            m="0 auto"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            backgroundColor={
-              access === "admin"
-                ? colors.greenAccent[600]
-                : access === "manager"
-                ? colors.greenAccent[700]
-                : colors.greenAccent[700]
-            }
-            borderRadius="4px">
-            {access === "admin" && <AdminPanelSettingsOutlinedIcon />}
-            {access === "manager" && <SecurityOutlinedIcon />}
-            {access === "user" && <LockOpenOutlinedIcon />}
-            <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-              {access}
-            </Typography>
-          </Box>
-        );
-      },
-    },
-    {
-      field: "action",
-      headerName: "",
-      flex: 1,
-      renderCell: () => {
-        return (
-          <Box
-            width="60%"
-            m="0 auto"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            borderRadius="4px">
-            <Typography
-              sx={{ ml: "5px" }}
-              className="flex justify-center items-center">
-              <button>
-                <InfoIcon fontSize="large" className="mx-2" />
-              </button>
-              <button>
-                <EditIcon fontSize="large" className="mx-2" />
-              </button>
-              <button>
-                <DeleteIcon fontSize="large" className="mx-2" />
-              </button>
-            </Typography>
-          </Box>
-        );
-      },
-    },
-  ];
 
   return (
-    <Box m="20px">
-      <Box display='flex' justifyContent='space-between'>
-        <Header title="TEAM" subtitle="Managing the Team Members" />
-        <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
+    <div className="m-5">
+      <div className="flex justify-between ">
+        <Header title="Tài khoản" subtitle="Quản lý tài khoản" />
+        <div color={colors.grey[100]}>
           <button
             style={{
               backgroundColor: colors.blueAccent[700],
@@ -173,40 +89,142 @@ function Accounts() {
               alignItems: "center",
             }}>
             <AddIcon />
-            <span className="ml-1">Thêm tài khoản</span>
+            <span className="ml-1">Thêm mới tài khoản</span>
           </button>
-        </Typography>
-      </Box>
-      <Box
-        height="75vh"
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .name-column--cell": {
-            color: colors.greenAccent[300],
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: colors.blueAccent[700],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: colors.primary[400],
-          },
-          "& .MuiDataGrid-footerContainer": {
-            borderTop: "none",
-            backgroundColor: colors.blueAccent[700],
-          },
-          "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
-          },
-        }}>
-        <DataGrid checkboxSelection rows={mockDataTeam} columns={columns}  />
-      </Box>
-    </Box>
+          {/* <button
+            style={{
+              backgroundColor: colors.blueAccent[700],
+              padding: "10px 16px",
+              borderRadius: "4px",
+              display: "inline-flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+            <FileUploadIcon />
+            <span className="ml-1">Xuất file excel</span>
+          </button> */}
+        </div>
+      </div>
+
+      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+        <table className="w-full text-left rtl:text-right">
+          <thead
+            className=""
+            style={{ backgroundColor: colors.blueAccent[700] }}>
+            <tr>
+              <th scope="col" className="p-4">
+                <div className="flex items-center">
+                  <input
+                    id="checkbox-all-search"
+                    type="checkbox"
+                    className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  />
+                  <label htmlFor="checkbox-all-search" className="sr-only">
+                    checkbox
+                  </label>
+                </div>
+              </th>
+              <th scope="col" className="px-6 py-3">
+                STT
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Họ và tên
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Email
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Ngày sinh
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Số điện thoại
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Quyền
+              </th>
+              <th scope="col" className="px-6 py-3"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {mockDataTeam.map((data, index) => (
+              <tr
+                className=""
+                style={{ backgroundColor: colors.primary[400] }}
+                key={index}>
+                <td className="w-4 p-4">
+                  <div className="flex items-center">
+                    <input
+                      id="checkbox-table-search-1"
+                      type="checkbox"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <label
+                      htmlFor="checkbox-table-search-1"
+                      className="sr-only">
+                      checkbox
+                    </label>
+                  </div>
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  scope="row"
+                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {data.id}
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  {data.name}
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  {data.email}
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  {data.dateOfBirth}
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  {data.phone}
+                </td>
+                <td className="px-6 py-4 m-5">
+                  <span
+                    style={{
+                      backgroundColor: colors.greenAccent[700],
+                      display: "flex",
+                      justifyContent: "center",
+                      padding: "5px",
+                      borderRadius: "4px"
+                    }}>
+                    {data.access === "admin" && (
+                      <AdminPanelSettingsOutlinedIcon className="mr-2" />
+                    )}
+                  {data.access === "manager" && <SecurityOutlinedIcon className="mr-2" />}
+                  {data.access === "user" && <LockOpenOutlinedIcon className="mr-2" />}
+                  {data.access}
+                  </span>
+                </td>
+                <td className="px-6 py-4">
+                  <button>
+                    <InfoIcon fontSize="large" className="mx-2" />
+                  </button>
+                  <button>
+                    <EditIcon fontSize="large" className="mx-2" />
+                  </button>
+                  <button>
+                    <DeleteIcon fontSize="large" className="mx-2" />
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 

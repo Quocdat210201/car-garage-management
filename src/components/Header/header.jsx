@@ -8,9 +8,11 @@ import Login from "../../Layout/Login/login";
 import * as React from "react";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
+import Notify from "../notify/notify";
 
 function Header() {
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState(true);
+  const [notify, setNoify] = useState(false);
   const [modalUser, setmodalUser] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
   const [actions, setActions] = useState("login");
@@ -26,7 +28,7 @@ function Header() {
     return () => {
       document.removeEventListener("mousedown", handler);
     };
-  });
+  }, []);
 
   return (
     <div className="relative">
@@ -47,11 +49,15 @@ function Header() {
             <FaTwitter className="hover:text-[#767676] cursor-pointer" />
             <FaFacebookF className="hover:text-[#767676] cursor-pointer" />
           </div>
-          <div className="mr-4 pr-1 text-[30px] relative">
+          <div
+            className="mr-4 pr-1 text-[30px] relative"
+            onClick={() => setNoify((prev) => !prev)}>
             <IoMdNotifications className="hover:text-[#767676] cursor-pointer" />
             <span className="absolute w-4 h-4 bg-red-600 text-[10px] text-white font-medium top-0 right-0.5 rounded-full flex justify-center items-center">
               1
             </span>
+            {/* <Notify/> */}
+            {notify ? <Notify/> : <div></div>}
           </div>
           <div className="relative">
             {user ? (

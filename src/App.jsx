@@ -19,11 +19,18 @@ import TopBar from "./pages/dashboard/screens/global/topBar";
 import Dashboard from "./pages/dashboard/screens/dashboard";
 import SideBar from "./pages/dashboard/screens/global/sideBar";
 import Star from "./pages/dashboard/screens/star";
-import Car from "./pages/dashboard/screens/car"
-import Accounts from "./pages/dashboard/screens/accounts"
+import Car from "./pages/dashboard/screens/car";
+import ProfileAdmin from "./pages/dashboard/screens/profile";
+import Accounts from "./pages/dashboard/screens/accounts";
+import CalendarWork from "./pages/dashboard/screens/calendarwork";
+import AppointmentAdmin from "./pages/dashboard/screens/appointments";
+import Customer from "./pages/dashboard/screens/customers";
+import Bill from "./pages/dashboard/screens/bill";
+import Pie from "./pages/dashboard/screens/pie";
+import WareHouse from "./pages/dashboard/screens/warehouse";
 
 function App() {
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState("user");
 
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
@@ -31,40 +38,63 @@ function App() {
   return (
     <div className="">
       <div className="app">
-        <BrowserRouter>
-          {/* <Header />
-          <Routes>
-            <Route exact path={routerConfig.home} element={<Home />} />
-            <Route
-              exact
-              path={routerConfig.appointment}
-              element={<Appointment />}
-            />
-            <Route exact path={routerConfig.services} element={<Service />} />
-            <Route exact path={routerConfig.servicesDetails} element={<ServiceDetails />} />
-            <Route exact path={routerConfig.aboutUs} element={<Introduce />} />
-            <Route exact path={routerConfig.contact} element={<Contact />} />
-            <Route exact path={routerConfig.profile} element={<Profile />} />
-          </Routes>
-          <Footer /> */}
-
-          <ColorModeContext.Provider value={colorMode}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              <div className="app flex">
-                <SideBar/>
-                <main className="content">
-                  <TopBar />
-                  <Routes>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/car" element={<Car />} />
-                    <Route path="/accounts" element={<Accounts />} />
-                  </Routes>
-                </main>
-              </div>
-            </ThemeProvider>
-          </ColorModeContext.Provider>
-        </BrowserRouter>
+        {user === "user" ? (
+          <BrowserRouter>
+            <Header />
+            <Routes>
+              <Route exact path={routerConfig.home} element={<Home />} />
+              <Route
+                exact
+                path={routerConfig.appointment}
+                element={<Appointment />}
+              />
+              <Route exact path={routerConfig.services} element={<Service />} />
+              <Route
+                exact
+                path={routerConfig.servicesDetails}
+                element={<ServiceDetails />}
+              />
+              <Route
+                exact
+                path={routerConfig.aboutUs}
+                element={<Introduce />}
+              />
+              <Route exact path={routerConfig.contact} element={<Contact />} />
+              <Route exact path={routerConfig.profile} element={<Profile />} />
+            </Routes>
+            <Footer />
+          </BrowserRouter>
+        ) : (
+          <BrowserRouter>
+            <ColorModeContext.Provider value={colorMode}>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <div className="app flex">
+                  <SideBar />
+                  <main className="content">
+                    <TopBar />
+                    <Routes>
+                      <Route path="/admin" element={<Dashboard />} />
+                      <Route path="/admin/profile" element={<ProfileAdmin />} />
+                      <Route path="/admin/car" element={<Car />} />
+                      <Route
+                        path="/admin/apointments"
+                        element={<AppointmentAdmin />}
+                      />
+                      <Route path="/admin/star" element={<Star />} />
+                      <Route path="/admin/customer" element={<Customer />} />
+                      <Route path="/admin/calendar" element={<CalendarWork />} />
+                      <Route path="/admin/accounts" element={<Accounts />} />
+                      <Route path="/admin/bill" element={<Bill />} />
+                      <Route path="/admin/pie" element={<Pie />} />
+                      <Route path="/admin/warehouse" element={<WareHouse />} />
+                    </Routes>
+                  </main>
+                </div>
+              </ThemeProvider>
+            </ColorModeContext.Provider>
+          </BrowserRouter>
+        )}
       </div>
     </div>
   );

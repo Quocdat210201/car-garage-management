@@ -1,5 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import routerConfig from "../../config";
+import { FaCheck } from "react-icons/fa";
+import SendAppoint from "./sendAppoint"
 
 function Appointment() {
   return (
@@ -27,7 +29,7 @@ function Appointment() {
           </div>
         </div>
       </div>
-      <div className="my-6 px-28">
+      <div className="mt-6 mb-16 px-28 ">
         <div className="flex justify-start items-center">
           <span className="block w-1.5 h-10 bg-[red]"></span>
           <h1 className="text-[20px] font-medium ml-2">
@@ -143,25 +145,29 @@ function Appointment() {
                   <label className="text-[18px] mb-2">Thời gian</label>
                   <input type="time" className="input-appoint" />
                 </div>
-              </div>
-              <div className="flex flex-col w-1/2 mt-4 pl-8">
-                <label className="text-[18px] mb-2">Nội dung</label>
-                <textarea
-                  name=""
-                  id=""
-                  cols="3"
-                  rows="3"
-                  placeholder="Nội dung"
-                  className="input-appoint"></textarea>
+                <div className="flex flex-col w-1/2 mt-4 pl-8">
+                  <label className="text-[18px] mb-2">Nội dung</label>
+                  <textarea
+                    name=""
+                    id=""
+                    cols="3"
+                    rows="3"
+                    placeholder="Nội dung"
+                    className="input-appoint"></textarea>
+                </div>
               </div>
             </div>
-            <div className="action">
-              <button className="btn btn-primary ml-8 mt-10">Gửi lịch hẹn</button>
+            <div className="action flex justify-end">
+              <button className="btn btn-primary ml-8 mt-10" type="submit">
+                Gửi lịch hẹn
+              </button>
             </div>
           </form>
         </div>
       </div>
+      {/* <SendAppoint /> */}
     </div>
+
   );
 }
 

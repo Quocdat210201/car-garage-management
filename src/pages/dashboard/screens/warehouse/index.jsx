@@ -8,37 +8,35 @@ import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
 
-export const mockDataCar = [
+export const mockDataWarehouse = [
   {
     id: 1,
-    license: "92L1-11271",
-    name: "Phan Quoc Dat",
-    carCompany: "Audi",
-    origin: "Đức",
-    year: 2010,
-    status: "Bảo dưỡng",
+    name: "Động cơ",
+    quantity: 20,
+    price: 100.0,
+    content: "Kiem tra dong co oto va bao duong gam xe",
+    status: "Còn hàng",
     action: "",
   },
   {
     id: 2,
-    license: "92L1-11271",
-    name: "Phan Quoc Dat",
-    carCompany: "Audi",
-    origin: "Đức",
-    year: 2010,
-    status: "Bảo dưỡng",
+    name: "Máy lọc khí",
+    quantity: 0,
+    price: 499.0,
+    content: "Kiem tra dong co oto va bao duong gam xe",
+    status: "Hết hàng",
     action: "",
   },
 ];
 
-function Star() {
+function WareHouse() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   return (
     <div className="m-5">
       <div className="flex justify-between ">
-        <Header title="XE" subtitle="Quản lý xe" />
+        <Header title=" KHO" subtitle="Quản lý phụ tùng" />
         <div color={colors.grey[100]}>
           <button
             style={{
@@ -51,7 +49,7 @@ function Star() {
               alignItems: "center",
             }}>
             <AddIcon />
-            <span className="ml-1">Thêm mới xe</span>
+            <span className="ml-1">Thêm mới lịch hẹn</span>
           </button>
           <button
             style={{
@@ -90,28 +88,29 @@ function Star() {
                 STT
               </th>
               <th scope="col" className="px-6 py-3">
-                Biển số xe
+                Tên phụ tùng
               </th>
               <th scope="col" className="px-6 py-3">
-                Tên khách hàng
+                Số lượng còn
               </th>
               <th scope="col" className="px-6 py-3">
-                Hãng xe
+                Đơn giá
               </th>
               <th scope="col" className="px-6 py-3">
-                Nơi sản xuất
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Năm sản xuất
+                Mô tả
               </th>
               <th scope="col" className="px-6 py-3">
                 Trạng thái
               </th>
-              <th scope="col" className="px-6 py-3"></th>
+              <th scope="col" className="px-6 py-3">
+                Mô tả
+              </th>
+              <th scope="col" className="px-6 py-3">
+              </th>
             </tr>
           </thead>
           <tbody>
-            {mockDataCar.map((data, index) => (
+            {mockDataWarehouse.map((data, index) => (
               <tr
                 className=""
                 style={{ backgroundColor: colors.primary[400] }}
@@ -139,27 +138,27 @@ function Star() {
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.license}
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
                   {data.name}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.carCompany}
+                  {data.quantity}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.origin}
+                  {data.price}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.year}
+                  {data.content}
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  {data.status}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
@@ -186,4 +185,4 @@ function Star() {
   );
 }
 
-export default Star;
+export default WareHouse;

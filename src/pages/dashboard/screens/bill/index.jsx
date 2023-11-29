@@ -8,37 +8,37 @@ import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
 
-export const mockDataCar = [
+export const mockDataBill = [
   {
     id: 1,
-    license: "92L1-11271",
-    name: "Phan Quoc Dat",
-    carCompany: "Audi",
-    origin: "Đức",
-    year: 2010,
-    status: "Bảo dưỡng",
+    customerName: "Phan Quoc Dat",
+    service: "Sơn xe",
+    price: 100.0,
+    dateCreate: "21/02/2023",
+    status: "Chưa thanh toán",
+    note: "-",
     action: "",
   },
   {
     id: 2,
-    license: "92L1-11271",
-    name: "Phan Quoc Dat",
-    carCompany: "Audi",
-    origin: "Đức",
-    year: 2010,
-    status: "Bảo dưỡng",
+    customerName: "Phan Quoc Dat",
+    service: "Sơn xe",
+    price: 100.0,
+    dateCreate: "21/02/2023",
+    status: "Đã thanh toán",
+    note: "-",
     action: "",
   },
 ];
 
-function Star() {
+function Bill() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
   return (
     <div className="m-5">
       <div className="flex justify-between ">
-        <Header title="XE" subtitle="Quản lý xe" />
+        <Header title="Hóa đơn" subtitle="Quản lý hóa đơn" />
         <div color={colors.grey[100]}>
           <button
             style={{
@@ -51,7 +51,7 @@ function Star() {
               alignItems: "center",
             }}>
             <AddIcon />
-            <span className="ml-1">Thêm mới xe</span>
+            <span className="ml-1">Thêm mới hóa đơn</span>
           </button>
           <button
             style={{
@@ -90,28 +90,28 @@ function Star() {
                 STT
               </th>
               <th scope="col" className="px-6 py-3">
-                Biển số xe
+                Ten khách hàng
               </th>
               <th scope="col" className="px-6 py-3">
-                Tên khách hàng
+                Dịch vụ
               </th>
               <th scope="col" className="px-6 py-3">
-                Hãng xe
+                Giá
               </th>
               <th scope="col" className="px-6 py-3">
-                Nơi sản xuất
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Năm sản xuất
+                Ngày tạo
               </th>
               <th scope="col" className="px-6 py-3">
                 Trạng thái
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Ghi chú
               </th>
               <th scope="col" className="px-6 py-3"></th>
             </tr>
           </thead>
           <tbody>
-            {mockDataCar.map((data, index) => (
+            {mockDataBill.map((data, index) => (
               <tr
                 className=""
                 style={{ backgroundColor: colors.primary[400] }}
@@ -139,32 +139,32 @@ function Star() {
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.license}
+                  {data.customerName}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.name}
+                  {data.service}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.carCompany}
+                  {data.price}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.origin}
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  {data.year}
+                  {data.dateCreate}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
                   {data.status}
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  {data.note}
                 </td>
                 <td className="px-6 py-4">
                   <button>
@@ -186,4 +186,4 @@ function Star() {
   );
 }
 
-export default Star;
+export default Bill;
