@@ -125,68 +125,6 @@ function Appointments() {
   ];
 
   return (
-    // <Box m="20px">
-    //   <Box className="flex justify-between ">
-    //     <Header title=" LỊCH HẸN" subtitle="Quản lý lịch hẹn" />
-    //     <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-    //       <button
-    //         style={{
-    //           backgroundColor: colors.blueAccent[700],
-    //           padding: "10px 16px",
-    //           borderRadius: "4px",
-    //           marginRight: "10px",
-    //           display: "inline-flex",
-    //           justifyContent: "center",
-    //           alignItems: "center",
-    //         }}>
-    //         <AddIcon />
-    //         <span className="ml-1">Thêm mới lịch hẹn</span>
-    //       </button>
-    //       <button
-    //         style={{
-    //           backgroundColor: colors.blueAccent[700],
-    //           padding: "10px 16px",
-    //           borderRadius: "4px",
-    //           display: "inline-flex",
-    //           justifyContent: "center",
-    //           alignItems: "center",
-    //         }}>
-    //         <FileUploadIcon />
-    //         <span className="ml-1">Xuất file excel</span>
-    //       </button>
-    //     </Typography>
-    //   </Box>
-
-    //   <Box
-    //     height="75vh"
-    //     sx={{
-    //       "& .MuiDataGrid-root": {
-    //         border: "none",
-    //       },
-    //       "& .MuiDataGrid-cell": {
-    //         borderBottom: "none",
-    //       },
-    //       "& .name-column--cell": {
-    //         color: colors.greenAccent[300],
-    //       },
-    //       "& .MuiDataGrid-columnHeaders": {
-    //         backgroundColor: colors.blueAccent[700],
-    //         borderBottom: "none",
-    //       },
-    //       "& .MuiDataGrid-virtualScroller": {
-    //         backgroundColor: colors.primary[400],
-    //       },
-    //       "& .MuiDataGrid-footerContainer": {
-    //         borderTop: "none",
-    //         backgroundColor: colors.blueAccent[700],
-    //       },
-    //       "& .MuiCheckbox-root": {
-    //         color: `${colors.greenAccent[200]} !important`,
-    //       },
-    //     }}>
-    //     <DataGrid checkboxSelection rows={mockDataAppoint} columns={columns} />
-    //   </Box>
-    // </Box>
     <div className="m-5">
       <div className="flex justify-between ">
         <Header title=" LỊCH HẸN" subtitle="Quản lý lịch hẹn" />

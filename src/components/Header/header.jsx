@@ -1,6 +1,6 @@
 import { FaPhone, FaFacebookF, FaYoutube, FaTwitter } from "react-icons/fa";
 import { IoMdMail, IoMdNotifications } from "react-icons/io";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, Navigate, useNavigate } from "react-router-dom";
 import routerConfig from "../../config";
 import { GoSearch } from "react-icons/go";
 import { useState, useEffect, useRef } from "react";
@@ -10,14 +10,68 @@ import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 import Notify from "../notify/notify";
 
+import { loginApi, userApi } from "../../service/UserService";
+import { toast } from "react-toastify";
+
 function Header() {
-  const [user, setUser] = useState(true);
+  const [user, setUser] = useState([]);
   const [notify, setNoify] = useState(false);
   const [modalUser, setmodalUser] = useState(false);
   const [modalLogin, setModalLogin] = useState(false);
   const [actions, setActions] = useState("login");
 
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
   let menuRef = useRef();
+
+  const showToastMessageError = () => {
+    toast.error("Không tìm thấy tài khoản!", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+  const showToastMessageSuccess = () => {
+    toast.success("Đăng nhập thành công!", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+  const handleLogin = async () => {
+    if (!phoneNumber || !password) {
+      return;
+    }
+
+    let res = await loginApi(phoneNumber, password);
+    if (res.statusCode === 400) {
+      showToastMessageError();
+    } else if (res.data && res.data.access_token) {
+      localStorage.setItem("token", res.data.access_token);
+      localStorage.setItem("roles", res.data.roles);
+      window.location.reload();
+      setModalLogin(false);
+      showToastMessageSuccess()
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+    window.location.reload();
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const getUser = async () => {
+    try {
+      const { data } = await userApi();
+      setUser(data);
+    } catch {
+      console.error();
+    }
+  };
+
   useEffect(() => {
     let handler = (e) => {
       if (!menuRef.current.contains(e.target)) {
@@ -57,10 +111,10 @@ function Header() {
               1
             </span>
             {/* <Notify/> */}
-            {notify ? <Notify/> : <div></div>}
+            {notify ? <Notify /> : <div></div>}
           </div>
           <div className="relative">
-            {user ? (
+            {user.id ? (
               <img
                 src="https://www.shareicon.net/data/512x512/2016/05/24/770117_people_512x512.png"
                 alt=""
@@ -78,7 +132,7 @@ function Header() {
             )}
           </div>
           <div
-            className={`menu-user absolute bg-[#7c7c7c] w-60 h-60 top-16 right-20 z-50 text-white rounded ${
+            className={`menu-user absolute bg-[#7c7c7c] max-w-md h-60 top-16 right-20 z-50 text-white rounded ${
               modalUser ? "menu-active" : "menu-inactive"
             }`}
             ref={menuRef}>
@@ -91,9 +145,9 @@ function Header() {
                 />
               </a>
               <div className="pl-4">
-                <span className="font-medium">Dat Phan</span>
+                <span className="font-medium">{user.name}</span>
                 <br></br>
-                <span>@datphan212</span>
+                <span>{user.email}</span>
               </div>
             </div>
             <ul className="list pt-3">
@@ -103,7 +157,9 @@ function Header() {
               <li className="py-2.5 px-3 hover:bg-[#989898] hover:cursor-pointer">
                 Lịch sử
               </li>
-              <li className="py-2.5 px-3 hover:bg-[#989898] hover:cursor-pointer">
+              <li
+                className="py-2.5 px-3 hover:bg-[#989898] hover:cursor-pointer"
+                onClick={handleLogout}>
                 Đăng xuất
               </li>
             </ul>
@@ -206,6 +262,8 @@ function Header() {
                     <input
                       type="text"
                       placeholder="Số điện thoại"
+                      value={phoneNumber}
+                      onChange={(event) => setPhoneNumber(event.target.value)}
                       className="block p-4 rounded w-full border-none outline-none text-black font-normal text-[20px]"
                     />
                     {/* <label htmlFor="">Số điện thoại</label> */}
@@ -214,6 +272,8 @@ function Header() {
                     <input
                       type="password"
                       placeholder="Mật khẩu"
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
                       className="block p-4 rounded w-full border-none outline-none text-black font-normal text-[20px]"
                     />
                     <FaRegEye className="absolute right-4 top-6 text-black cursor-pointer" />
@@ -225,8 +285,10 @@ function Header() {
           <label htmlFor="">Mật khẩu</label>
         </div> */}
                   <button
+                    className="w-full flex items-center justify-center bg-[#D90429] text-white text-[22px] p-3 font-medium rounded mt-10 hover:opacity-80 cursor-pointer"
                     type="submit"
-                    className="w-full flex items-center justify-center bg-[#D90429] text-white text-[22px] p-3 font-medium rounded mt-10 hover:opacity-80">
+                    // disabled={userName && password ? false : true}
+                    onClick={handleLogin}>
                     Đăng nhập
                   </button>
                   <div className="mt-3 w-full flex flex-row justify-center">

@@ -1,5 +1,5 @@
+import { DeleteOutlined, EditOutlined, GroupOutlined } from "@ant-design/icons";
 import { Box, Typography, useTheme } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../../../theme";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -7,33 +7,48 @@ import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
+import { mockDataCar } from "./mockData";
+import CarModal from "./carModal";
+import { Form, Input, Select, Button } from "antd/lib";
+import Modal from "antd/lib/modal/Modal";
+import CloseIcon from "@mui/icons-material/Close";
+const { Option } = Select;
 
-export const mockDataCar = [
-  {
-    id: 1,
-    license: "92L1-11271",
-    name: "Phan Quoc Dat",
-    carCompany: "Audi",
-    origin: "Đức",
-    year: 2010,
-    status: "Bảo dưỡng",
-    action: "",
-  },
-  {
-    id: 2,
-    license: "92L1-11271",
-    name: "Phan Quoc Dat",
-    carCompany: "Audi",
-    origin: "Đức",
-    year: 2010,
-    status: "Bảo dưỡng",
-    action: "",
-  },
-];
+import { get } from "lodash";
+// import ClassModal from "./classModal";
+
+import { useState } from "react";
 
 function Star() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [form] = Form.useForm();
+  const classId = false
+  const [isModalVisible, setIsModalVisible] = useState({
+    open: false,
+    id: null,
+  });
+
+  console.log([form]);
+
+  const showModal = (id) => {
+    setIsModalVisible({
+      open: true,
+      id,
+    });
+    console.log({ id });
+    console.log(isModalVisible);
+  };
+  const handleCancel = () => {
+    setIsModalVisible({ open: false, id: null });
+  };
+  const handleReload = () => {
+    setIsModalVisible({ open: false, id: null });
+  };
+
+  const handleChange = (value) => {
+    console.log(`selected ${value}`);
+  };
 
   return (
     <div className="m-5">
@@ -49,9 +64,10 @@ function Star() {
               display: "inline-flex",
               justifyContent: "center",
               alignItems: "center",
-            }}>
-            <AddIcon />
-            <span className="ml-1">Thêm mới xe</span>
+            }}
+            onClick={() => showModal(null)}>
+            <AddIcon className="ml-1" />
+            Thêm mới xe
           </button>
           <button
             style={{
@@ -182,6 +198,94 @@ function Star() {
           </tbody>
         </table>
       </div>
+
+      {
+        get(isModalVisible, "open", true) && (
+          <div className=" detail-modal flex-col">
+            <Modal
+              title={
+                // classId ?
+                // "Cập nhật thông tin lớp học"
+                "Thêm mới xe"
+              }
+              open={get(isModalVisible, "open", true)}
+              onCancel={handleCancel}
+              onOk={handleReload}
+              width={580}
+              // style={{ backgroundColor: colors.blueAccent[800] }}
+              footer={
+                <>
+                  <Button type="default" onClick={handleCancel} className="m-1">
+                    Huỷ
+                  </Button>
+                  <Button onClick={form.submit}>
+                    {classId ? "Lưu thay đổi" : "Thêm ngay"}
+                  </Button>
+                </>
+              }
+              >
+              <Form
+                name="basic"
+                className="max-w-full max-h-full align-center text-white p-5 rounded-[4px]">
+                <div className="flex items-center justify-center">
+                  <Form.Item
+                    style={{ width: 450 }}
+                    name="id"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập tên lớp!",
+                      },
+                    ]}>
+                    <span>Biển số xe</span>
+                    <Input placeholder="Nhập biển số xe..." className=" p-2" />
+                  </Form.Item>
+                  <Form.Item name="" style={{ marginLeft: 16 }}>
+                    <span>Hãng xe</span>
+                    <Select
+                      defaultValue="default"
+                      style={{
+                        zIndex: 9999,
+                        width: 220,
+                        height: 42,
+                      }}
+                      onChange={handleChange}>
+                      <Option value="default">---Chọn hãng xe---</Option>
+                      <Option value="lucy">Lucy</Option>
+                      <Option value="disabled">Disabled</Option>
+                      <Option value="Yiminghe">yiminghe</Option>
+                    </Select>
+                  </Form.Item>
+                </div>
+                <Form.Item name="">
+                  <span>Nơi sản xuất</span>
+                  <Input
+                    value="Đức"
+                    placeholder="Nhập nơi sản xuất"
+                    className="text-black p-2"
+                  />
+                </Form.Item>
+                <Form.Item name="">
+                  <span>Năm sản xuất</span>
+                  <Input
+                    placeholder="Nhập nơi sản xuất"
+                    type="date"
+                    className="text-black p-2"
+                  />
+                </Form.Item>
+
+                {/* <div className="flex justify-end items-center">
+                  <Button className="mr-2 bg" onClick={handleCancel}>
+                    Hủy
+                  </Button>
+                  <Button onClick={handleReload}>Lưu</Button>
+                </div> */}
+              </Form>
+            </Modal>
+          </div>
+        )
+        // alert("Hello")
+      }
     </div>
   );
 }

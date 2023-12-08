@@ -1,9 +1,50 @@
 import { Link, NavLink } from "react-router-dom";
 import routerConfig from "../../config";
 import { FaCheck } from "react-icons/fa";
-import SendAppoint from "./sendAppoint"
+import SendAppoint from "./sendAppoint";
+import { useEffect, useState } from "react";
+import {
+  apiProvince,
+  apiProvinceDistrict,
+  apiProvinceWard,
+} from "../../service/UserService";
+import Select from "./SelectProvince";
 
 function Appointment() {
+  const [districts, setDistricts] = useState([]);
+  const [district, setDistrict] = useState("");
+  const [wards, setWards] = useState([]);
+  const [ward, setWard] = useState("");
+  const [reset, setReset] = useState(false);
+
+  // const provincesId = provinces[1].province_id
+
+  // console.log({provincesId});
+
+  useEffect(() => {
+    setDistrict(null);
+    const fetchPublicDistrict = async () => {
+      const response = await apiProvinceDistrict();
+      if (response.status === 200) {
+        setDistricts(response.data?.results);
+      }
+    };
+    fetchPublicDistrict();
+    setDistricts([]);
+  }, []);
+
+  useEffect(() => {
+    const fetchPublicWard = async () => {
+      const response = await apiProvinceWard(district);
+      if (response.status === 200) {
+        setWards(response.data?.results);
+      }
+    };
+    district && fetchPublicWard();
+    !district ? setReset(true) : setReset(false);
+    !district && setDistricts([]);
+  }, [district]);
+
   return (
     <div className="">
       <div className="area-bg__inner">
@@ -29,7 +70,7 @@ function Appointment() {
           </div>
         </div>
       </div>
-      <div className="mt-6 mb-16 px-28 ">
+      <div className="mt-6 mb-16 px-[400px] ">
         <div className="flex justify-start items-center">
           <span className="block w-1.5 h-10 bg-[red]"></span>
           <h1 className="text-[20px] font-medium ml-2">
@@ -49,7 +90,7 @@ function Appointment() {
                 <h1 className="text-[20px] font-medium ml-2">Thông tin xe</h1>
               </div>
               <div className="flex">
-                <div className="flex flex-col w-1/4 mt-4 pl-8">
+                <div className="flex flex-col w-1/3 mt-4 pl-8">
                   <label className="text-[18px] mb-2">Biển số xe</label>
                   <input
                     type="text"
@@ -57,7 +98,7 @@ function Appointment() {
                     className="input-appoint"
                   />
                 </div>
-                <div className="flex flex-col w-1/4 mt-4 pl-8">
+                <div className="flex flex-col w-1/3 mt-4 pl-8">
                   <label className="text-[18px] mb-2">Hãng xe </label>
                   <select className="input-appoint" name="">
                     <option value="">--Chọn hãng xe--</option>
@@ -65,17 +106,13 @@ function Appointment() {
                     <option value="cat">Porches</option>
                   </select>
                 </div>
-                <div className="flex flex-col w-1/4 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Nơi sản xuất</label>
-                  <input
-                    type="text"
-                    placeholder="Nhập nơi sản xuất"
-                    className="input-appoint"
-                  />
-                </div>
-                <div className="flex flex-col w-1/4 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Năm sản xuất</label>
-                  <input type="date" className="input-appoint" />
+                <div className="flex flex-col w-1/3 mt-4 pl-8">
+                  <label className="text-[18px] mb-2">Loại xe</label>
+                  <select className="input-appoint">
+                    <option value="">--Chọn loại xe--</option>
+                    <option value="dog">Xe mới</option>
+                    <option value="cat">Porches</option>
+                  </select>
                 </div>
               </div>
             </div>
@@ -91,38 +128,62 @@ function Appointment() {
                   Thông tin liên hệ
                 </h1>
               </div>
-              <div className="flex">
-                <div className="flex flex-col w-1/4 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Họ và tên</label>
-                  <input
-                    type="text"
-                    placeholder="Nhập họ và tên"
-                    className="input-appoint"
-                  />
+              <div>
+                <div className="flex">
+                  <div className="flex flex-col w-1/3 mt-4 pl-8">
+                    <label className="text-[18px] mb-2">Họ và tên</label>
+                    <input
+                      type="text"
+                      placeholder="Nhập họ và tên"
+                      className="input-appoint"
+                    />
+                  </div>
+                  <div className="flex flex-col w-1/3 mt-4 pl-8">
+                    <label className="text-[18px] mb-2">Số điện thoại</label>
+                    <input
+                      type="number"
+                      placeholder="Nhập số điện thoại"
+                      className="input-appoint"
+                    />
+                  </div>
+                  <div className="flex flex-col w-1/3 mt-4 pl-8">
+                    <label className="text-[18px] mb-2">Email</label>
+                    <input
+                      type="text"
+                      placeholder="Nhập email"
+                      className="input-appoint"
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col w-1/4 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Số điện thoại</label>
-                  <input
-                    type="number"
-                    placeholder="Nhập số điện thoại"
-                    className="input-appoint"
-                  />
-                </div>
-                <div className="flex flex-col w-1/4 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Email</label>
-                  <input
-                    type="text"
-                    placeholder="Nhập email"
-                    className="input-appoint"
-                  />
-                </div>
-                <div className="flex flex-col w-1/4 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Địa chỉ</label>
-                  <input
-                    type="text"
-                    placeholder="Nhập địa chỉ"
-                    className="input-appoint"
-                  />
+                <div className="flex">
+                  <div className="flex flex-col w-1/3 mt-4 pl-8">
+                    <Select
+                      reset={reset}
+                      type="district"
+                      value={district}
+                      setValue={setDistrict}
+                      options={districts}
+                      label="Quận/Huyện"
+                    />
+                  </div>
+                  <div className="flex flex-col w-1/3 mt-4 pl-8">
+                    <Select
+                      reset={reset}
+                      type="ward"
+                      value={ward}
+                      setValue={setWard}
+                      options={wards}
+                      label="Phường/xã"
+                    />
+                  </div>
+                  <div className="flex flex-col w-1/3 mt-4 pl-8">
+                    <label className="text-[18px] mb-2">Đường/ Số nhà</label>
+                    <input
+                      type="text"
+                      placeholder="Nhập địa chỉ cụ thể"
+                      className="input-appoint"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -137,22 +198,35 @@ function Appointment() {
                 <h1 className="text-[20px] font-medium ml-2">Chi tiết</h1>
               </div>
               <div className="flex">
-                <div className="flex flex-col w-1/4 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Ngày hẹn</label>
-                  <input type="date" className="input-appoint" />
-                </div>
-                <div className="flex flex-col w-1/4 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Thời gian</label>
-                  <input type="time" className="input-appoint" />
+                <div>
+                  <div>
+                    <div className="flex flex-col w-1/4 mt-4 pl-8">
+                      <label className="text-[18px] mb-2">Thời gian hẹn</label>
+                      <input type="datetime-local" className="input-appoint" />
+                    </div>
+                    <div className="flex flex-col w-1/4 mt-4 pl-8">
+                      <label className="text-[18px] mb-2">Dịch vụ</label>
+                      <select className="input-appoint" name="">
+                        <option value="">--Chọn dịch vụ--</option>
+                        <option value="dog">Rửa xe</option>
+                        <option value="cat">Sơn</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    
+                  </div>
                 </div>
                 <div className="flex flex-col w-1/2 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Nội dung</label>
+                  <label className="text-[18px] mb-2">
+                    Yêu cầu của khách hàng
+                  </label>
                   <textarea
                     name=""
                     id=""
                     cols="3"
                     rows="3"
-                    placeholder="Nội dung"
+                    placeholder="Nhập yêu cầu"
                     className="input-appoint"></textarea>
                 </div>
               </div>
@@ -167,7 +241,6 @@ function Appointment() {
       </div>
       {/* <SendAppoint /> */}
     </div>
-
   );
 }
 

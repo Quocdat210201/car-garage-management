@@ -42,7 +42,7 @@ function TopBar() {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton>
+        <IconButton onClick={() => alert("hello")}>
           <PersonOutlinedIcon />
         </IconButton>
       </Box>

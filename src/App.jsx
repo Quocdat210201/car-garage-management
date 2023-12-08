@@ -35,10 +35,47 @@ function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
 
+  const roles = localStorage.getItem("roles");
+
   return (
     <div className="">
       <div className="app">
-        {user === "user" ? (
+        {roles === "System Administrator" ||
+        roles === "Gara Administrator" ||
+        roles === "Staff" ? (
+          <BrowserRouter>
+            <ColorModeContext.Provider value={colorMode}>
+              <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <div className="app flex">
+                  <SideBar />
+                  <main className="content">
+                    <TopBar />
+                    <Routes>
+                      <Route path="/admin" element={<Dashboard />} />
+                      <Route path="/admin/profile" element={<ProfileAdmin />} />
+                      <Route path="/admin/car" element={<Car />} />
+                      <Route
+                        path="/admin/apointments"
+                        element={<AppointmentAdmin />}
+                      />
+                      <Route path="/admin/star" element={<Star />} />
+                      <Route path="/admin/customer" element={<Customer />} />
+                      <Route
+                        path="/admin/calendar"
+                        element={<CalendarWork />}
+                      />
+                      <Route path="/admin/accounts" element={<Accounts />} />
+                      <Route path="/admin/bill" element={<Bill />} />
+                      <Route path="/admin/pie" element={<Pie />} />
+                      <Route path="/admin/warehouse" element={<WareHouse />} />
+                    </Routes>
+                  </main>
+                </div>
+              </ThemeProvider>
+            </ColorModeContext.Provider>
+          </BrowserRouter>
+        ) : (
           <BrowserRouter>
             <Header />
             <Routes>
@@ -63,36 +100,6 @@ function App() {
               <Route exact path={routerConfig.profile} element={<Profile />} />
             </Routes>
             <Footer />
-          </BrowserRouter>
-        ) : (
-          <BrowserRouter>
-            <ColorModeContext.Provider value={colorMode}>
-              <ThemeProvider theme={theme}>
-                <CssBaseline />
-                <div className="app flex">
-                  <SideBar />
-                  <main className="content">
-                    <TopBar />
-                    <Routes>
-                      <Route path="/admin" element={<Dashboard />} />
-                      <Route path="/admin/profile" element={<ProfileAdmin />} />
-                      <Route path="/admin/car" element={<Car />} />
-                      <Route
-                        path="/admin/apointments"
-                        element={<AppointmentAdmin />}
-                      />
-                      <Route path="/admin/star" element={<Star />} />
-                      <Route path="/admin/customer" element={<Customer />} />
-                      <Route path="/admin/calendar" element={<CalendarWork />} />
-                      <Route path="/admin/accounts" element={<Accounts />} />
-                      <Route path="/admin/bill" element={<Bill />} />
-                      <Route path="/admin/pie" element={<Pie />} />
-                      <Route path="/admin/warehouse" element={<WareHouse />} />
-                    </Routes>
-                  </main>
-                </div>
-              </ThemeProvider>
-            </ColorModeContext.Provider>
           </BrowserRouter>
         )}
       </div>
