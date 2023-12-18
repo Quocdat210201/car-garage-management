@@ -8,11 +8,21 @@ import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function TopBar() {
+  const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("roles");
+    navigate("/");
+    toast.success("Đã đăng xuất!");
+    window.location.reload();
+  };
 
   return (
     <Box display="flex" justifyContent="space-between" p={2}>
@@ -42,7 +52,7 @@ function TopBar() {
         <IconButton>
           <SettingsOutlinedIcon />
         </IconButton>
-        <IconButton onClick={() => alert("hello")}>
+        <IconButton onClick={handleLogout}>
           <PersonOutlinedIcon />
         </IconButton>
       </Box>

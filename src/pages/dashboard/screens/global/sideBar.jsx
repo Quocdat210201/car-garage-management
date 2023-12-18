@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ProSidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
@@ -13,8 +13,11 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import ToysIcon from '@mui/icons-material/Toys';
+import LogoutIcon from '@mui/icons-material/Logout';
+import ToysIcon from "@mui/icons-material/Toys";
 import logoInage from "../../../../assets/images/image 2.png";
+import { toast } from "react-toastify";
+import { Button } from "antd";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -38,6 +41,14 @@ function SideBar() {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("roles");
+    navigate("/");
+    toast.success("Đã đăng xuất!");
+    window.location.reload();
+  };
 
   return (
     <Box
@@ -118,7 +129,7 @@ function SideBar() {
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-              />
+            />
             <Item
               title="Nhân viên"
               to="/admin/star"
@@ -153,7 +164,7 @@ function SideBar() {
               icon={<PieChartOutlineOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-              />
+            />
             <Item
               title="Thống kê"
               to="/admin/pie"
@@ -168,6 +179,14 @@ function SideBar() {
               selected={selected}
               setSelected={setSelected}
             />
+            
+            <button
+              onClick={handleLogout}
+              className="fixed bottom-10 mx-auto left-[32px] text-[15px] text-[#000] bg-[#ccc] rounded-[6px] py-3 px-8"
+              >
+                <LogoutIcon className="mr-[17px]"></LogoutIcon>
+                Đăng xuất
+              </button>
           </Box>
         </Menu>
       </ProSidebar>

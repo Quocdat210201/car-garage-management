@@ -34,7 +34,7 @@ const _getProvince = (url, params = {}, options = {}) => {
 };
 
 const post = (url, body = {}, options = {}) =>
-  instance.post(baseURL + url, body, { options });
+  instance.post(baseURL + url, body,  { ...defaultOptions, options });
 const put = (url, body = {}, options = {}) =>
   instance.put(baseURL + url, body, { ...defaultOptions, options });
 const patch = (url, body = {}, options = {}) =>

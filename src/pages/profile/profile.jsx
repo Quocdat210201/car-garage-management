@@ -2,6 +2,7 @@ import * as React from "react";
 import { Link, NavLink } from "react-router-dom";
 import routerConfig from "../../config";
 import fbLogo from "../../assets/images/fb-logo.webp";
+import InsLogo from "../../assets/images/Instagram-Logo.png";
 
 import { FaEdit } from "react-icons/fa";
 import { MdOutlineCalendarMonth } from "react-icons/md";
@@ -31,7 +32,6 @@ function Profile() {
       [field]: event.target.value,
     });
   };
-  const [disable, setDisable] = useState(false);
   useEffect(() => {
     getUser();
   }, []);
@@ -95,7 +95,7 @@ function Profile() {
               <FaEdit className="text-[26px] text-[#fff] p-1" />
             </button>
             <h1 className="text-[20px] p-2">
-              <span>{user.name}</span>
+              {/* <span>{user.name}</span> */}
             </h1>
           </div>
           <div className="flex w-full justify-center items-center mt-6">
@@ -104,7 +104,11 @@ function Profile() {
               src={fbLogo}
               alt="fb"
             />
-            <img className="w-10 h-10 object-cover" src={fbLogo} alt="ins" />
+            <img
+              className="w-14 h-14 object-cover mr-4 text-[30px]"
+              src={InsLogo}
+              alt="fb"
+            />
           </div>
         </div>
         <div className="w-2/3 bg-[#F3F3F3] ml-6 rounded px-10 py-10 h-[660px]">
@@ -181,16 +185,16 @@ function Profile() {
                 <button
                   className="btn btn-primary mr-4"
                   onClick={handleUpdateUser}>
-                  Save Changes
+                  Lưu
                 </button>
                 <button className="btn btn-primary" onClick={toggleEditMode}>
-                  Cancel
+                  Hủy
                 </button>
               </>
             )}
             {!isEditMode && (
               <button className="btn btn-primary" onClick={toggleEditMode}>
-                Edit
+                Sửa
               </button>
             )}
           </div>

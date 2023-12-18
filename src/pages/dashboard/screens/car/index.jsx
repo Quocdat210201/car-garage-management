@@ -7,11 +7,9 @@ import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
-import { mockDataCar } from "./mockData";
-import CarModal from "./carModal";
+import { mockDataCar } from "./mockData"
 import { Form, Input, Select, Button } from "antd/lib";
 import Modal from "antd/lib/modal/Modal";
-import CloseIcon from "@mui/icons-material/Close";
 const { Option } = Select;
 
 import { get } from "lodash";
@@ -24,21 +22,18 @@ function Star() {
   const colors = tokens(theme.palette.mode);
   const [form] = Form.useForm();
   const classId = false
+  const [loading, setIsLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState({
     open: false,
     id: null,
   });
-
-  console.log([form]);
-
   const showModal = (id) => {
     setIsModalVisible({
       open: true,
       id,
     });
-    console.log({ id });
-    console.log(isModalVisible);
   };
+
   const handleCancel = () => {
     setIsModalVisible({ open: false, id: null });
   };

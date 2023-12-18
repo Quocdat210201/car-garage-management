@@ -1,39 +1,90 @@
-import {post, get, put, getProvince} from "./BaseApi"
+import { post, get, put, getProvince } from "./BaseApi";
+import axios from "axios";
 
 const loginApi = async (phoneNumber, password) => {
-    const res = await post("api/account/login", {phoneNumber, password});
-    return res.data;
-}
+  const res = await post("api/account/login", { phoneNumber, password });
+  return res.data;
+};
+
+const registerApi = async (user) => {
+  const res = await post("api/account/sign-up", user);
+  return res.data;
+};
 
 const userApi = async () => {
-    const res = await get("api/user");
-    return res.data;
-}
+  const res = await get("api/user");
+  return res.data;
+};
 
 const updateUserApi = async (user) => {
-    const res = await put("api/user/update-user", user);
-    return res.data;
-}
+  const res = await put("api/user/update-user", user);
+  return res.data;
+};
 
-const apiProvince = async () => {
-    const res = await getProvince("api/province/1")
-    return res;
-}
+// const apiProvince = async () => {
+//   const res = await getProvince("api/province/1");
+//   return res;
+// };
 
 const apiProvinceDistrict = async () => {
-    const res = await getProvince(`api/province/district/${48}`)
-    return res;
-}
+  const res = await get("api/district");
+  return res;
+};
 
 const apiProvinceWard = async (districtId) => {
-    const res = await getProvince(`api/province/ward/${districtId}`)
-    return res;
-}
+  const res = await get(`api/ward/district?districtId=${districtId}`);
+  return res;
+};
+
+const apiAppointmentSchedule = async (data) => {
+  const res = await post("api/appointment-schedule", data);
+  return res;
+};
+
+const getAppointmentSchedule = async () => {
+  const res = await get(`api/appointment-schedule`);
+  return res;
+};
 
 
-// const listUser = async () => {
-//     const res = await get("api/account/login");
-//     return res.data;
-// }
+const serviceApi = async () => {
+  const res = await get("api/repair-service");
+  return res;
+};
 
-export {loginApi, userApi, updateUserApi, apiProvince, apiProvinceDistrict, apiProvinceWard}
+const serviceDetailApi = async (id) => {
+  const res = await get(`api/repair-service/${id}`);
+  return res;
+};
+
+const carBrandApi = async () => {
+  const res = await get(`api/car-brand`);
+  return res;
+};
+
+const carTypeApi = async () => {
+  const res = await get(`api/car-type`);
+  return res;
+};
+
+const getCarApi = async () => {
+  const res = await get(`api/car`);
+  return res;
+};
+
+
+
+export {
+  loginApi,
+  registerApi,
+  userApi,
+  updateUserApi,
+  apiProvinceDistrict,
+  apiProvinceWard,
+  apiAppointmentSchedule,
+  getAppointmentSchedule,
+  serviceApi,
+  serviceDetailApi,
+  carBrandApi,
+  carTypeApi,
+};

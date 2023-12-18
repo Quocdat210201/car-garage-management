@@ -5,14 +5,63 @@ import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../../components/Header";
 import EditIcon from "@mui/icons-material/Edit";
+import SaveIcon from '@mui/icons-material/Save';
+import CancelScheduleSendIcon from '@mui/icons-material/CancelScheduleSend';
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import { userApi, updateUserApi } from "../../../../service/UserService";
 
 const Profile = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [user, setUser] = useState({
+    name: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    email: "",
+    address: "",
+  });
 
   const handleFormSubmit = (values) => {
     console.log(values);
+  };
+
+  const [isEditMode, setIsEditMode] = useState(false);
+  const toggleEditMode = () => {
+    setIsEditMode(!isEditMode);
+  };
+
+  const handleInputChange = (event, field) => {
+    setUser({
+      ...user,
+      [field]: event.target.value,
+    });
+  };
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const getUser = async () => {
+    try {
+      const { data } = await userApi();
+      setUser(data);
+    } catch {
+      console.error();
+    }
+  };
+
+  const handleUpdateUser = async () => {
+    try {
+      await updateUserApi(user);
+      toast.success("Lưu thành công !");
+      setTimeout(() => {
+        setIsEditMode(false); // Set edit mode to false after saving
+      }, 0);
+    } catch (error) {
+      toast.error("Error updating user information");
+      console.error(error);
+    }
   };
 
   return (
@@ -20,20 +69,65 @@ const Profile = () => {
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="CÁ NHÂN" subtitle="Thông tin cá nhân" />
         <Typography color={colors.grey[100]} sx={{ ml: "5px" }}>
-          <button
-            type="submit"
-            style={{
-              backgroundColor: colors.blueAccent[700],
-              padding: "10px 16px",
-              borderRadius: "4px",
-              marginRight: "10px",
-              display: "inline-flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <EditIcon />
-            <span className="ml-1">Chỉnh sửa</span>
-          </button>
+          <div className="action flex justify-end items-center">
+            {isEditMode && (
+              <>
+                <button
+                  type="submit"
+                  style={{
+                    backgroundColor: colors.blueAccent[700],
+                    padding: "10px 16px",
+                    borderRadius: "4px",
+                    marginRight: "10px",
+                    marginTop: "0px",
+                    display: "inline-flex",
+                    justifyContent: "center",
+                    fontSize: "14px",
+                    alignItems: "center",
+                  }}
+                  onClick={handleUpdateUser}>
+                  <SaveIcon />
+                <span className="ml-1">Lưu</span>
+                </button>
+                <button
+                  type="submit"
+                  style={{
+                    backgroundColor: colors.blueAccent[700],
+                    padding: "10px 16px",
+                    borderRadius: "4px",
+                    marginRight: "10px",
+                    marginTop: "0px",
+                    display: "inline-flex",
+                    justifyContent: "center",
+                    fontSize: "14px",
+                    alignItems: "center",
+                  }}
+                  onClick={toggleEditMode}>
+                  <CancelScheduleSendIcon />
+                <span className="ml-1">Hủy</span>
+                </button>
+              </>
+            )}
+            {!isEditMode && (
+              <button
+                type="submit"
+                style={{
+                  backgroundColor: colors.blueAccent[700],
+                  padding: "10px 16px",
+                  borderRadius: "4px",
+                  marginRight: "10px",
+                  marginTop: "0px",
+                  display: "inline-flex",
+                  justifyContent: "center",
+                  fontSize: "14px",
+                  alignItems: "center",
+                }}
+                onClick={toggleEditMode}>
+                <EditIcon />
+                <span className="ml-1">Chỉnh sửa</span>
+              </button>
+            )}
+          </div>
         </Typography>
       </Box>
 
@@ -41,99 +135,65 @@ const Profile = () => {
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
         validationSchema={checkoutSchema}>
-        {({
-          values,
-          errors,
-          touched,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-        }) => (
+        {({ errors, touched, handleBlur, handleChange, handleSubmit }) => (
           <form onSubmit={handleSubmit}>
+            {console.log(user)}
             <Box
               display="grid"
               gap="30px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              gridTemplateColumns="repeat(1, minmax(0, 1fr))"
               sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+                "& > div": { gridColumn: isNonMobile ? undefined : "span 1" },
               }}>
-              <TextField
-                fullWidth
-                variant="filled"
+              <input
                 type="text"
-                label="Họ"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.firstName}
-                name="firstName"
-                error={!!touched.firstName && !!errors.firstName}
-                helperText={touched.firstName && errors.firstName}
-                sx={{ gridColumn: "span 2" }}
+                placeholder="Họ và tên"
+                value={user.name}
+                onChange={(event) => handleInputChange(event, "name")}
+                className={`custom-input-profile ${
+                  isEditMode ? "" : "opacity-70"
+                }`}
+                disabled={!isEditMode}
               />
-              <TextField
-                fullWidth
-                variant="filled"
+              <input
                 type="text"
-                label="Tên"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.lastName}
-                name="lastName"
-                error={!!touched.lastName && !!errors.lastName}
-                helperText={touched.lastName && errors.lastName}
-                sx={{ gridColumn: "span 2" }}
+                placeholder="Số điện thoại"
+                value={user.phoneNumber}
+                onChange={(event) => handleInputChange(event, "phoneNumber")}
+                className={`custom-input-profile ${
+                  isEditMode ? "" : "opacity-70"
+                }`}
+                disabled={!isEditMode}
               />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Ngày sinh"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.dateOfBirth}
-                name="dateOfBirth"
-                error={!!touched.dateOfBirth && !!errors.dateOfBirth}
-                helperText={touched.dateOfBirth && errors.dateOfBirth}
-                sx={{ gridColumn: "span 4" }}
+              <input
+                type="date"
+                placeholder="Ngày sinh"
+                value={user.dateOfBirth}
+                onChange={(event) => handleInputChange(event, "dateOfBirth")}
+                className={`custom-input-profile ${
+                  isEditMode ? "" : "opacity-70"
+                }`}
+                disabled={!isEditMode}
               />
-              <TextField
-                fullWidth
-                variant="filled"
+              <input
                 type="text"
-                label="Email"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.email}
-                name="email"
-                error={!!touched.email && !!errors.email}
-                helperText={touched.email && errors.email}
-                sx={{ gridColumn: "span 4" }}
+                placeholder="Email"
+                value={user.email}
+                onChange={(event) => handleInputChange(event, "email")}
+                className={`custom-input-profile ${
+                  isEditMode ? "" : "opacity-70"
+                }`}
+                disabled={!isEditMode}
               />
-              <TextField
-                fullWidth
-                variant="filled"
+              <input
                 type="text"
-                label="Số điện thoại"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helperText={touched.contact && errors.contact}
-                sx={{ gridColumn: "span 4" }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Địa chỉ"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address1}
-                name="address1"
-                error={!!touched.address1 && !!errors.address1}
-                helperText={touched.address1 && errors.address1}
-                sx={{ gridColumn: "span 4" }}
+                placeholder="Địa chỉ"
+                value={user.address}
+                onChange={(event) => handleInputChange(event, "address")}
+                className={`custom-input-profile ${
+                  isEditMode ? "" : "opacity-70"
+                }`}
+                disabled={!isEditMode}
               />
             </Box>
           </form>

@@ -1,6 +1,7 @@
-import Login from "./Layout/Login/login";
-import Register from "./Layout/Register/register";
+import Login from "./pages/Login/login";
+import Register from "./pages/Register/register";
 import Appointment from "./pages/Appointment/appointment";
+import SendAppoint  from "./pages/Appointment/sendAppoint";
 import Service from "./pages/Services/services";
 import ServiceDetails from "./pages/Services/servicesDetails";
 import Contact from "./pages/Contact/contact";
@@ -77,6 +78,14 @@ function App() {
           </BrowserRouter>
         ) : (
           <BrowserRouter>
+            <Routes>
+              <Route exact path={routerConfig.login} element={<Login />} />
+              <Route
+                exact
+                path={routerConfig.register}
+                element={<Register />}
+              />
+            </Routes>
             <Header />
             <Routes>
               <Route exact path={routerConfig.home} element={<Home />} />
@@ -85,9 +94,13 @@ function App() {
                 path={routerConfig.appointment}
                 element={<Appointment />}
               />
-              <Route exact path={routerConfig.services} element={<Service />} />
               <Route
                 exact
+                path={routerConfig.sendAppointment}
+                element={<SendAppoint />}
+              />
+              <Route exact path={routerConfig.services} element={<Service />} />
+              <Route
                 path={routerConfig.servicesDetails}
                 element={<ServiceDetails />}
               />

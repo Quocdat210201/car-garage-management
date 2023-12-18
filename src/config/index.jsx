@@ -4,8 +4,9 @@ const routes = {
   register: "/register",
   aboutUs: "/about-us",
   services: "/services",
-  servicesDetails: "/services-details",
+  servicesDetails: "/services/:serviceId",
   appointment: "/appointment",
+  sendAppointment: "/send-success",
   contact: "/contact",
   profile: "/profile",
 };

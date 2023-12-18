@@ -21,7 +21,7 @@ const Select = ({ label, options, value, setValue, type, reset, name }) => {
                 type === "province"
                   ? item?.province_id
                   : type === "district"
-                  ? item?.district_id
+                  ? item?.id
                   : type === "ward"
                   ? item?.ward_id
                   : item?.code
@@ -30,7 +30,7 @@ const Select = ({ label, options, value, setValue, type, reset, name }) => {
                 type === "province"
                   ? item?.province_id
                   : type === "district"
-                  ? item?.district_id
+                  ? item?.id
                   : type === "ward"
                   ? item?.ward_id
                   : item?.code
@@ -38,7 +38,7 @@ const Select = ({ label, options, value, setValue, type, reset, name }) => {
               {type === "province"
                 ? item?.province_name
                 : type === "district"
-                ? item?.district_name
+                ? item?.name
                 : type === "ward"
                 ? item?.ward_name
                 : item?.value}
