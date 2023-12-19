@@ -100,6 +100,7 @@ function Appointment() {
   const [service, setService] = useState("");
   const [services, setServices] = useState([]);
   const [carBrand, setCarBrand] = useState([]);
+  const [carBrandId, setCarBrandId] = useState("");
   const [carType, setCarType] = useState([]);
   const [user, setUser] = useState([]);
   const [loading, setIsLoading] = useState(false);
@@ -128,7 +129,7 @@ function Appointment() {
       ...prev,
       [e.target.name]: e.target.value,
     }));
-  };
+  };  
 
   // const signUp = async () => {
   //   const data = { dataAppointment };
@@ -159,17 +160,22 @@ function Appointment() {
     }
   };
 
-  const getCarType = async () => {
-    setIsLoading(true);
-    try {
-      const { data } = await carTypeApi();
-      setCarType(data.data);
-      setIsLoading(false);
-    } catch {
-      console.error();
-      setIsLoading(false);
-    }
-  };
+  useEffect(() => {
+    const getCarType = async () => {
+      setIsLoading(true);
+      try {
+        const { data } = await carTypeApi(carBrandId);
+        setCarType(data.data);
+        setIsLoading(false);
+      } catch {
+        console.error();
+        setIsLoading(false);
+      }
+    };
+    getCarType()
+  }, [carBrandId]);
+
+  
 
   const getUser = async () => {
     try {
@@ -182,8 +188,7 @@ function Appointment() {
 
   useEffect(() => {
     getService();
-    getCarBrand();
-    getCarType();
+    getCarBrand()
     getUser();
   }, []);
 
@@ -304,7 +309,8 @@ function Appointment() {
                     const index = event.target.selectedIndex;
                     const optionElement = event.target.childNodes[index];
                     const optionElementId = optionElement.getAttribute("id");
-                    console.log(optionElementId);
+                    // console.log(optionElementId);
+                    setCarBrandId(optionElementId)
                     setDataAppointment({
                       ...dataAppointment,
                       carBrandId: optionElementId,

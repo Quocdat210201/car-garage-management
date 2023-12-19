@@ -12,35 +12,7 @@ import Header from "../../components/Header";
 import { getAppointmentSchedule } from "../../../../service/UserService";
 import { format, parseISO } from "date-fns";
 
-export const mockDataAppoint = [
-  {
-    id: 1,
-    customerName: "Phan Quoc Dat",
-    date: "21/02/2023",
-    time: "09:00",
-    content: "Kiem tra dong co oto va bao duong gam xe",
-    status: "Đang chờ",
-    action: "",
-  },
-  {
-    id: 2,
-    customerName: "Phan Quoc Dat",
-    date: "21/02/2023",
-    time: "09:00",
-    content: "Kiem tra dong co oto va bao duong gam xe",
-    status: "Đã xác nhận",
-    action: "",
-  },
-  {
-    id: 3,
-    customerName: "Phan Quoc Dat",
-    date: "21/02/2023",
-    time: "09:00",
-    content: "Kiem tra dong co oto va bao duong gam xe",
-    status: "Đã hủy",
-    action: "",
-  },
-];
+
 
 function Appointments() {
   const theme = useTheme();

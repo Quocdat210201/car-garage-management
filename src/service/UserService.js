@@ -1,4 +1,4 @@
-import { post, get, put, getProvince } from "./BaseApi";
+import { post, get, put,  getProvince, delete as _delete} from "./BaseApi";
 import axios from "axios";
 
 const loginApi = async (phoneNumber, password) => {
@@ -39,7 +39,7 @@ const apiProvinceWard = async (districtId) => {
 const apiAppointmentSchedule = async (data) => {
   const res = await post("api/appointment-schedule", data);
   return res;
-};
+};  
 
 const getAppointmentSchedule = async () => {
   const res = await get(`api/appointment-schedule`);
@@ -62,8 +62,8 @@ const carBrandApi = async () => {
   return res;
 };
 
-const carTypeApi = async () => {
-  const res = await get(`api/car-type`);
+const carTypeApi = async (carBrandId) => {
+  const res = await get(`api/car-type/car-brand?carBrandId=${carBrandId}`);
   return res;
 };
 
@@ -71,6 +71,11 @@ const getCarApi = async () => {
   const res = await get(`api/car`);
   return res;
 };
+
+const deleteCar = async (carId) => {
+  const res = await _delete(`api/car/${carId}`);
+  return res;
+}
 
 
 
@@ -87,4 +92,6 @@ export {
   serviceDetailApi,
   carBrandApi,
   carTypeApi,
+  getCarApi,
+  deleteCar
 };

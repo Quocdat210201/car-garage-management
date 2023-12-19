@@ -7,43 +7,134 @@ import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
-import { mockDataCar } from "./mockData"
-import { Form, Input, Select, Button } from "antd/lib";
+import { mockDataCar } from "./mockData";
+import { Form, Input, Select, Button, TextArea } from "antd/lib";
 import Modal from "antd/lib/modal/Modal";
 const { Option } = Select;
 
+import {
+  getCarApi,
+  carBrandApi,
+  carTypeApi,
+  deleteCar,
+} from "../../../../service/UserService";
+
 import { get } from "lodash";
+import { toast } from "react-toastify";
 // import ClassModal from "./classModal";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Star() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [form] = Form.useForm();
-  const classId = false
+  const classId = false;
   const [loading, setIsLoading] = useState(false);
+  const [listCar, setlistCar] = useState([]);
+  const [carEdit, setcarEdit] = useState([]);
+  const [carDelete, setCarDelete] = useState([]);
+  const [carBrand, setCarBrand] = useState([]);
+  const [carBrandId, setCarBrandId] = useState("");
+  const [carType, setCarType] = useState([]);
+  const [modalDelete, setModalDelete] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const toggleEditMode = () => {
+    setIsEditMode(!isEditMode);
+  };
   const [isModalVisible, setIsModalVisible] = useState({
     open: false,
     id: null,
   });
-  const showModal = (id) => {
+  const showModal = (car, id) => {
+    console.log();
     setIsModalVisible({
       open: true,
       id,
     });
+    setcarEdit(car);
   };
+
+  const showModalDelete = (car) => {
+    setModalDelete(true);
+    setCarDelete(car);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteCar(carDelete.id);
+      toast.success('Xóa thành công', {
+        position: 'top-right',
+        autoClose: 1000, // Đặt thời gian hiển thị trong 2 giây
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+      });
+      setModalDelete(false);
+      getListCar()
+    } catch {
+      console.error();
+    }
+  };
+
+  const addNumbering = (data) => {
+    return data.map((item, index) => ({ ...item, stt: index + 1 }));
+  };
+
+  const getListCar = async () => {
+    try {
+      const { data } = await getCarApi();
+      const newData = addNumbering(data.data);
+      setlistCar(newData);
+    } catch {
+      console.error();
+    }
+  };
+  useEffect(() => {
+    getListCar();
+  }, []);
 
   const handleCancel = () => {
     setIsModalVisible({ open: false, id: null });
+    setModalDelete(false);
+    setIsEditMode(false);
   };
   const handleReload = () => {
     setIsModalVisible({ open: false, id: null });
+    setIsEditMode(false);
   };
 
   const handleChange = (value) => {
     console.log(`selected ${value}`);
   };
+
+  const getCarBrand = async () => {
+    try {
+      const { data } = await carBrandApi();
+      setCarBrand(data.data);
+    } catch {
+      console.error();
+    }
+  };
+
+  useEffect(() => {
+    getCarBrand();
+  }, []);
+  useEffect(() => {
+    const getCarType = async () => {
+      setIsLoading(true);
+      try {
+        const { data } = await carTypeApi(carBrandId);
+        setCarType(data.data);
+        setIsLoading(false);
+      } catch {
+        console.error();
+        setIsLoading(false);
+      }
+    };
+    getCarType();
+  }, [carBrandId]);
 
   return (
     <div className="m-5">
@@ -59,8 +150,7 @@ function Star() {
               display: "inline-flex",
               justifyContent: "center",
               alignItems: "center",
-            }}
-            onClick={() => showModal(null)}>
+            }}>
             <AddIcon className="ml-1" />
             Thêm mới xe
           </button>
@@ -101,28 +191,22 @@ function Star() {
                 STT
               </th>
               <th scope="col" className="px-6 py-3">
-                Biển số xe
-              </th>
-              <th scope="col" className="px-6 py-3">
                 Tên khách hàng
               </th>
               <th scope="col" className="px-6 py-3">
-                Hãng xe
+                Biển số xe
               </th>
               <th scope="col" className="px-6 py-3">
-                Nơi sản xuất
+                Tên loại xe
               </th>
               <th scope="col" className="px-6 py-3">
-                Năm sản xuất
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Trạng thái
+                Mô tả
               </th>
               <th scope="col" className="px-6 py-3"></th>
             </tr>
           </thead>
           <tbody>
-            {mockDataCar.map((data, index) => (
+            {listCar.map((data, index) => (
               <tr
                 className=""
                 style={{ backgroundColor: colors.primary[400] }}
@@ -145,46 +229,44 @@ function Star() {
                   style={{ color: colors.greenAccent[300] }}
                   scope="row"
                   className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {data.id}
+                  {data.stt}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.license}
+                  {data.owner.name}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.name}
+                  {data.registrationNumber}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.carCompany}
+                  {data.carType.name}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.origin}
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  {data.year}
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  {data.status}
+                  {data.description ? (
+                    <p className="custom-text-desc-2 w-[400px]">
+                      {data.description}
+                    </p>
+                  ) : (
+                    <p>
+                      <strong>-</strong>
+                    </p>
+                  )}
                 </td>
                 <td className="px-6 py-4">
-                  <button>
+                  <button onClick={() => showModal(data)}>
                     <InfoIcon fontSize="large" className="mx-2" />
                   </button>
                   <button>
                     <EditIcon fontSize="large" className="mx-2" />
                   </button>
-                  <button>
+                  <button onClick={() => showModalDelete(data)}>
                     <DeleteIcon fontSize="large" className="mx-2" />
                   </button>
                 </td>
@@ -201,7 +283,7 @@ function Star() {
               title={
                 // classId ?
                 // "Cập nhật thông tin lớp học"
-                "Thêm mới xe"
+                "Chi tiết xe"
               }
               open={get(isModalVisible, "open", true)}
               onCancel={handleCancel}
@@ -209,16 +291,68 @@ function Star() {
               width={580}
               // style={{ backgroundColor: colors.blueAccent[800] }}
               footer={
-                <>
-                  <Button type="default" onClick={handleCancel} className="m-1">
-                    Huỷ
-                  </Button>
-                  <Button onClick={form.submit}>
-                    {classId ? "Lưu thay đổi" : "Thêm ngay"}
-                  </Button>
-                </>
-              }
-              >
+                isEditMode ? (
+                  <>
+                    <button
+                      type="submit"
+                      style={{
+                        backgroundColor: colors.blueAccent[700],
+                        padding: "10px 16px",
+                        borderRadius: "4px",
+                        marginRight: "10px",
+                        marginTop: "0px",
+                        display: "inline-flex",
+                        justifyContent: "center",
+                        fontSize: "14px",
+                        alignItems: "center",
+                      }}
+                      onClick={handleCancel}>
+                      <span className="ml-1">Hủy</span>
+                    </button>
+                    <button
+                      type="submit"
+                      style={{
+                        backgroundColor: colors.blueAccent[700],
+                        padding: "10px 16px",
+                        borderRadius: "4px",
+                        marginRight: "10px",
+                        marginTop: "0px",
+                        display: "inline-flex",
+                        justifyContent: "center",
+                        fontSize: "14px",
+                        alignItems: "center",
+                      }}
+                      onClick={form.submit}>
+                      <span className="ml-1">Lưu</span>
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="submit"
+                    style={{
+                      backgroundColor: colors.blueAccent[700],
+                      padding: "10px 16px",
+                      borderRadius: "4px",
+                      marginRight: "10px",
+                      marginTop: "0px",
+                      display: "inline-flex",
+                      justifyContent: "center",
+                      fontSize: "14px",
+                      alignItems: "center",
+                    }}
+                    onClick={toggleEditMode}>
+                    <span className="ml-1">Chỉnh sửa</span>
+                  </button>
+                )
+                // <>
+                //   <Button type="default" onClick={handleCancel} className="m-1">
+                //   <span className="ml-1">Hủy</span>
+                //   </Button>
+                //   <Button onClick={form.submit}>
+                //    <span>Lưu thay đổi</span>
+                //   </Button>
+                // </>
+              }>
               <Form
                 name="basic"
                 className="max-w-full max-h-full align-center text-white p-5 rounded-[4px]">
@@ -229,45 +363,108 @@ function Star() {
                     rules={[
                       {
                         required: true,
+                        message: "Vui lòng nhập tên khách hàng",
+                      },
+                    ]}>
+                    <span>
+                      Tên khách hàng
+                      {/* <span style={{ color: "red" }}>*</span> */}
+                    </span>
+                    <Input
+                      placeholder="Tên khách hàng"
+                      value={carEdit.owner.name}
+                      className="p-2"
+                      disabled={!isEditMode}
+                      on
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    style={{ width: 450, marginLeft: "16px" }}
+                    name="id"
+                    rules={[
+                      {
+                        required: true,
                         message: "Vui lòng nhập tên lớp!",
                       },
                     ]}>
                     <span>Biển số xe</span>
-                    <Input placeholder="Nhập biển số xe..." className=" p-2" />
+                    <Input
+                      placeholder="Nhập biển số xe..."
+                      className=" p-2"
+                      value={carEdit.registrationNumber}
+                      disabled={!isEditMode}
+                    />
+                  </Form.Item>
+                </div>
+                <div className="flex items-center justify-center">
+                  <Form.Item name="">
+                    <span>Hãng xe</span>
+                    <select
+                      className="input-appoint text-14"
+                      defaultValue="data"
+                      name="carBrandId"
+                      id="carBrand"
+                      disabled={!isEditMode}
+                      style={{
+                        zIndex: 9999,
+                        width: 240,
+                      }}
+                      onChange={(event) => {
+                        const index = event.target.selectedIndex;
+                        const optionElement = event.target.childNodes[index];
+                        const optionElementId =
+                          optionElement.getAttribute("id");
+                        console.log(optionElementId);
+                        setCarBrandId(optionElementId);
+                        // console.log(`selected ${event.target.value}`);
+                      }}>
+                      <option value="default">---Chọn hãng xe---</option>
+                      <option value="data">{carEdit.carBrand}</option>
+                      {carBrand.map((item) => (
+                        <option key={item.id} id={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
                   </Form.Item>
                   <Form.Item name="" style={{ marginLeft: 16 }}>
-                    <span>Hãng xe</span>
-                    <Select
+                    <span>Loại xe</span>
+                    <select
+                      className="input-appoint text-14"
                       defaultValue="default"
                       style={{
                         zIndex: 9999,
-                        width: 220,
-                        height: 42,
+                        width: 240,
                       }}
+                      disabled={!isEditMode}
                       onChange={handleChange}>
-                      <Option value="default">---Chọn hãng xe---</Option>
-                      <Option value="lucy">Lucy</Option>
-                      <Option value="disabled">Disabled</Option>
-                      <Option value="Yiminghe">yiminghe</Option>
-                    </Select>
+                      <option value="">{carEdit.carType.name}</option>
+                      {carType.map((item) => (
+                        <option key={item.id} id={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
                   </Form.Item>
                 </div>
                 <Form.Item name="">
-                  <span>Nơi sản xuất</span>
-                  <Input
-                    value="Đức"
-                    placeholder="Nhập nơi sản xuất"
+                  <span>Mô tả</span>
+                  <Input.TextArea
+                    disabled={!isEditMode}
+                    rows={4}
+                    placeholder="Nhập mô tả"
                     className="text-black p-2"
+                    value={carEdit.description}
                   />
                 </Form.Item>
-                <Form.Item name="">
+                {/* <Form.Item name="">
                   <span>Năm sản xuất</span>
                   <Input
                     placeholder="Nhập nơi sản xuất"
                     type="date"
                     className="text-black p-2"
                   />
-                </Form.Item>
+                </Form.Item> */}
 
                 {/* <div className="flex justify-end items-center">
                   <Button className="mr-2 bg" onClick={handleCancel}>
@@ -281,6 +478,51 @@ function Star() {
         )
         // alert("Hello")
       }
+      {modalDelete && (
+        <Modal
+          title="Xóa xe"
+          open={modalDelete}
+          onOk={handleDelete}
+          onCancel={handleCancel}
+          footer={
+            <>
+              <button
+                type="submit"
+                style={{
+                  backgroundColor: colors.blueAccent[700],
+                  padding: "6px 16px",
+                  borderRadius: "4px",
+                  marginRight: "10px",
+                  marginTop: "0px",
+                  display: "inline-flex",
+                  justifyContent: "center",
+                  fontSize: "14px",
+                  alignItems: "center",
+                }}
+                onClick={handleCancel}>
+                <span className="ml-1">Hủy</span>
+              </button>
+              <button
+                type="submit"
+                style={{
+                  backgroundColor: colors.blueAccent[700],
+                  padding: "6px 16px",
+                  borderRadius: "4px",
+                  marginRight: "10px",
+                  marginTop: "0px",
+                  display: "inline-flex",
+                  justifyContent: "center",
+                  fontSize: "14px",
+                  alignItems: "center",
+                }}
+                onClick={handleDelete}>
+                <span className="ml-1">Xóa</span>
+              </button>
+            </>
+          }>
+          <p>Bạn có chắc chắc muốn xóa?</p>
+        </Modal>
+      )}
     </div>
   );
 }
