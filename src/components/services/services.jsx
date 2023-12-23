@@ -35,8 +35,6 @@ const  Services = () => {
       console.error();
     }
   };
-  console.log(services);
-
   React.useEffect(() => {
     getService();
   }, []);

@@ -29,7 +29,6 @@ function Header() {
   const dep = useSelector(selectDep);
   const dispatch = useDispatch();
 
-  
   let menuRef = useRef();
 
   const showToastMessageError = () => {
@@ -45,7 +44,7 @@ function Header() {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    dispatch(setDependence({}))
+    dispatch(setDependence({}));
     navigate("/");
     toast.success("Đã đăng xuất!");
   };
@@ -63,10 +62,8 @@ function Header() {
     }
   };
 
-  
-  
   useEffect(() => {
-    const isLogged = localStorage.getItem('token');
+    const isLogged = localStorage.getItem("token");
 
     if (isLogged) {
       setIsLogged(true);
@@ -75,17 +72,17 @@ function Header() {
     }
   }, [dep]);
 
-  useEffect(() => {
-    let handler = (e) => {
-      if (!menuRef.current.contains(e.target)) {
-        setmodalUser(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => {
-      document.removeEventListener("mousedown", handler);
-    };
-  }, []);
+  // useEffect(() => {
+  //   let handler = (e) => {
+  //     if (!menuRef.current.contains(e.target)) {
+  //       setmodalUser(false);
+  //     }
+  //   };
+  //   document.addEventListener("mousedown", handler);
+  //   return () => {
+  //     document.removeEventListener("mousedown", handler);
+  //   };
+  // }, []);
 
   return (
     <div className="relative">
@@ -113,17 +110,18 @@ function Header() {
             <span className="absolute w-4 h-4 bg-red-600 text-[10px] text-white font-medium top-0 right-0.5 rounded-full flex justify-center items-center">
               1
             </span>
-            {/* <Notify/> */}
             {notify ? <Notify /> : <div></div>}
           </div>
           <div className="relative">
             {isLogged ? (
-              <img
-                src="https://www.shareicon.net/data/512x512/2016/05/24/770117_people_512x512.png"
-                alt=""
-                className="w-10 h-10 rounded-full object-cover cursor-pointer"
-                onClick={() => setmodalUser((prev) => !prev)}
-              />
+              <Link to={routerConfig.profile}>
+                <img
+                  src="https://www.shareicon.net/data/512x512/2016/05/24/770117_people_512x512.png"
+                  alt=""
+                  className="w-10 h-10 rounded-full object-cover cursor-pointer"
+                  // onClick={() => setmodalUser((prev) => !prev)}
+                />
+              </Link>
             ) : (
               <Link to={routerConfig.login}>
                 <button className="relative w-24 bg-red-600 text-white px-1 py-1.5 text-[16px] rounded-lg font-medium text-center hover:opacity-80">
@@ -131,39 +129,6 @@ function Header() {
                 </button>
               </Link>
             )}
-          </div>
-          <div
-            className={`menu-user absolute bg-[#7c7c7c] max-w-md h-60 top-16 right-20 z-50 text-white rounded ${
-              modalUser ? "menu-active" : "menu-inactive"
-            }`}
-            ref={menuRef}>
-            <div className="flex justify-start items-center mx-3 py-4 border-bottom">
-              <a href="">
-                <img
-                  src="https://www.shareicon.net/data/512x512/2016/05/24/770117_people_512x512.png"
-                  alt=""
-                  className="w-14 h-14 rounded-full object-cover cursor-pointer"
-                />
-              </a>
-              <div className="pl-4">
-                <span className="font-medium">{user.name}</span>
-                <br></br>
-                <span>{user.email}</span>
-              </div>
-            </div>
-            <ul className="list pt-3">
-              <li className="py-2.5 px-3 hover:bg-[#989898] hover:cursor-pointer">
-                <Link to={routerConfig.profile}>Thông tin cá nhân</Link>
-              </li>
-              <li className="py-2.5 px-3 hover:bg-[#989898] hover:cursor-pointer">
-                Lịch sử
-              </li>
-              <li
-                className="py-2.5 px-3 hover:bg-[#989898] hover:cursor-pointer"
-                onClick={handleLogout}>
-                Đăng xuất
-              </li>
-            </ul>
           </div>
         </div>
         <div
@@ -219,16 +184,6 @@ function Header() {
                     Đặt lịch hẹn
                   </NavLink>
                 </li>
-                {/* <li className="text-[24px] font-normal cursor-pointer menu-items transition">
-                  <NavLink
-                    to={routerConfig.contact}
-                    className={`${({ isActive }) =>
-                      isActive
-                        ? "active"
-                        : null} ml-16 flex items-center h-full relative text-[#b3b3b3] transition-colors`}>
-                    Liên hệ
-                  </NavLink>
-                </li> */}
               </ul>
             </div>
           </div>
@@ -238,7 +193,6 @@ function Header() {
                 type="text"
                 placeholder="Tìm kiếm dịch vụ..."
                 className="input-search"
-                // onChange={onchange}
               />
               <GoSearch className="w-5 h-5 cursor-pointer text-[var(--white-color)] search-icon" />
             </div>

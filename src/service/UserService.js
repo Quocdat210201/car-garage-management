@@ -21,11 +21,6 @@ const updateUserApi = async (user) => {
   return res.data;
 };
 
-// const apiProvince = async () => {
-//   const res = await getProvince("api/province/1");
-//   return res;
-// };
-
 const apiProvinceDistrict = async () => {
   const res = await get("api/district");
   return res;
@@ -45,7 +40,6 @@ const getAppointmentSchedule = async () => {
   const res = await get(`api/appointment-schedule`);
   return res;
 };
-
 
 const serviceApi = async () => {
   const res = await get("api/repair-service");
@@ -77,6 +71,16 @@ const deleteCar = async (carId) => {
   return res;
 }
 
+const getAccount = async (Role) => {
+  const res = await get(`api/admin-user/get-user-by-role?Role=${Role}`);
+  return res;
+}
+
+const deleteAccount = async (accountId) => {
+  const res = await _delete(`api/admin-user/delete-user/${accountId}`);
+  return res;
+}
+
 
 
 export {
@@ -93,5 +97,7 @@ export {
   carBrandApi,
   carTypeApi,
   getCarApi,
-  deleteCar
+  deleteCar,
+  getAccount,
+  deleteAccount
 };

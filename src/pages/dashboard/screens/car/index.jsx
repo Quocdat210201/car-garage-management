@@ -53,6 +53,7 @@ function Star() {
       id,
     });
     setcarEdit(car);
+    console.log(carEdit);
   };
 
   const showModalDelete = (car) => {
@@ -63,8 +64,8 @@ function Star() {
   const handleDelete = async () => {
     try {
       await deleteCar(carDelete.id);
-      toast.success('Xóa thành công', {
-        position: 'top-right',
+      toast.success("Xóa thành công", {
+        position: "top-right",
         autoClose: 1000, // Đặt thời gian hiển thị trong 2 giây
         hideProgressBar: true,
         closeOnClick: true,
@@ -72,7 +73,7 @@ function Star() {
         draggable: true,
       });
       setModalDelete(false);
-      getListCar()
+      getListCar();
     } catch {
       console.error();
     }
@@ -135,6 +136,11 @@ function Star() {
     };
     getCarType();
   }, [carBrandId]);
+
+  const getCarBrandName = (carBrandId) => {
+    const foundCarBrand = carBrand.find((item) => item.id === carBrandId);
+    return foundCarBrand ? foundCarBrand.name : "";
+  };
 
   return (
     <div className="m-5">
@@ -401,13 +407,13 @@ function Star() {
                     <span>Hãng xe</span>
                     <select
                       className="input-appoint text-14"
-                      defaultValue="data"
+                      defaultValue={carEdit.carType.carBrandId}
                       name="carBrandId"
                       id="carBrand"
                       disabled={!isEditMode}
                       style={{
                         zIndex: 9999,
-                        width: 240,
+                        width: 210,
                       }}
                       onChange={(event) => {
                         const index = event.target.selectedIndex;
@@ -419,7 +425,10 @@ function Star() {
                         // console.log(`selected ${event.target.value}`);
                       }}>
                       <option value="default">---Chọn hãng xe---</option>
-                      <option value="data">{carEdit.carBrand}</option>
+                      <option value={carEdit.carType.carBrandId}>
+                        {" "}
+                        {getCarBrandName(carEdit.carType.carBrandId)}
+                      </option>
                       {carBrand.map((item) => (
                         <option key={item.id} id={item.id}>
                           {item.name}
@@ -434,7 +443,7 @@ function Star() {
                       defaultValue="default"
                       style={{
                         zIndex: 9999,
-                        width: 240,
+                        width: 210,
                       }}
                       disabled={!isEditMode}
                       onChange={handleChange}>

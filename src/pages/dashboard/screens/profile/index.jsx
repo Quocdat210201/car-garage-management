@@ -150,7 +150,7 @@ const Profile = () => {
                 placeholder="Họ và tên"
                 value={user.name}
                 onChange={(event) => handleInputChange(event, "name")}
-                className={`custom-input-profile ${
+                className={`custom-input-profile w-full p-4 ${
                   isEditMode ? "" : "opacity-70"
                 }`}
                 disabled={!isEditMode}
@@ -160,7 +160,7 @@ const Profile = () => {
                 placeholder="Số điện thoại"
                 value={user.phoneNumber}
                 onChange={(event) => handleInputChange(event, "phoneNumber")}
-                className={`custom-input-profile ${
+                className={`custom-input-profile w-full p-4 ${
                   isEditMode ? "" : "opacity-70"
                 }`}
                 disabled={!isEditMode}
@@ -170,7 +170,7 @@ const Profile = () => {
                 placeholder="Ngày sinh"
                 value={user.dateOfBirth}
                 onChange={(event) => handleInputChange(event, "dateOfBirth")}
-                className={`custom-input-profile ${
+                className={`custom-input-profile w-full p-4 ${
                   isEditMode ? "" : "opacity-70"
                 }`}
                 disabled={!isEditMode}
@@ -180,7 +180,7 @@ const Profile = () => {
                 placeholder="Email"
                 value={user.email}
                 onChange={(event) => handleInputChange(event, "email")}
-                className={`custom-input-profile ${
+                className={`custom-input-profile w-full p-4 ${
                   isEditMode ? "" : "opacity-70"
                 }`}
                 disabled={!isEditMode}
@@ -190,7 +190,7 @@ const Profile = () => {
                 placeholder="Địa chỉ"
                 value={user.address}
                 onChange={(event) => handleInputChange(event, "address")}
-                className={`custom-input-profile ${
+                className={`custom-input-profile w-full p-4 ${
                   isEditMode ? "" : "opacity-70"
                 }`}
                 disabled={!isEditMode}
