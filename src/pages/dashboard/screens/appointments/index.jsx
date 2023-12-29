@@ -1,129 +1,66 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { Box, Typography, useTheme } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { useTheme } from "@mui/material";
 import { tokens } from "../../../../theme";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
 import { getAppointmentSchedule } from "../../../../service/UserService";
 import { format, parseISO } from "date-fns";
-
-
+import ScheduleSendIcon from "@mui/icons-material/ScheduleSend";
+import ModalAssign from "./modalAssign";
 
 function Appointments() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [appoint, setAppoint] = useState([]);
   const [loading, setIsLoading] = useState(false);
-  const columns = [
-    { field: "id", headerName: "STT" },
-    {
-      field: "customerName",
-      headerName: "Tên khách hàng",
-      flex: 1,
-      cellClassName: "name-column--cell",
-    },
-    {
-      field: "date",
-      headerName: "Ngày hẹn",
-      flex: 1,
-    },
-    {
-      field: "time",
-      headerName: "Thời gian",
-      flex: 1,
-    },
-    {
-      field: "content",
-      headerName: "Nội dung",
-      flex: 1,
-    },
-    {
-      field: "status",
-      headerName: "Trạng thái",
-      headerAlign: "center",
-      flex: 1,
-      renderCell: ({ row: { status } }) => {
-        return (
-          <Box
-            width="60%"
-            m="0 auto"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            color={
-              status === "Đang chờ"
-                ? colors.redAccent[400]
-                : status === "Đã xác nhận"
-                ? colors.greenAccent[500]
-                : colors.redAccent[700]
-            }
-            borderRadius="4px">
-            <Typography style={{ fontWeight: 700 }} sx={{ ml: "5px" }}>
-              {status}
-            </Typography>
-          </Box>
-        );
-      },
-    },
-    {
-      field: "action",
-      headerName: "",
-      flex: 1,
-      renderCell: () => {
-        return (
-          <Box
-            width="60%"
-            m="0 auto"
-            p="5px"
-            display="flex"
-            justifyContent="center"
-            borderRadius="4px">
-            <Typography
-              sx={{ ml: "5px" }}
-              className="flex justify-center items-center">
-              <button>
-                <InfoIcon fontSize="large" className="mx-2" />
-              </button>
-              <button>
-                <EditIcon fontSize="large" className="mx-2" />
-              </button>
-              <button>
-                <DeleteIcon fontSize="large" className="mx-2" />
-              </button>
-            </Typography>
-          </Box>
-        );
-      },
-    },
-  ];
+  const [modalAssign, setModalAssign] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
+  const [dataAssign, setDataAssign] = useState([]);
+
+  const toggleEditMode = () => {
+    setIsEditMode(!isEditMode);
+  };
+
+  const handleShowAssign = (data) => {
+    setModalAssign(true);
+    setDataAssign(data);
+  };
+
+  const handleCancel = () => {
+    // setModalDelete(false);
+    setModalAssign(false);
+    setIsEditMode(false);
+  };
 
   const addNumbering = (data) => {
     return data.map((item, index) => ({ ...item, stt: index + 1 }));
   };
 
-  useEffect(() => {
-    const getDataAppoint = async () => {
-      setIsLoading(true);
-      try {
-        const response = await getAppointmentSchedule();
-        const newData = addNumbering(response.data?.data);
+  const getDataAppoint = async () => {
+    setIsLoading(true);
+    try {
+      const response = await getAppointmentSchedule();
+      const newData = addNumbering(response.data?.data);
 
-        if (response.status === 200) {
-          setAppoint(newData);
-          setIsLoading(false);
-        }
-      } catch {
-        console.error();
+      if (response.status === 200) {
+        setAppoint(newData);
         setIsLoading(false);
       }
-    };
+    } catch {
+      console.error();
+      setIsLoading(false);
+    }
+  };
+  useEffect(() => {
     getDataAppoint();
   }, []);
+  console.log({ appoint });
 
   return (
     <div className="m-5">
@@ -195,11 +132,16 @@ function Appointments() {
                 Trạng thái
               </th>
               <th scope="col" className="px-6 py-3"></th>
+              <th scope="col" className="px-6 py-3"></th>
             </tr>
           </thead>
-          <tbody>
-            {appoint &&
-              appoint.map((data, index) => (
+          {appoint.length === 0 ? (
+            <div className="">
+              <lable></lable>
+            </div>
+          ) : (
+            <tbody>
+              {appoint.map((data, index) => (
                 <tr
                   className=""
                   style={{ backgroundColor: colors.primary[400] }}
@@ -274,7 +216,7 @@ function Appointments() {
                       <span
                         style={{
                           color: colors.redAccent[100],
-                          background: colors.greenAccent[600],
+                          background: colors.blueAccent[600],
                           padding: "6px 10px",
                           borderRadius: "4px",
                         }}>
@@ -284,11 +226,11 @@ function Appointments() {
                       <span
                         style={{
                           color: colors.redAccent[100],
-                          background: colors.redAccent[500],
+                          background: colors.greenAccent[500],
                           padding: "6px 10px",
                           borderRadius: "4px",
                         }}>
-                        Đã hủy
+                        Đã hoàn thành
                       </span>
                     ) : (
                       <span>-</span>
@@ -305,11 +247,65 @@ function Appointments() {
                       <DeleteIcon fontSize="large" className="mx-2" />
                     </button>
                   </td>
+                  <td className="px-6 py-4">
+                    {data.status === 0 ? (
+                      <button
+                        style={{
+                          backgroundColor: colors.greenAccent[500],
+                          padding: "10px 16px",
+                          borderRadius: "4px",
+                          marginRight: "10px",
+                          display: "inline-flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: "120px",
+                        }}
+                        onClick={() => {
+                          handleShowAssign(data);
+                        }}>
+                        <ScheduleSendIcon />
+                        <span className="ml-1">Giao việc</span>
+                      </button>
+                    ) : (
+                      <button
+                        style={{
+                          backgroundColor: colors.greenAccent[500],
+                          padding: "10px 16px",
+                          borderRadius: "4px",
+                          marginRight: "10px",
+                          display: "inline-flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          width: "120px",
+                          opacity: 0.7,
+                          cursor: "not-allowed"
+                        }}
+                        onClick={() => {
+                          handleShowAssign(data);
+                        }}>
+                        <CheckCircleOutlineIcon />
+                        <span className="ml-1">Đã giao</span>
+                      </button>
+                    )}
+                  </td>
                 </tr>
               ))}
-          </tbody>
+            </tbody>
+          )}
         </table>
       </div>
+      {modalAssign && (
+        <div className=" detail-modal flex-col">
+          <ModalAssign
+            isEditModal={isEditMode}
+            handleCancel={handleCancel}
+            toggleEditMode={toggleEditMode}
+            data={dataAssign}
+            open={modalAssign}
+            getDataAppoint={getDataAppoint}
+          />
+        </div>
+      )}
     </div>
   );
 }

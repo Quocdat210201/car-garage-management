@@ -134,30 +134,30 @@ function Login() {
         <h1 className="text-[32px] uppercase font-semibold pt-5 pb-6">
           Đăng Nhập
         </h1>
-        <div className="mt-5 w-full ">
+        <div className="mt-[1.25rem] w-full ">
           <input
             type="text"
             placeholder="Số điện thoại"
             value={phoneNumber}
             onChange={(event) => setPhoneNumber(event.target.value)}
-            className="block p-4 rounded w-full border-none outline-none text-black font-normal text-[20px]"
+            className="block p-[1rem] rounded w-full border-none outline-none text-black font-normal text-[20px]"
           />
           {/* <label htmlFor="">Số điện thoại</label> */}
         </div>
-        <div className="mt-5 w-full relative">
+        <div className="mt-[1.25rem] w-full relative">
           <input
             type="password"
             placeholder="Mật khẩu"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
-            className="block p-4 rounded w-full border-none outline-none text-black font-normal text-[20px]"
+            className="block p-[1rem] rounded w-full border-none outline-none text-black font-normal text-[20px]"
           />
           <FaRegEye className="absolute right-4 top-6 text-black cursor-pointer" />
           {/* <label htmlFor="">Số điện thoại</label> */}
         </div>
 
         {/* <div className="mt-4 wi">
-<input type="number" placeholder="Mật khẩu" className="p-4 rounded "/>
+<input type="number" placeholder="Mật khẩu" className="p-[1rem] rounded "/>
 <label htmlFor="">Mật khẩu</label>
 </div> */}
         <button

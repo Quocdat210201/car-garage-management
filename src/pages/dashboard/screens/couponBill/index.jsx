@@ -7,9 +7,10 @@ import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
-import { mockDataCar } from "./mockData";
 import { Form, Input, Select, Button, TextArea } from "antd/lib";
 import Modal from "antd/lib/modal/Modal";
+import DetailCouponBill from "./detailCouponBill";
+import AddNewCouponBill from "./addCouponBill";
 const { Option } = Select;
 
 import {
@@ -25,7 +26,7 @@ import { toast } from "react-toastify";
 
 import { useEffect, useState } from "react";
 
-function Star() {
+function CouponBill() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [form] = Form.useForm();
@@ -39,21 +40,15 @@ function Star() {
   const [carType, setCarType] = useState([]);
   const [modalDelete, setModalDelete] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [modalDetail, setModalDetail] = useState(false);
+  const [modalAdd, setModalAdd] = useState(false);
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
   };
-  const [isModalVisible, setIsModalVisible] = useState({
-    open: false,
-    id: null,
-  });
-  const showModal = (car, id) => {
-    console.log();
-    setIsModalVisible({
-      open: true,
-      id,
-    });
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const showModal = (car) => {
+    setModalDetail(true);
     setcarEdit(car);
-    console.log(carEdit);
   };
 
   const showModalDelete = (car) => {
@@ -97,13 +92,15 @@ function Star() {
   }, []);
 
   const handleCancel = () => {
-    setIsModalVisible({ open: false, id: null });
+    setModalDetail(false);
     setModalDelete(false);
     setIsEditMode(false);
-  };
-  const handleReload = () => {
-    setIsModalVisible({ open: false, id: null });
+    setModalAdd(false)
+};
+const handleReload = () => {
+    setModalDetail(false);
     setIsEditMode(false);
+    setModalAdd(false)
   };
 
   const handleChange = (value) => {
@@ -137,8 +134,6 @@ function Star() {
     getCarType();
   }, [carBrandId]);
 
-  console.log(carBrand);
-
   const getCarBrandName = (carBrandId) => {
     const foundCarBrand = carBrand.find((item) => item.id === carBrandId);
     return foundCarBrand ? foundCarBrand.name : "";
@@ -147,7 +142,7 @@ function Star() {
   return (
     <div className="m-5">
       <div className="flex justify-between ">
-        <Header title="XE" subtitle="Quản lý xe" />
+        <Header title="PHIẾU NHẬP" subtitle="Quản lý phiếu nhập phụ tùng" />
         <div color={colors.grey[100]}>
           <button
             style={{
@@ -158,9 +153,12 @@ function Star() {
               display: "inline-flex",
               justifyContent: "center",
               alignItems: "center",
+            }}
+            onClick={() => {
+              setModalAdd(true);
             }}>
             <AddIcon className="ml-1" />
-            Thêm mới xe
+            Thêm mới phiếu nhập
           </button>
           <button
             style={{
@@ -199,13 +197,19 @@ function Star() {
                 STT
               </th>
               <th scope="col" className="px-6 py-3">
-                Tên khách hàng
+                Mã phiếu nhập
               </th>
               <th scope="col" className="px-6 py-3">
-                Biển số xe
+                Nhân viên thực hiện
               </th>
               <th scope="col" className="px-6 py-3">
-                Tên loại xe
+                Nhà cung cấp
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Ngày nhập
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Ngày tạo
               </th>
               <th scope="col" className="px-6 py-3">
                 Mô tả
@@ -242,30 +246,32 @@ function Star() {
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.owner.name}
+                  PNPT01
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.registrationNumber}
+                  Phan Quốc Đạt
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.carType.name}
+                  Cty Phụ Tùng
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.description ? (
-                    <p className="custom-text-desc-2 w-[400px]">
-                      {data.description}
-                    </p>
-                  ) : (
-                    <p>
-                      <strong>-</strong>
-                    </p>
-                  )}
+                  21/02/2024
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  22/03/2023
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  Ghi chú nếu có
                 </td>
                 <td className="px-6 py-4">
                   <button onClick={() => showModal(data)}>
@@ -283,209 +289,22 @@ function Star() {
           </tbody>
         </table>
       </div>
-
+      {modalAdd && (
+        <AddNewCouponBill
+          open={modalAdd}
+          handleCancel={handleCancel}
+          handleReload={handleReload}
+        />
+      )}
       {
-        get(isModalVisible, "open", true) && (
-          <div className=" detail-modal flex-col">
-            <Modal
-              title={
-                // classId ?
-                // "Cập nhật thông tin lớp học"
-                "Chi tiết xe"
-              }
-              open={get(isModalVisible, "open", true)}
-              onCancel={handleCancel}
-              onOk={handleReload}
-              width={580}
-              // style={{ backgroundColor: colors.blueAccent[800] }}
-              footer={
-                isEditMode ? (
-                  <>
-                    <button
-                      type="submit"
-                      style={{
-                        backgroundColor: colors.blueAccent[700],
-                        padding: "10px 16px",
-                        borderRadius: "4px",
-                        marginRight: "10px",
-                        marginTop: "0px",
-                        display: "inline-flex",
-                        justifyContent: "center",
-                        fontSize: "14px",
-                        alignItems: "center",
-                      }}
-                      onClick={handleCancel}>
-                      <span className="ml-1">Hủy</span>
-                    </button>
-                    <button
-                      type="submit"
-                      style={{
-                        backgroundColor: colors.blueAccent[700],
-                        padding: "10px 16px",
-                        borderRadius: "4px",
-                        marginRight: "10px",
-                        marginTop: "0px",
-                        display: "inline-flex",
-                        justifyContent: "center",
-                        fontSize: "14px",
-                        alignItems: "center",
-                      }}
-                      onClick={form.submit}>
-                      <span className="ml-1">Lưu</span>
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    type="submit"
-                    style={{
-                      backgroundColor: colors.blueAccent[700],
-                      padding: "10px 16px",
-                      borderRadius: "4px",
-                      marginRight: "10px",
-                      marginTop: "0px",
-                      display: "inline-flex",
-                      justifyContent: "center",
-                      fontSize: "14px",
-                      alignItems: "center",
-                    }}
-                    onClick={toggleEditMode}>
-                    <span className="ml-1">Chỉnh sửa</span>
-                  </button>
-                )
-                // <>
-                //   <Button type="default" onClick={handleCancel} className="m-1">
-                //   <span className="ml-1">Hủy</span>
-                //   </Button>
-                //   <Button onClick={form.submit}>
-                //    <span>Lưu thay đổi</span>
-                //   </Button>
-                // </>
-              }>
-              <Form
-                name="basic"
-                className="max-w-full max-h-full align-center text-white p-5 rounded-[4px]">
-                <div className="flex items-center justify-center">
-                  <Form.Item
-                    style={{ width: 450 }}
-                    name="id"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng nhập tên khách hàng",
-                      },
-                    ]}>
-                    <span>
-                      Tên khách hàng
-                      {/* <span style={{ color: "red" }}>*</span> */}
-                    </span>
-                    <Input
-                      placeholder="Tên khách hàng"
-                      value={carEdit.owner.name}
-                      className="p-2"
-                      disabled={!isEditMode}
-                      on
-                    />
-                  </Form.Item>
-                  <Form.Item
-                    style={{ width: 450, marginLeft: "16px" }}
-                    name="id"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Vui lòng nhập tên lớp!",
-                      },
-                    ]}>
-                    <span>Biển số xe</span>
-                    <Input
-                      placeholder="Nhập biển số xe..."
-                      className=" p-2"
-                      value={carEdit.registrationNumber}
-                      disabled={!isEditMode}
-                    />
-                  </Form.Item>
-                </div>
-                <div className="flex items-center justify-center">
-                  <Form.Item name="">
-                    <span>Hãng xe</span>
-                    <select
-                      className="input-appoint text-14"
-                      defaultValue={carEdit.carType.carBrandId}
-                      name="carBrandId"
-                      id="carBrand"
-                      disabled={!isEditMode}
-                      style={{
-                        zIndex: 9999,
-                        width: 210,
-                      }}
-                      onChange={(event) => {
-                        const index = event.target.selectedIndex;
-                        const optionElement = event.target.childNodes[index];
-                        const optionElementId =
-                          optionElement.getAttribute("id");
-                        console.log(optionElementId);
-                        setCarBrandId(optionElementId);
-                        // console.log(`selected ${event.target.value}`);
-                      }}>
-                      <option value="default">---Chọn hãng xe---</option>
-                      <option value={carEdit.carType.carBrandId}>
-                        {" "}
-                        {getCarBrandName(carEdit.carType.carBrandId)}
-                      </option>
-                      {carBrand.map((item) => (
-                        <option key={item.id} id={item.id}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </select>
-                  </Form.Item>
-                  <Form.Item name="" style={{ marginLeft: 16 }}>
-                    <span>Loại xe</span>
-                    <select
-                      className="input-appoint text-14"
-                      defaultValue="default"
-                      style={{
-                        zIndex: 9999,
-                        width: 210,
-                      }}
-                      disabled={!isEditMode}
-                      onChange={handleChange}>
-                      <option value="">{carEdit.carType.name}</option>
-                      {carType.map((item) => (
-                        <option key={item.id} id={item.id}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </select>
-                  </Form.Item>
-                </div>
-                <Form.Item name="">
-                  <span>Mô tả</span>
-                  <Input.TextArea
-                    disabled={!isEditMode}
-                    rows={4}
-                    placeholder="Nhập mô tả"
-                    className="text-black p-2"
-                    value={carEdit.description}
-                  />
-                </Form.Item>
-                {/* <Form.Item name="">
-                  <span>Năm sản xuất</span>
-                  <Input
-                    placeholder="Nhập nơi sản xuất"
-                    type="date"
-                    className="text-black p-2"
-                  />
-                </Form.Item> */}
-
-                {/* <div className="flex justify-end items-center">
-                  <Button className="mr-2 bg" onClick={handleCancel}>
-                    Hủy
-                  </Button>
-                  <Button onClick={handleReload}>Lưu</Button>
-                </div> */}
-              </Form>
-            </Modal>
-          </div>
+        modalDetail && (
+          <DetailCouponBill
+            open={modalDetail}
+            handleCancel={handleCancel}
+            handleReload={handleReload}
+            toggleEditMode={toggleEditMode}
+            isEditMode={isEditMode}
+          />
         )
         // alert("Hello")
       }
@@ -538,4 +357,4 @@ function Star() {
   );
 }
 
-export default Star;
+export default CouponBill;

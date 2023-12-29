@@ -102,11 +102,7 @@ function WareHouse() {
               <th scope="col" className="px-6 py-3">
                 Trạng thái
               </th>
-              <th scope="col" className="px-6 py-3">
-                Mô tả
-              </th>
-              <th scope="col" className="px-6 py-3">
-              </th>
+              <th scope="col" className="px-6 py-3"></th>
             </tr>
           </thead>
           <tbody>
@@ -154,11 +150,6 @@ function WareHouse() {
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
                   {data.content}
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  {data.status}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}

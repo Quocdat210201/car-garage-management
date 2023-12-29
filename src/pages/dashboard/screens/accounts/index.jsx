@@ -104,7 +104,6 @@ function Accounts() {
   const showModal = (acc) => {
     setAccountEdit(acc);
     setModalDetail(true);
-    console.log(acc);
   };
 
   const showModalDelete = (acc) => {

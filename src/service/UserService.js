@@ -1,4 +1,4 @@
-import { post, get, put,  getProvince, delete as _delete} from "./BaseApi";
+import { post, get, put, getProvince, delete as _delete } from "./BaseApi";
 import axios from "axios";
 
 const loginApi = async (phoneNumber, password) => {
@@ -34,10 +34,28 @@ const apiProvinceWard = async (districtId) => {
 const apiAppointmentSchedule = async (data) => {
   const res = await post("api/appointment-schedule", data);
   return res;
-};  
+};
 
 const getAppointmentSchedule = async () => {
   const res = await get(`api/appointment-schedule`);
+  return res;
+};
+
+const getAppointmentScheduleStaff = async (staffId) => {
+  const res = await get(`api/admin-appointment-schedule/by-staff/${staffId}`);
+  return res;
+};
+
+const AssignSchedule = async (staffId, assign) => {
+  const res = await put(
+    `api/admin-appointment-schedule/assign/${staffId}`,
+    assign
+  );
+  return res;
+};
+
+const FinishAssign = async (id, assign) => {
+  const res = await put(`api/admin-appointment-schedule/finish/${id}`, assign);
   return res;
 };
 
@@ -56,6 +74,11 @@ const carBrandApi = async () => {
   return res;
 };
 
+const getcarTypeApi = async () => {
+  const res = await get(`api/car-type`);
+  return res;
+};
+
 const carTypeApi = async (carBrandId) => {
   const res = await get(`api/car-type/car-brand?carBrandId=${carBrandId}`);
   return res;
@@ -69,19 +92,17 @@ const getCarApi = async () => {
 const deleteCar = async (carId) => {
   const res = await _delete(`api/car/${carId}`);
   return res;
-}
+};
 
 const getAccount = async (Role) => {
   const res = await get(`api/admin-user/get-user-by-role?Role=${Role}`);
   return res;
-}
+};
 
 const deleteAccount = async (accountId) => {
   const res = await _delete(`api/admin-user/delete-user/${accountId}`);
   return res;
-}
-
-
+};
 
 export {
   loginApi,
@@ -92,12 +113,16 @@ export {
   apiProvinceWard,
   apiAppointmentSchedule,
   getAppointmentSchedule,
+  AssignSchedule,
+  FinishAssign,
+  getAppointmentScheduleStaff,
   serviceApi,
   serviceDetailApi,
   carBrandApi,
   carTypeApi,
+  getcarTypeApi,
   getCarApi,
   deleteCar,
   getAccount,
-  deleteAccount
+  deleteAccount,
 };

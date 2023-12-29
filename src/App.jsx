@@ -27,8 +27,10 @@ import CalendarWork from "./pages/dashboard/screens/calendarwork";
 import AppointmentAdmin from "./pages/dashboard/screens/appointments";
 import Customer from "./pages/dashboard/screens/customers";
 import Bill from "./pages/dashboard/screens/bill";
+import CouponBill from "./pages/dashboard/screens/couponBill"
 import Pie from "./pages/dashboard/screens/pie";
-import WareHouse from "./pages/dashboard/screens/warehouse";
+import WareHouse from "./pages/dashboard/screens/warehouse"
+import ScheduleStaff from "./pages/dashboard/screens/ScheduleStar"
 
 function App() {
   const [user, setUser] = useState("user");
@@ -67,7 +69,9 @@ function App() {
                         element={<CalendarWork />}
                       />
                       <Route path="/admin/accounts" element={<Accounts />} />
+                      <Route path="/staff/schedule" element={<ScheduleStaff />} />
                       <Route path="/admin/bill" element={<Bill />} />
+                      <Route path="/admin/coupon-bill" element={<CouponBill />} />
                       <Route path="/admin/pie" element={<Pie />} />
                       <Route path="/admin/warehouse" element={<WareHouse />} />
                     </Routes>

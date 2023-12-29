@@ -13,7 +13,7 @@ import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined
 import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
 import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
 import ToysIcon from "@mui/icons-material/Toys";
 import logoInage from "../../../../assets/images/image 2.png";
 import { toast } from "react-toastify";
@@ -49,6 +49,8 @@ function SideBar() {
     toast.success("Đã đăng xuất!");
     window.location.reload();
   };
+
+  const roles = localStorage.getItem("roles");
 
   return (
     <Box
@@ -116,77 +118,98 @@ function SideBar() {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Xe"
-              to="/admin/car"
-              icon={<ToysIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Lịch hẹn"
-              to="/admin/apointments"
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Nhân viên"
-              to="/admin/star"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Khách hàng"
-              to="/admin/customer"
-              icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Lịch làm việc"
-              to="/admin/calendar"
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Hóa đơn"
-              to="/admin/bill"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Kho phụ tùng"
-              to="/admin/warehouse"
-              icon={<PieChartOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Thống kê"
-              to="/admin/pie"
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Tài khoản"
-              to="/admin/accounts"
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            
+            {roles === "System Administrator" ||
+            roles === "Gara Administrator" ? (
+              <Box>
+                <Item
+                  title="Xe"
+                  to="/admin/car"
+                  icon={<ToysIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Lịch hẹn"
+                  to="/admin/apointments"
+                  icon={<CalendarTodayOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Nhân viên"
+                  to="/admin/star"
+                  icon={<ContactsOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Khách hàng"
+                  to="/admin/customer"
+                  icon={<PersonOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Lịch làm việc"
+                  to="/admin/calendar"
+                  icon={<CalendarTodayOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Hóa đơn"
+                  to="/admin/bill"
+                  icon={<ReceiptOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Phiếu nhập phụ tùng"
+                  to="/admin/coupon-bill"
+                  icon={<ReceiptOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Kho phụ tùng"
+                  to="/admin/warehouse"
+                  icon={<PieChartOutlineOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Thống kê"
+                  to="/admin/pie"
+                  icon={<BarChartOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Tài khoản"
+                  to="/admin/accounts"
+                  icon={<BarChartOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              </Box>
+            ) : (
+              <Box>
+                 <Item
+                  title="Lịch làm việc"
+                  to="/staff/schedule"
+                  icon={<CalendarTodayOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              </Box>
+            )}
+
             <button
               onClick={handleLogout}
-              className="fixed bottom-10 mx-auto left-[32px] text-[15px] text-[#000] bg-[#ccc] rounded-[6px] py-3 px-8"
-              >
-                <LogoutIcon className="mr-[17px]"></LogoutIcon>
-                Đăng xuất
-              </button>
+              className="fixed bottom-10 mx-auto left-[32px] text-[15px] text-[#000] bg-[#ccc] rounded-[6px] py-3 px-8">
+              <LogoutIcon className="mr-[17px]"></LogoutIcon>
+              Đăng xuất
+            </button>
           </Box>
         </Menu>
       </ProSidebar>

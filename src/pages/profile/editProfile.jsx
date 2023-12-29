@@ -46,7 +46,7 @@ const EditProfile = ({ open, handleCancel, handleReload }) => {
       await updateUserApi(user);
       toast.success("Lưu thành công !");
       handleCancel();
-      window.location.reload()
+      // window.location.reload()
       getUser(); // Fetch updated user data
     } catch (error) {
       toast.error("Error updating user information");

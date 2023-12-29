@@ -45,55 +45,55 @@ function Register() {
           <h1 className="text-[32px] uppercase font-semibold pt-5 pb-6">
             Đăng Ký
           </h1>
-          <div className="mt-5 w-full ">
+          <div className="mt-[1.25rem] w-full ">
             <input
               type="text"
               name="phoneNumber"
               value={phoneNumber}
               onChange={(e) => setPhoneNumber(e.target.value)}
               placeholder="Số điện thoại"
-              className="block p-4 rounded w-full border-none outline-none text-black font-normal text-[20px]"
+              className="block p-[1rem] rounded w-full border-none outline-none text-black font-normal text-[20px]"
             />
           </div>
-          <div className="mt-5 w-full ">
+          <div className="mt-[1.25rem] w-full ">
             <input
               type="text"
               placeholder="Email"
               name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="block p-4 rounded w-full border-none outline-none text-black font-normal text-[20px]"
+              className="block p-[1rem] rounded w-full border-none outline-none text-black font-normal text-[20px]"
             />
           </div>
-          <div className="mt-5 w-full ">
+          <div className="mt-[1.25rem] w-full ">
             <input
               type="text"
               placeholder="Tên đăng nhập"
               name="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="block p-4 rounded w-full border-none outline-none text-black font-normal text-[20px]"
+              className="block p-[1rem] rounded w-full border-none outline-none text-black font-normal text-[20px]"
             />
           </div>
-          <div className="mt-5 w-full relative">
+          <div className="mt-[1.25rem] w-full relative">
             <input
               type="password"
               placeholder="Mật khẩu"
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="block p-4 rounded w-full border-none outline-none text-black font-normal text-[20px]"
+              className="block p-[1rem] rounded w-full border-none outline-none text-black font-normal text-[20px]"
             />
             <FaRegEye className="absolute right-4 top-6 text-black cursor-pointer" />
           </div>
-          <div className="mt-5 w-full relative">
+          <div className="mt-[1.25rem] w-full relative">
             <input
               type="password"
               name="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Nhập lại mật khẩu"
-              className="block p-4 rounded w-full border-none outline-none text-black font-normal text-[20px]"
+              className="block p-[1rem] rounded w-full border-none outline-none text-black font-normal text-[20px]"
             />
             <FaRegEye className="absolute right-4 top-6 text-black cursor-pointer" />
           </div>
