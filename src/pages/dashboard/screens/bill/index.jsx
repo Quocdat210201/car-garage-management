@@ -7,6 +7,9 @@ import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
+import BillDetail from "./billDetail";
+import AddNewBill from "./addBillDetail";
+import { useState, useEffect } from "react";
 
 export const mockDataBill = [
   {
@@ -34,6 +37,24 @@ export const mockDataBill = [
 function Bill() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [modalDetail, setModalDetail] = useState(false);
+  const [showmodalAddNew, setShowModalAddNew] = useState(false);
+
+  const handleShowDetail = (data) => {
+    setModalDetail(true);
+    // setDataAssign(data);
+  };
+
+  const handleShowAddNew = () => {
+    setShowModalAddNew(true);
+  };
+
+  const handleCancel = () => {
+    // setModalDelete(false);
+    setModalDetail(false);
+    setShowModalAddNew(false);
+    // setIsEditMode(false);
+  };
 
   return (
     <div className="m-5">
@@ -49,7 +70,8 @@ function Bill() {
               display: "inline-flex",
               justifyContent: "center",
               alignItems: "center",
-            }}>
+            }}
+            onClick={handleShowAddNew}>
             <AddIcon />
             <span className="ml-1">Thêm mới hóa đơn</span>
           </button>
@@ -167,7 +189,10 @@ function Bill() {
                   {data.note}
                 </td>
                 <td className="px-6 py-4">
-                  <button>
+                  <button
+                    onClick={() => {
+                      handleShowDetail(data);
+                    }}>
                     <InfoIcon fontSize="large" className="mx-2" />
                   </button>
                   <button>
@@ -182,6 +207,20 @@ function Bill() {
           </tbody>
         </table>
       </div>
+      {modalDetail && (
+        <BillDetail
+          open={modalDetail}
+          handleCancel={handleCancel}
+          isEditModal={true}
+        />
+      )}
+      {showmodalAddNew && (
+        <AddNewBill
+          open={showmodalAddNew}
+          handleCancel={handleCancel}
+          isEditModal={true}
+        />
+      )}
     </div>
   );
 }

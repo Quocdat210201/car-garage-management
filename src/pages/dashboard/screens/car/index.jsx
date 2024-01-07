@@ -96,6 +96,8 @@ function Star() {
     getListCar();
   }, []);
 
+  console.log({listCar});
+
   const handleCancel = () => {
     setIsModalVisible({ open: false, id: null });
     setModalDelete(false);

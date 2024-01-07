@@ -55,7 +55,7 @@ const AssignSchedule = async (staffId, assign) => {
 };
 
 const FinishAssign = async (id, assign) => {
-  const res = await put(`api/admin-appointment-schedule/finish/${id}`, assign);
+  const res = await put(`api/admin-appointment-schedule/staff-update/${id}`, assign);
   return res;
 };
 
@@ -94,6 +94,11 @@ const deleteCar = async (carId) => {
   return res;
 };
 
+const getCarRegistrationNumber = async (registrationNumber) => {
+  const res = await get(`api/car/registration-number?registrationNumber=${registrationNumber}`);
+  return res;
+};
+
 const getAccount = async (Role) => {
   const res = await get(`api/admin-user/get-user-by-role?Role=${Role}`);
   return res;
@@ -101,6 +106,33 @@ const getAccount = async (Role) => {
 
 const deleteAccount = async (accountId) => {
   const res = await _delete(`api/admin-user/delete-user/${accountId}`);
+  return res;
+};
+
+const AdminGoodsDeliveryNote = async (data) => {
+  const res = await post(`api/admin-goods-delivery`, data);
+  return res;
+};
+
+const getAdminGoodsDeliveryNote = async () => {
+  const res = await get(`api/admin-goods-delivery`);
+  return res;
+};
+
+const getAutomotivePart = async (CategoryId, PartSupplierId) => {
+  const res = await get(
+    `api/automotive-part/category-supplier?CategoryId=${CategoryId}&AutomotivePartSupplierId=${PartSupplierId}`
+  );
+  return res;
+};
+
+const getAutomotivePartCategory = async () => {
+  const res = await get(`api/automotive-part-category`);
+  return res;
+};
+
+const getAutomotivePartSupplier = async () => {
+  const res = await get(`api/automotive-part-supplier`);
   return res;
 };
 
@@ -125,4 +157,10 @@ export {
   deleteCar,
   getAccount,
   deleteAccount,
+  AdminGoodsDeliveryNote,
+  getAdminGoodsDeliveryNote,
+  getAutomotivePartSupplier,
+  getAutomotivePartCategory,
+  getAutomotivePart,
+  getCarRegistrationNumber
 };

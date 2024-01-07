@@ -3,14 +3,29 @@ import { tokens } from "../../../../theme";
 import { useTheme } from "@mui/material";
 import { Form, Input } from "antd/lib";
 import AddIcon from "@mui/icons-material/Add";
+import { format, parseISO } from "date-fns";
+import formatCurrency from "../../components/formatMoney";
 
 const DetailCouponBill = (props) => {
-  const { handleCancel, handleReload, isEditMode, toggleEditMode, open } =
-    props;
-  console.log(props);
+  const {
+    handleCancel,
+    handleReload,
+    isEditMode,
+    toggleEditMode,
+    open,
+    data,
+    listPartCategory,
+  } = props;
+  console.log(data);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [form] = Form.useForm();
+  console.log({ listPartCategory });
+
+  const getName = (id) => {
+    const categoryName = listPartCategory.find((item) => item.id === id);
+    return categoryName ? categoryName.name : "";
+  };
   return (
     <div className=" detail-modal flex-col">
       <Modal
@@ -89,184 +104,159 @@ const DetailCouponBill = (props) => {
         }>
         <Form
           name="basic"
-          className="max-w-full max-h-full align-center text-white p-5 rounded-[4px]">
+          className="max-w-full max-h-full align-center padding-x-10 text-white p-5 rounded-[4px]">
           <div className="flex items-center justify-center">
-            <Form.Item
-              style={{ width: 300 }}
-              name="id"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tên khách hàng",
-                },
-              ]}>
-              <span>
-                Mã phiếu nhập
-                {/* <span style={{ color: "red" }}>*</span> */}
-              </span>
+            <Form.Item style={{ width: 300 }} name="id">
+              <span>Mã phiếu nhập</span>
               <Input
-                placeholder="PNPT01"
-                //   value={carEdit.owner.name}
+                placeholder=""
                 className="p-2 "
-                disabled={!isEditMode}
-                on
+                value={data.goodsDeliveryCode}
+                disabled
               />
             </Form.Item>
             <Form.Item
-              style={{ width: 300, marginLeft: "16px" }}
-              name="id"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tên lớp!",
-                },
-              ]}>
-              <span>Nhà cung cấp</span>
-              <Input
-                placeholder="Cty Phụ Tùng"
-                className=" p-2 "
-                //   value={carEdit.registrationNumber}
+              style={{ width: 300, marginLeft: 16, paddingTop: 20 }}
+              name="id">
+              <span>Nhân viên thực hiện</span>
+              <select
                 disabled={!isEditMode}
-              />
+                className="input-appoint text-14"
+                defaultValue="default"
+                name="staffId"
+                id="staffId"
+                // onChange={(event) => {
+                //   const index = event.target.selectedIndex;
+                //   const optionElement = event.target.childNodes[index];
+                //   const optionElementId = optionElement.getAttribute("id");
+                //   console.log(optionElementId);
+                //   setDeliveryData({
+                //     ...deliveryData,
+                //     staffId: optionElementId,
+                //   });
+                // }}
+              >
+                <option value="default"> {data.staff.name}</option>
+                {/* {listStaff.map((item) => (
+                  <option key={item.id} id={item.id}>
+                    {data.staff.name}
+                  </option>
+                ))} */}
+              </select>
             </Form.Item>
-            <Form.Item
-              style={{ width: 300, marginLeft: "16px" }}
-              name="id"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tên lớp!",
-                },
-              ]}>
+            <Form.Item style={{ width: 300, marginLeft: "16px" }} name="id">
               <span>Ngày nhập</span>
               <Input
-                placeholder="21/02/2024"
+                type="text"
                 className=" p-2 "
-                //   value={carEdit.registrationNumber}
+                name="receiveDate"
+                value={format(parseISO(data.receiveDate), "dd/MM/yyyy")}
                 disabled={!isEditMode}
+                // onChange={(e) => handleInputChange(e)}
               />
             </Form.Item>
           </div>
-          <div className="flex items-center justify-center">
-            <Form.Item
-              style={{ width: 300 }}
-              name="id"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tên lớp!",
-                },
-              ]}>
-              <span>Nhân viên thực hiện</span>
-              <Input
-                placeholder="Phan Quoc Dat"
-                className=" p-2 "
-                //   value={carEdit.registrationNumber}
-                disabled={!isEditMode}
-              />
-            </Form.Item>
-            <Form.Item
-              style={{ width: 300, marginLeft: "16px" }}
-              name="id"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tên lớp!",
-                },
-              ]}>
-              <span>Ngày tạo</span>
-              <Input
-                placeholder="21/02/2023"
-                className=" p-2 "
-                //   value={carEdit.registrationNumber}
-                disabled={!isEditMode}
-              />
-            </Form.Item>
-            <Form.Item
-              style={{ width: 300, marginLeft: "16px" }}
-              name="id"
-              >
-              {/* <span>Ngày tạo</span>
-                    <Input
-                      placeholder="21/02/2023"
-                      className=" p-2 "
-                      //   value={carEdit.registrationNumber}
-                      disabled={!isEditMode}
-                    /> */}
-            </Form.Item>
-          </div>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between items-center mt-6">
             <span className="text-black">Phụ tùng</span>
-            <button className="text-black bg-[#ccc] w-[34px] h-[34px] rounded-full cursor-pointer">
+            <button
+              // onClick={handleAddNew}
+              className="text-black bg-[#ccc] w-[34px] h-[34px] rounded-full cursor-pointer">
               <AddIcon />
             </button>
           </div>
-          <div className="border-t-[1px] mt-1 pt-6 flex justify-between">
-            <Form.Item name="">
-              <span>Tên phụ tùng</span>
-              <Input
-                disabled={!isEditMode}
-                rows={4}
-                placeholder="Bánh xe"
-                className="text-black p-2  "
-                // value={carEdit.description}
-              />
-            </Form.Item>
-            <Form.Item name="">
-              <span>Mô tả</span>
-              <Input
-                disabled={!isEditMode}
-                rows={4}
-                placeholder="Bánh xe BMW i3"
-                className="text-black p-2  "
-                // value={carEdit.description}
-              />
-            </Form.Item>
-            <Form.Item
-              style={{ width: 100, marginLeft: "16px" }}
-              name="id"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tên lớp!",
-                },
-              ]}>
-              <span>Số lượng</span>
-              <Input
-                disabled={!isEditMode}
-                rows={4}
-                placeholder="16"
-                className="text-black p-2  "
-                // value={carEdit.description}
-              />
-            </Form.Item>
-            <Form.Item
-              style={{ width: 120, marginLeft: "16px" }}
-              name="id"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tên lớp!",
-                },
-              ]}>
-              <span>Đơn giá </span>
-              <Input
-                disabled={!isEditMode}
-                rows={4}
-                placeholder="16"
-                className="text-black p-2  "
-                // value={carEdit.description}
-              />
-            </Form.Item>
-            <Form.Item name="">
-              <span>Ghi chú</span>
-              <Input
-                disabled={!isEditMode}
-                rows={4}
-                placeholder="Ghi chu neu co"
-                className="text-black p-2  "
-                // value={carEdit.description}
-              />
+          {/* {deliveryData.goodsDeliveryNoteDetails.map((detail, index) => ( */}
+          {data.goodsDeliveryNoteDetails.map((item, index) => (
+            <div
+              className="border-t-[1px] mt-1 pt-6 flex justify-between"
+              key={index}>
+              <Form.Item name="" style={{ width: 160 }}>
+                <span>Nhà cung cấp</span>
+                <select
+                  disabled={!isEditMode}
+                  className="input-appoint text-14"
+                  defaultValue="default">
+                  <option value="default">
+                    {
+                      item.automotivePartInWarehouse.automotivePart
+                        .automotivePartSupplier.name
+                    }
+                  </option>
+                </select>
+              </Form.Item>
+              <Form.Item name="" style={{ width: 200, marginLeft: "16px" }}>
+                <span>Loại phụ tùng</span>
+                <select
+                  disabled={!isEditMode}
+                  className="input-appoint text-14"
+                  defaultValue="default">
+                  <option value="default">
+                    {getName(
+                      item.automotivePartInWarehouse.automotivePart.categoryId
+                    )}
+                  </option>
+                </select>
+              </Form.Item>
+              <Form.Item name="" style={{ width: 200, marginLeft: "16px" }}>
+                <span>Tên phụ tùng</span>
+                <select
+                  disabled={!isEditMode}
+                  className="input-appoint text-14"
+                  defaultValue="default"
+                  name="automotivePartId">
+                  <option value="default">
+                    {item.automotivePartInWarehouse.automotivePart.name}
+                  </option>
+                </select>
+              </Form.Item>
+              <Form.Item style={{ width: 100, marginLeft: "16px" }} name="id">
+                <span>Số lượng</span>
+                <Input
+                  disabled={!isEditMode}
+                  type="number"
+                  placeholder="16"
+                  className="text-black p-2  "
+                  name="quantity"
+                  value={item.receiveNumber}
+                />
+              </Form.Item>
+              <Form.Item style={{ width: 120, marginLeft: "16px" }} name="id">
+                <span>Đơn giá </span>
+                <Input
+                  disabled={!isEditMode}
+                  type="text"
+                  placeholder="16"
+                  className="text-black p-2  "
+                  name="price"
+                  value={formatCurrency(item.price)}
+                />
+              </Form.Item>
+            </div>
+          ))}
+          {/* ))} */}
+          <div>
+            <Form.Item className="flex justify-end">
+              <Form.Item
+                style={{ marginTop: 16 }}
+                name="id"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập tên lớp!",
+                  },
+                ]}>
+                <div className="flex ">
+                  <span
+                    className="text-[16px] font-bold"
+                    style={{ color: colors.greenAccent[300] }}>
+                    Tổng chi phí:
+                  </span>
+                  <span
+                    className="text-[16px] font-bold ml-3"
+                    style={{ color: colors.greenAccent[300] }}>
+                    1.499.000 VND
+                  </span>
+                </div>
+              </Form.Item>
             </Form.Item>
           </div>
         </Form>

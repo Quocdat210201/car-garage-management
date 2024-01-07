@@ -4,8 +4,15 @@ import { useTheme } from "@mui/material";
 import { format, parseISO } from "date-fns";
 import { Form, Input } from "antd/lib";
 import { useState, useEffect } from "react";
-import { getcarTypeApi, FinishAssign } from "../../../../service/UserService";
+import {
+  getcarTypeApi,
+  FinishAssign,
+  getAutomotivePartSupplier,
+  getAutomotivePartCategory,
+  getAutomotivePart,
+} from "../../../../service/UserService";
 import { toast } from "react-toastify";
+import AddIcon from "@mui/icons-material/Add";
 
 function ModalDetailSchedule(props) {
   const {
@@ -17,15 +24,32 @@ function ModalDetailSchedule(props) {
     getListSchedule,
     staffId,
   } = props;
+  console.log({ dataWork });
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [form] = Form.useForm();
   const [carType, setCarType] = useState([]);
   const [assignId, setAssignId] = useState(dataWork.id);
+  const [listPart, setListPart] = useState([]);
+  const [listPartSupplier, setListPartSupplier] = useState([]);
+  const [listPartCategory, setListPartCategory] = useState([]);
+  const [partCategoryId, setPartCategoryId] = useState("");
+  const [partSupplierId, setPartSupplierId] = useState("");
+  const [repairServiceId, setRepairServiceId] = useState();
+  const [automotivePartId, setAutomotivePartId] = useState(null);
   const [finishAssign, setFinishAssign] = useState({
     id: assignId,
-    status: "",
+    repairServiceUpdateRequests: [
+      {
+        automotivePartId: "",
+        quantity: 0,
+        repairServiceId: repairServiceId,
+      },
+    ],
+    status: 2,
   });
+
+  console.log({ repairServiceId });
   const getCarType = async () => {
     try {
       const { data } = await getcarTypeApi();
@@ -35,17 +59,49 @@ function ModalDetailSchedule(props) {
     }
   };
 
-  useEffect(() => {
-    getCarType();
-  }, []);
-
-  const getCarTypeName = (carTypeId) => {
-    const foundCarType = carType.find((item) => item.id === carTypeId);
-    return foundCarType ? foundCarType.name : "";
+  console.log({ dataWork });
+  const getlistPartSupplier = async () => {
+    try {
+      const { data } = await getAutomotivePartSupplier();
+      setListPartSupplier(data.data);
+    } catch (error) {
+      console.error();
+    }
+  };
+  const getlistPartCategory = async () => {
+    try {
+      const { data } = await getAutomotivePartCategory();
+      setListPartCategory(data.data);
+    } catch (error) {
+      console.error();
+    }
   };
 
+  useEffect(() => {
+    const getlistPart = async () => {
+      try {
+        const { data } = await getAutomotivePart(
+          partCategoryId,
+          partSupplierId
+        );
+        setListPart(data.data);
+      } catch (error) {
+        console.error();
+      }
+    };
+    getlistPart();
+  }, [partCategoryId, partSupplierId]);
+
+  useEffect(() => {
+    getCarType();
+    getlistPartSupplier();
+    getlistPartCategory();
+  }, []);
+
+  const handleAddNew = () => {};
+
   const handleSubmit = async () => {
-    // console.log(finishAssign);
+    console.log(finishAssign);
     try {
       const res = await FinishAssign(assignId, finishAssign);
       toast.success("Đã hoàn thành nhiệm vụ!", {
@@ -65,14 +121,45 @@ function ModalDetailSchedule(props) {
     }
   };
 
+  const getCarTypeName = (carTypeId) => {
+    const foundCarType = carType.find((item) => item.id === carTypeId);
+    return foundCarType ? foundCarType.name : "";
+  };
+
+  const handleInputChange = (e, index) => {
+    const { name, value } = e.target;
+
+    // Nếu input là một chi tiết của goodsDeliveryNoteDetails
+    if (index !== undefined) {
+      const updatedDetails = [...finishAssign.repairServiceUpdateRequests];
+      updatedDetails[index][name] = value;
+
+      // Cập nhật giá trị automotivePartId khi có thay đổi
+      if (name === "automotivePartId") {
+        setAutomotivePartId(value);
+      }
+
+      setFinishAssign({
+        ...finishAssign,
+        repairServiceUpdateRequests: updatedDetails,
+      });
+    } else {
+      // Nếu input là ở mức cao hơn (không phải trong goodsDeliveryNoteDetails)
+      setFinishAssign({
+        ...finishAssign,
+        [name]: value,
+      });
+    }
+  };
+
   return (
     <Modal
       title="Chi tiết giao việc"
       open={open}
       onCancel={handleCancel}
-      width={900}
+      width={1100}
       footer={
-        isEditModal ? (
+        dataWork.status === 1 ? (
           <>
             <button
               type="submit"
@@ -88,7 +175,7 @@ function ModalDetailSchedule(props) {
                 alignItems: "center",
               }}
               onClick={handleCancel}>
-              <span className="ml-1">Hủy</span>
+              <span className="ml-1">Lưu</span>
             </button>
             <button
               type="submit"
@@ -105,10 +192,10 @@ function ModalDetailSchedule(props) {
                 color: "#fff",
               }}
               onClick={handleSubmit}>
-              <span className="ml-1">Xác nhận</span>
+              <span className="ml-1">Hoàn thành</span>
             </button>
           </>
-        ) : (
+        ) : dataWork.status === 2 ? (
           <>
             <button
               type="submit"
@@ -124,7 +211,7 @@ function ModalDetailSchedule(props) {
                 alignItems: "center",
               }}
               onClick={handleCancel}>
-              <span className="ml-1">Hủy</span>
+              <span className="ml-1">Lưu</span>
             </button>
             <button
               type="submit"
@@ -144,12 +231,61 @@ function ModalDetailSchedule(props) {
               <span className="ml-1">Hoàn thành</span>
             </button>
           </>
+        ) : (
+          <></>
         )
       }>
       <Form
         name="basic"
-        className="max-w-full max-h-full align-center text-white p-5 rounded-[4px]">
+        className="max-w-full max-h-full align-center text-white p-5 rounded-[4px] padding-x-10 mb-6">
+        <span className="text-black text-[14px] ml-[-10px]">
+          <strong>Thông tin khách hàng</strong>
+        </span>
         <div className="flex justify-between">
+          <Form.Item
+            style={{ width: 150 }}
+            name="id"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập tên khách hàng",
+              },
+            ]}>
+            <span>
+              Biển số xe
+              {/* <span style={{ color: "red" }}>*</span> */}
+            </span>
+            <Input
+              placeholder="Tên khách hàng"
+              value={dataWork && dataWork.car.name}
+              className="p-2 mr-6 border-none"
+              disabled
+              on
+            />
+          </Form.Item>
+          <Form.Item
+            //   style={{ width: 450 }}
+            name="id"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập tên lớp!",
+              },
+            ]}>
+            <span>Loại xe</span>
+            <select
+              style={{ width: 180, cursor: "not-allowed" }}
+              className="input-appoint text-14 padding-10 opacity-8"
+              defaultValue={dataWork.car.carTypeId}
+              name="carBrandId"
+              id="carBrand"
+              disabled>
+              <option value="default">
+                {getCarTypeName(dataWork.car.carTypeId)}
+              </option>
+              {/* <option value="">{dataWork.car.carTypeId}</option> */}
+            </select>
+          </Form.Item>
           <Form.Item
             //   style={{ width: 450 }}
             name="id"
@@ -188,52 +324,6 @@ function ModalDetailSchedule(props) {
               disabled
             />
           </Form.Item>
-          <Form.Item
-            //   style={{ width: 450 }}
-            name="id"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên khách hàng",
-              },
-            ]}>
-            <span>
-              Biển số xe
-              {/* <span style={{ color: "red" }}>*</span> */}
-            </span>
-            <Input
-              placeholder="Tên khách hàng"
-              value={dataWork && dataWork.car.name}
-              className="p-2 mr-6 border-none"
-              disabled
-              on
-            />
-          </Form.Item>
-        </div>
-        <div className="flex justify-between">
-          <Form.Item
-            //   style={{ width: 450 }}
-            name="id"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên lớp!",
-              },
-            ]}>
-            <span>Loại xe</span>
-            <select
-              style={{ width: 180, cursor: "not-allowed" }}
-              className="input-appoint text-14 padding-10 opacity-8"
-              defaultValue={dataWork.car.carTypeId}
-              name="carBrandId"
-              id="carBrand"
-              disabled>
-              <option value="default">
-                {getCarTypeName(dataWork.car.carTypeId)}
-              </option>
-              {/* <option value="">{dataWork.car.carTypeId}</option> */}
-            </select>
-          </Form.Item>
           <Form.Item name="">
             <Form.Item
               //   style={{ width: 450 }}
@@ -253,125 +343,209 @@ function ModalDetailSchedule(props) {
               />
             </Form.Item>
           </Form.Item>
-          <Form.Item name="">
-            <Form.Item
-              //   style={{ width: 450 }}
-              name="id"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tên lớp!",
-                },
-              ]}>
-              <span>Thời gian làm việc </span>
-              <Input
-                placeholder="09:00 - 11:00"
-                className=" p-2 border-none"
-                value={dataWork.receiveCarAddress}
-                disabled
-              />
-            </Form.Item>
-          </Form.Item>
-          <Form.Item name="">
-            <Form.Item
-              //   style={{ width: 450 }}
-              name="id"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tên lớp!",
-                },
-              ]}>
-              <span>Ngày làm việc</span>
-              <Input
-                placeholder="21/02/2001"
-                className=" p-2 border-none"
-                value={dataWork.receiveCarAddress}
-                disabled
-              />
-            </Form.Item>
-          </Form.Item>
         </div>
-        <div className="flex ">
-          <Form.Item
-            //   style={{ width: 450 }}
-            name="id"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên khách hàng",
-              },
-            ]}>
-            <span>
-              Chi tiết công việc
-              {/* <span style={{ color: "red" }}>*</span> */}
-            </span>
-            <Input.TextArea
-              disabled
-              style={{ width: 300 }}
-              placeholder="Chi tiết công việc"
-              className="p-2 mr-6"
-              value={dataWork.adminWorkDetail}
-            />
-          </Form.Item>
-          <Form.Item
-            style={{ width: 450, marginLeft: 14 }}
-            name="id"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên lớp!",
-              },
-            ]}>
-            <span>Nhân viên thực hiện</span>
-            <Input
-              disabled
-              style={{ width: 200 }}
-              placeholder="Phan Quoc Dat"
-              value={dataWork.staff.name}
-              className="p-2 mr-6"
-              //   disabled
-            />
-          </Form.Item>
-          <Form.Item
-            //   style={{ width: 450 }}
-            name="id"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên khách hàng",
-              },
-            ]}>
-            <span>
-              Trạng thái
-              {/* <span style={{ color: "red" }}>*</span> */}
-            </span>
-            <select
-              style={{ width: 200 }}
-              className={`input-appoint text-14 ${
-                !isEditModal ? "cursor-not-allowed opacity-8" : ""
-              }`}
-              disabled={!isEditModal}
-              onClick={(e) => {
-                const value = e.target.value;
-                if (value === "Chưa hoàn thành") {
-                  setFinishAssign((prev) => ({
-                    ...prev,
-                    status: 1,
-                  }));
-                } else if (value === "Hoàn thành") {
-                  setFinishAssign((prev) => ({
-                    ...prev,
-                    status: 2,
-                  }));
-                }
-              }}>
-              <option value="Chưa hoàn thành">Chưa hoàn thành</option>
-              <option value="Hoàn thành">Hoàn thành</option>
-            </select>
-          </Form.Item>
-        </div>
+        <Form.Item
+          // style={{ width: 800 }}
+          name="id"
+          rules={[
+            {
+              required: true,
+              message: "Vui lòng nhập tên khách hàng",
+            },
+          ]}>
+          <span>
+            Chi tiết công việc
+            {/* <span style={{ color: "red" }}>*</span> */}
+          </span>
+          <Input.TextArea
+            disabled
+            style={{ width: "100%" }}
+            placeholder="Chi tiết công việc"
+            className="p-2 mr-6"
+            value={dataWork.adminWorkDetail}
+          />
+        </Form.Item>
       </Form>
+
+      {dataWork.status === 1 ? (
+        <div className="align-center padding-x-10 p-5 border-t-[2px]">
+          <div>
+            <span className="text-black text-[14px] ml-[-10px]">
+              <strong>Chi tiết công việc hoàn thành</strong>
+            </span>
+            <Form.Item
+              style={{ marginTop: 20 }}
+              name="id"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng nhập tên khách hàng",
+                },
+              ]}>
+              <span>Chi tiết công việc đã thực hiện</span>
+              <Input.TextArea
+                style={{ width: "100%" }}
+                placeholder="Chi tiết công việc"
+                className="p-2 mr-6"
+                // value={dataWork.adminWorkDetail}
+              />
+            </Form.Item>
+          </div>
+          <div className="flex justify-between items-center mt-6">
+            <span className="text-black">Phụ tùng thay</span>
+            <button
+              onClick={handleAddNew}
+              className="text-black bg-[#ccc] w-[34px] h-[34px] rounded-full cursor-pointer">
+              <AddIcon />
+            </button>
+          </div>
+          {finishAssign.repairServiceUpdateRequests.map((detail, index) => (
+            <div
+              className="border-t-[1px] mt-1 pt-6 flex justify-between"
+              key={index}>
+              <Form.Item
+                //   style={{ width: 450 }}
+                name="id"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập tên khách hàng",
+                  },
+                ]}>
+                <span>
+                  Dịch vụ
+                  {/* <span style={{ color: "red" }}>*</span> */}
+                </span>
+                <select
+                  className="input-appoint text-14"
+                  defaultValue="default"
+                  name="automotivePartId"
+                  onChange={(event) => {
+                    const index = event.target.selectedIndex;
+                    const optionElement = event.target.childNodes[index];
+                    const optionElementId = optionElement.getAttribute("id");
+                    console.log({ optionElementId });
+                    setRepairServiceId(optionElementId);
+
+                    // Cập nhật giá trị automotivePartId
+                    setFinishAssign({
+                      ...finishAssign,
+                      repairServiceUpdateRequests: [
+                        {
+                          ...finishAssign.repairServiceUpdateRequests[0],
+                          repairServiceId: optionElementId,
+                        },
+                      ],
+                    });
+                  }}>
+                  <option value="default">--Dịch vụ--</option>
+                  {dataWork && dataWork.appointmentScheduleDetails && 
+                    dataWork.appointmentScheduleDetails.map((item) => (
+                      <option key={item.repairServiceId} id={item.repairServiceId}>
+                        {item.repairService.name}
+                      </option>
+                    ))}
+                </select>
+              </Form.Item>
+              <Form.Item name="" style={{ width: 250, marginLeft: "16px" }}>
+                <span>Nhà cung cấp</span>
+                <select
+                  className="input-appoint text-14"
+                  defaultValue="default"
+                  onChange={(event) => {
+                    const index = event.target.selectedIndex;
+                    const optionElement = event.target.childNodes[index];
+                    const optionElementId = optionElement.getAttribute("id");
+                    console.log(optionElementId);
+                    setPartSupplierId(optionElementId);
+                  }}>
+                  <option value="default">--Chọn nhà cung cấp</option>
+                  {listPartSupplier.map((item) => (
+                    <option key={item.id} id={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </Form.Item>
+              <Form.Item name="" style={{ width: 250, marginLeft: "16px" }}>
+                <span>Loại phụ tùng</span>
+                <select
+                  className="input-appoint text-14"
+                  defaultValue="default"
+                  onChange={(event) => {
+                    const index = event.target.selectedIndex;
+                    const optionElement = event.target.childNodes[index];
+                    const optionElementId = optionElement.getAttribute("id");
+                    console.log(optionElementId);
+                    setPartCategoryId(optionElementId);
+                  }}>
+                  <option value="default">--Chọn loại phụ tùng</option>
+                  {listPartCategory.map((item) => (
+                    <option key={item.id} id={item.id}>
+                      {item.name}
+                    </option>
+                  ))}
+                </select>
+              </Form.Item>
+              <Form.Item name="" style={{ width: 250, marginLeft: "16px" }}>
+                <span>Tên phụ tùng</span>
+                <select
+                  className="input-appoint text-14"
+                  defaultValue="default"
+                  name="automotivePartId"
+                  onChange={(event) => {
+                    const index = event.target.selectedIndex;
+                    const optionElement = event.target.childNodes[index];
+                    const optionElementId = optionElement.getAttribute("id");
+                    console.log({ optionElementId });
+                    setAutomotivePartId(optionElementId);
+
+                    // Cập nhật giá trị automotivePartId
+                    setFinishAssign({
+                      ...finishAssign,
+                      repairServiceUpdateRequests: [
+                        {
+                          ...finishAssign.repairServiceUpdateRequests[0],
+                          automotivePartId: optionElementId,
+                        },
+                      ],
+                    });
+                  }}>
+                  <option value="default">--Chọn tên phụ tùng</option>
+                  {listPart &&
+                    listPart.map((item) => (
+                      <option key={item.id} id={item.id}>
+                        {item.name}
+                      </option>
+                    ))}
+                </select>
+              </Form.Item>
+              <Form.Item style={{ width: 150, marginLeft: "16px" }} name="id">
+                <span>Số lượng</span>
+                <Input
+                  type="number"
+                  placeholder="16"
+                  className="text-black p-2  "
+                  name="quantity"
+                  onChange={(e) => handleInputChange(e, index)}
+                />
+              </Form.Item>
+              {/* <Form.Item style={{ width: 120, marginLeft: "16px" }} name="id">
+              <span>Đơn giá </span>
+              <Input
+                type="number"
+                placeholder="16"
+                className="text-black p-2  "
+                name="price"
+                onChange={(e) => handleInputChange(e, index)}
+              />
+            </Form.Item> */}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <></>
+      )}
     </Modal>
   );
 }

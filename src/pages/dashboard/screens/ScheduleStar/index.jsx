@@ -77,6 +77,8 @@ function ScheduleStaff() {
     setIsEditMode(false);
   };
 
+  console.log({listSchedule});
+
   return (
     <div className="m-5">
       <div className="flex justify-between ">
@@ -187,41 +189,43 @@ function ScheduleStaff() {
                     className="px-6 py-4 w-[200px]">
                     {data.status === 1 ? (
                       <>
-                        <button
+                        <span
                           style={{
                             color: colors.redAccent[100],
-                            background: colors.redAccent[700],
-                            padding: "8px 10px",
+                            background: colors.redAccent[600],
+                            padding: "6px 10px",
                             borderRadius: "4px",
-                            marginRight: "10px",
-                            display: "inline-flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            width: "160px",
-                          }}>
-                          <Inventory2Icon />
-                          <span className="ml-2">Chưa hoàn thành</span>
-                        </button>
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleShowModal(data)}>
+                          Nhận việc
+                        </span>
                       </>
+                    ) : data.status === 2 ? (
+                      <span
+                        style={{
+                          color: colors.redAccent[100],
+                          background: colors.blueAccent[600],
+                          padding: "6px 10px",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handleShowModal(data)}>
+                        Hoàn thành
+                      </span>
+                    ) : data.status === 3 ? (
+                      <span
+                        style={{
+                          color: colors.redAccent[100],
+                          background: colors.greenAccent[600],
+                          padding: "6px 10px",
+                          borderRadius: "4px",
+                          cursor: "pointer",
+                        }}>
+                        Đã hoàn thành
+                      </span>
                     ) : (
-                      <>
-                        <button
-                          disabled
-                          style={{
-                            color: colors.redAccent[100],
-                            background: colors.greenAccent[500],
-                            padding: "8px 10px",
-                            borderRadius: "4px",
-                            marginRight: "10px",
-                            display: "inline-flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            width: "160px",
-                          }}>
-                          <CheckCircleOutlineIcon />
-                          <span className="ml-1">Đã hoàn thành</span>
-                        </button>
-                      </>
+                      <></>
                     )}
                   </td>
                   <td

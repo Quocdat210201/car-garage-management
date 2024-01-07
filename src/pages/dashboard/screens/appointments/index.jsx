@@ -13,6 +13,7 @@ import { getAppointmentSchedule } from "../../../../service/UserService";
 import { format, parseISO } from "date-fns";
 import ScheduleSendIcon from "@mui/icons-material/ScheduleSend";
 import ModalAssign from "./modalAssign";
+import ModalDetail from "./apointmentDetail";
 
 function Appointments() {
   const theme = useTheme();
@@ -20,6 +21,7 @@ function Appointments() {
   const [appoint, setAppoint] = useState([]);
   const [loading, setIsLoading] = useState(false);
   const [modalAssign, setModalAssign] = useState(false);
+  const [modalDetail, setModalDetail] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [dataAssign, setDataAssign] = useState([]);
 
@@ -32,10 +34,16 @@ function Appointments() {
     setDataAssign(data);
   };
 
+  const handleShowDetail = (data) => {
+    setModalDetail(true);
+    setDataAssign(data);
+  };
+
   const handleCancel = () => {
     // setModalDelete(false);
     setModalAssign(false);
     setIsEditMode(false);
+    setModalDetail(false);
   };
 
   const addNumbering = (data) => {
@@ -60,14 +68,13 @@ function Appointments() {
   useEffect(() => {
     getDataAppoint();
   }, []);
-  console.log({ appoint });
 
   return (
     <div className="m-5">
       <div className="flex justify-between ">
         <Header title=" LỊCH HẸN" subtitle="Quản lý lịch hẹn" />
         <div color={colors.grey[100]}>
-          <button
+          {/* <button
             style={{
               backgroundColor: colors.blueAccent[700],
               padding: "10px 16px",
@@ -79,7 +86,7 @@ function Appointments() {
             }}>
             <AddIcon />
             <span className="ml-1">Thêm mới lịch hẹn</span>
-          </button>
+          </button> */}
           <button
             style={{
               backgroundColor: colors.blueAccent[700],
@@ -94,7 +101,6 @@ function Appointments() {
           </button>
         </div>
       </div>
-
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <table className="w-full text-left rtl:text-right">
           <thead
@@ -216,13 +222,23 @@ function Appointments() {
                       <span
                         style={{
                           color: colors.redAccent[100],
-                          background: colors.blueAccent[600],
+                          background: colors.greenAccent[700],
                           padding: "6px 10px",
                           borderRadius: "4px",
                         }}>
                         Đã xác nhận
                       </span>
                     ) : data.status === 2 ? (
+                      <span
+                        style={{
+                          color: colors.redAccent[100],
+                          background: colors.blueAccent[600],
+                          padding: "6px 10px",
+                          borderRadius: "4px",
+                        }}>
+                        Đang thực hiện
+                      </span>
+                    ) : data.status === 3 ? (
                       <span
                         style={{
                           color: colors.redAccent[100],
@@ -237,7 +253,7 @@ function Appointments() {
                     )}
                   </td>
                   <td className="px-6 py-4">
-                    <button>
+                    <button onClick={() => handleShowDetail(data)}>
                       <InfoIcon fontSize="large" className="mx-2" />
                     </button>
                     <button>
@@ -278,7 +294,7 @@ function Appointments() {
                           alignItems: "center",
                           width: "120px",
                           opacity: 0.7,
-                          cursor: "not-allowed"
+                          cursor: "not-allowed",
                         }}
                         onClick={() => {
                           handleShowAssign(data);
@@ -302,6 +318,19 @@ function Appointments() {
             toggleEditMode={toggleEditMode}
             data={dataAssign}
             open={modalAssign}
+            getDataAppoint={getDataAppoint}
+          />
+        </div>
+      )}
+      \
+      {modalDetail && (
+        <div className=" detail-modal flex-col">
+          <ModalDetail
+            isEditModal={isEditMode}
+            handleCancel={handleCancel}
+            toggleEditMode={toggleEditMode}
+            data={dataAssign}
+            open={modalDetail}
             getDataAppoint={getDataAppoint}
           />
         </div>

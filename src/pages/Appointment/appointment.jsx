@@ -17,79 +17,10 @@ import {
   carBrandApi,
   carTypeApi,
   userApi,
+  getCarRegistrationNumber,
 } from "../../service/UserService";
-import SelectProvince from "./SelectProvince";
 import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
-
-// const carBrands = [
-//   {
-//     carBrandName: "Toyota",
-//     carType: {
-//       name: "",
-//     },
-//   },
-//   {
-//     carBrandName: "Kia",
-//     carType: {
-//       name: "",
-//     },
-//   },
-//   {
-//     carBrandName: "Hyundai",
-//     carType: {
-//       name: "",
-//     },
-//   },
-//   {
-//     carBrandName: "Mazda",
-//     carType: {
-//       name: "",
-//     },
-//   },
-//   {
-//     carBrandName: "Ford",
-//     carType: {
-//       name: "",
-//     },
-//   },
-//   {
-//     carBrandName: "Honda",
-//     carType: {
-//       name: "",
-//     },
-//   },
-//   {
-//     carBrandName: "Chevrolet",
-//     carType: {
-//       name: "",
-//     },
-//   },
-//   {
-//     carBrandName: "Mitsubishi",
-//     carType: {
-//       name: "",
-//     },
-//   },
-//   {
-//     carBrandName: "Nissan",
-//     carType: {
-//       name: "",
-//     },
-//   },
-//   {
-//     carBrandName: "Suzuki",
-//     carType: {
-//       name: "",
-//     },
-//   },
-//   {
-//     carBrandName: "Vinfast",
-//     carType: {
-//       name: "",
-//     },
-//   },
-// ];
+import { set } from "date-fns";
 
 function Appointment() {
   const [districts, setDistricts] = useState([]);
@@ -104,19 +35,18 @@ function Appointment() {
   const [carType, setCarType] = useState([]);
   const [user, setUser] = useState([]);
   const [loading, setIsLoading] = useState(false);
-  // const [value, setValue] = useState(1);
+  const [registration, setRegistration] = useState("");
+  const [carInfo, setCarInfo] = useState([]);
   const navigate = useNavigate();
-  // const [startDate, setStartDate] = useState(new Date());
 
   const [dataAppointment, setDataAppointment] = useState({
     phoneNumber: "",
     email: "",
     userName: "",
     address: "",
-    // wardId: "",
     appointmentScheduleDate: new Date(),
     note: "",
-    registrationNumber: "",
+    registrationNumber:"",
     carTypeId: "",
     carBrandId: "",
     manufacturingYear: "",
@@ -125,22 +55,14 @@ function Appointment() {
   });
 
   const handleChangeInput = (e) => {
+    console.log({ e });
+    console.log({ dataAppointment });
     setDataAppointment((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
-  };  
-
-  // const signUp = async () => {
-  //   const data = { dataAppointment };
-  //   try {
-  //     await apiAppointmentSchedule(data);
-  //     toast.success("Đăng kí thành công!");
-  //     navigate("/send-success");
-  //   } catch (error) {
-  //     error;
-  //   }
-  // };
+    console.log({ dataAppointment });
+  };
 
   const getService = async () => {
     try {
@@ -172,10 +94,23 @@ function Appointment() {
         setIsLoading(false);
       }
     };
-    getCarType()
+    getCarType();
   }, [carBrandId]);
 
-  
+  useEffect(() => {
+    const getInfoCar = async () => {
+      setIsLoading(true);
+      try {
+        const { data } = await getCarRegistrationNumber(registration);
+        setCarInfo(data.data);
+        setIsLoading(false);
+      } catch {
+        console.error();
+        setIsLoading(false);
+      }
+    };
+    getInfoCar();
+  }, [registration]);
 
   const getUser = async () => {
     try {
@@ -188,7 +123,7 @@ function Appointment() {
 
   useEffect(() => {
     getService();
-    getCarBrand()
+    getCarBrand();
     getUser();
   }, []);
 
@@ -196,7 +131,6 @@ function Appointment() {
     setDistrict(null);
     const fetchPublicDistrict = async () => {
       const response = await apiProvinceDistrict();
-      // console.log(response.data);
       if (response.status === 200) {
         setDistricts(response.data?.data);
       }
@@ -208,7 +142,6 @@ function Appointment() {
   useEffect(() => {
     const fetchPublicWard = async () => {
       const response = await apiProvinceWard(district);
-      // console.log(response);
       if (response.status === 200) {
         setWards(response.data?.data);
       }
@@ -217,11 +150,6 @@ function Appointment() {
     !district ? setReset(true) : setReset(false);
     !district && setDistricts([]);
   }, [district]);
-
-  // const onChange = (e) => {
-  //   console.log("radio checked", e.target.value);
-  //   setValue(e.target.value);
-  // };
 
   const handleSubmitAppointment = async () => {
     const res = await apiAppointmentSchedule(dataAppointment);
@@ -241,6 +169,11 @@ function Appointment() {
       repairServiceIds: [optionElementId],
       wardId: optionElementId,
     });
+  };
+
+  const getCarBrandName = (carBrandId) => {
+    const foundCarBrand = carBrand.find((item) => item.id === carBrandId);
+    return foundCarBrand ? foundCarBrand.name : "";
   };
 
   return (
@@ -293,9 +226,13 @@ function Appointment() {
                   type="text"
                   placeholder="Nhập biển số xe"
                   className="input-appoint"
-                  id="licenseId"
                   name="registrationNumber"
-                  onChange={handleChangeInput}
+                  onChange={
+                    handleChangeInput
+                    //(e) => {
+                    // setRegistration(e.target.value);
+                    //  }
+                }
                 />
               </div>
               <div className="flex flex-col w-1/3 mt-4 pl-8">
@@ -309,14 +246,18 @@ function Appointment() {
                     const index = event.target.selectedIndex;
                     const optionElement = event.target.childNodes[index];
                     const optionElementId = optionElement.getAttribute("id");
-                    // console.log(optionElementId);
-                    setCarBrandId(optionElementId)
+                    setCarBrandId(optionElementId);
                     setDataAppointment({
                       ...dataAppointment,
                       carBrandId: optionElementId,
                     });
                   }}>
-                  <option value="default">--Chọn hãng xe--</option>
+                  <option>
+                    {carInfo && carInfo.carType
+                      ? getCarBrandName(carInfo.carType.carBrandId)
+                      : ""}
+                  </option>
+                  {/* <option value={carInfo.length === 0 ? "default" : ""}>--Chọn hãng xe--</option> */}
                   {carBrand.map((item) => (
                     <option key={item.id} id={item.id}>
                       {item.name}
@@ -345,7 +286,10 @@ function Appointment() {
                       carTypeId: optionElementId,
                     });
                   }}>
-                  <option value="default">--Chọn loại xe--</option>
+                  <option value="default">
+                    {carInfo && carInfo.carType ? carInfo.carType.name : ""}
+                  </option>
+                  {/* <option value={carInfo.length === 0 ? "default" : ""}>--Chọn loại xe--</option> */}
                   {carType.map((item) => (
                     <option key={item.id} id={item.id}>
                       {item.name}
@@ -375,7 +319,7 @@ function Appointment() {
                   <label className="text-[18px] mb-2">Họ và tên</label>
                   <input
                     type="text"
-                    // value={user ? user.name : null}
+                    value={carInfo && carInfo.owner ? carInfo.owner.name : null}
                     placeholder="Nhập họ và tên"
                     className="input-appoint"
                     id="name"
@@ -386,8 +330,12 @@ function Appointment() {
                 <div className="flex flex-col w-1/3 mt-4 pl-8">
                   <label className="text-[18px] mb-2">Số điện thoại</label>
                   <input
-                    type="number"
-                    // value={user ? user.phoneNumber : null}
+                    type="text"
+                    value={
+                      carInfo && carInfo.owner
+                        ? carInfo.owner.phoneNumber
+                        : null
+                    }
                     placeholder="Nhập số điện thoại"
                     className="input-appoint"
                     id="phoneNumber"
@@ -399,7 +347,9 @@ function Appointment() {
                   <label className="text-[18px] mb-2">Email</label>
                   <input
                     type="text"
-                    // value={user ? user.email : null}
+                    value={
+                      carInfo && carInfo.owner ? carInfo.owner.email : null
+                    }
                     placeholder="Nhập email"
                     className="input-appoint"
                     id="email"
@@ -410,15 +360,6 @@ function Appointment() {
               </div>
               <div className="flex">
                 <div className="flex flex-col w-1/3 mt-4 pl-8">
-                  {/* <SelectProvince
-                    reset={reset}
-                    type="district"
-                    value={district}
-                    setValue={setDistrict}
-                    options={districts}
-                    label="Quận/Huyện"
-                  /> */}
-
                   <label className="text-[18px] mb-2">Quận/Huyện</label>
                   <select
                     className="input-appoint"
@@ -488,12 +429,6 @@ function Appointment() {
                 <div className="flex">
                   <div className="flex flex-col w-1/2 mt-4 pl-8">
                     <label className="text-[18px] mb-2">Thời gian hẹn</label>
-                    {/* <input
-                      type="datetime-local"
-                      className="input-appoint"
-                      name="appointmentScheduleDate"
-                      onChange={handleChangeInput}
-                    /> */}
                     <DatePicker
                       selected={dataAppointment.appointmentScheduleDate}
                       onChange={(date) => {

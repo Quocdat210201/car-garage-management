@@ -487,9 +487,17 @@ thead>th {
     opacity: 0.8 !important;
 }
 
+.ant-form-item {
+    margin-bottom: 12px !important;
+}
+
 .padding-10 {
     padding-top: 10px;
     padding-bottom: 10px;
+}
+
+.padding-x-10 {
+    padding:24px  10px !important;
 }
 
 .border-none {

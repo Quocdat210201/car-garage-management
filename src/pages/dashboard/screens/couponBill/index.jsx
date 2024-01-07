@@ -11,133 +11,110 @@ import { Form, Input, Select, Button, TextArea } from "antd/lib";
 import Modal from "antd/lib/modal/Modal";
 import DetailCouponBill from "./detailCouponBill";
 import AddNewCouponBill from "./addCouponBill";
+import { v4 as uuidv4 } from "uuid";
+import { format, parseISO } from "date-fns";
 const { Option } = Select;
 
 import {
-  getCarApi,
-  carBrandApi,
-  carTypeApi,
-  deleteCar,
+  getAdminGoodsDeliveryNote,
+  getAutomotivePartCategory,
+  getAutomotivePart,
 } from "../../../../service/UserService";
 
 import { get } from "lodash";
 import { toast } from "react-toastify";
-// import ClassModal from "./classModal";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 function CouponBill() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [form] = Form.useForm();
   const classId = false;
-  const [loading, setIsLoading] = useState(false);
-  const [listCar, setlistCar] = useState([]);
-  const [carEdit, setcarEdit] = useState([]);
-  const [carDelete, setCarDelete] = useState([]);
-  const [carBrand, setCarBrand] = useState([]);
-  const [carBrandId, setCarBrandId] = useState("");
-  const [carType, setCarType] = useState([]);
+  const [detailCouponBill, setDetailCouponBill] = useState([]);
   const [modalDelete, setModalDelete] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [modalDetail, setModalDetail] = useState(false);
   const [modalAdd, setModalAdd] = useState(false);
+  const [listCouponBill, setListCouponBill] = useState([]);
+  const [listPartCategory, setListPartCategory] = useState([]);
+  const [listPart, setListPart] = useState([]);
+  const [listgoodsDeliveryNoteDetails, setListgoodsDeliveryNoteDetails] =
+    useState([]);
+
+  const [modalId, setModalId] = useState(generateRandomId());
+
+  function generateRandomId() {
+    const prefix = "PN_";
+    const randomSuffix = generateRandomSuffix();
+    return `${prefix}${randomSuffix}`;
+  }
+
+  function generateRandomSuffix() {
+    const min = 1000000;
+    const max = 9999999;
+    const randomSuffix = Math.floor(Math.random() * (max - min + 1)) + min;
+    return randomSuffix.toString();
+  }
+
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
   };
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const showModal = (car) => {
+  const showModal = (data) => {
     setModalDetail(true);
-    setcarEdit(car);
+    setDetailCouponBill(data);
   };
 
-  const showModalDelete = (car) => {
+  const showModalDelete = (data) => {
     setModalDelete(true);
-    setCarDelete(car);
+    setDetailCouponBill(data);
   };
 
-  const handleDelete = async () => {
-    try {
-      await deleteCar(carDelete.id);
-      toast.success("Xóa thành công", {
-        position: "top-right",
-        autoClose: 1000, // Đặt thời gian hiển thị trong 2 giây
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-      });
-      setModalDelete(false);
-      getListCar();
-    } catch {
-      console.error();
-    }
+  const handleCancel = () => {
+    setModalDetail(false);
+    setModalDelete(false);
+    setIsEditMode(false);
+    setModalAdd(false);
+  };
+  const handleReload = () => {
+    setModalDetail(false);
+    setIsEditMode(false);
+    setModalAdd(false);
   };
 
   const addNumbering = (data) => {
     return data.map((item, index) => ({ ...item, stt: index + 1 }));
   };
 
-  const getListCar = async () => {
+  const getListCuoponBill = async () => {
     try {
-      const { data } = await getCarApi();
-      const newData = addNumbering(data.data);
-      setlistCar(newData);
-    } catch {
-      console.error();
+      const res = await getAdminGoodsDeliveryNote();
+      const data = res.data?.data;
+      const newData = addNumbering(data);
+      setListCouponBill(newData);
+
+      setListgoodsDeliveryNoteDetails(data.goodsDeliveryNoteDetails);
+    } catch (error) {
+      console.error(error);
     }
   };
-  useEffect(() => {
-    getListCar();
-  }, []);
 
-  const handleCancel = () => {
-    setModalDetail(false);
-    setModalDelete(false);
-    setIsEditMode(false);
-    setModalAdd(false)
-};
-const handleReload = () => {
-    setModalDetail(false);
-    setIsEditMode(false);
-    setModalAdd(false)
-  };
-
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
-  };
-
-  const getCarBrand = async () => {
+  const getlistPartCategory = async () => {
     try {
-      const { data } = await carBrandApi();
-      setCarBrand(data.data);
-    } catch {
+      const { data } = await getAutomotivePartCategory();
+      setListPartCategory(data.data);
+    } catch (error) {
       console.error();
     }
   };
 
   useEffect(() => {
-    getCarBrand();
+    getListCuoponBill();
+    getlistPartCategory();
   }, []);
-  useEffect(() => {
-    const getCarType = async () => {
-      setIsLoading(true);
-      try {
-        const { data } = await carTypeApi(carBrandId);
-        setCarType(data.data);
-        setIsLoading(false);
-      } catch {
-        console.error();
-        setIsLoading(false);
-      }
-    };
-    getCarType();
-  }, [carBrandId]);
-
-  const getCarBrandName = (carBrandId) => {
-    const foundCarBrand = carBrand.find((item) => item.id === carBrandId);
-    return foundCarBrand ? foundCarBrand.name : "";
-  };
+  // console.log({ listCouponBill });
+  // console.log({ listgoodsDeliveryNoteDetails });
 
   return (
     <div className="m-5">
@@ -156,6 +133,7 @@ const handleReload = () => {
             }}
             onClick={() => {
               setModalAdd(true);
+              setModalId(generateRandomId());
             }}>
             <AddIcon className="ml-1" />
             Thêm mới phiếu nhập
@@ -203,13 +181,7 @@ const handleReload = () => {
                 Nhân viên thực hiện
               </th>
               <th scope="col" className="px-6 py-3">
-                Nhà cung cấp
-              </th>
-              <th scope="col" className="px-6 py-3">
                 Ngày nhập
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Ngày tạo
               </th>
               <th scope="col" className="px-6 py-3">
                 Mô tả
@@ -218,74 +190,74 @@ const handleReload = () => {
             </tr>
           </thead>
           <tbody>
-            {listCar.map((data, index) => (
-              <tr
-                className=""
-                style={{ backgroundColor: colors.primary[400] }}
-                key={index}>
-                <td className="w-4 p-4">
-                  <div className="flex items-center">
-                    <input
-                      id="checkbox-table-search-1"
-                      type="checkbox"
-                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                    />
-                    <label
-                      htmlFor="checkbox-table-search-1"
-                      className="sr-only">
-                      checkbox
-                    </label>
-                  </div>
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {data.stt}
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  PNPT01
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  Phan Quốc Đạt
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  Cty Phụ Tùng
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  21/02/2024
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  22/03/2023
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  Ghi chú nếu có
-                </td>
-                <td className="px-6 py-4">
-                  <button onClick={() => showModal(data)}>
-                    <InfoIcon fontSize="large" className="mx-2" />
-                  </button>
-                  <button>
-                    <EditIcon fontSize="large" className="mx-2" />
-                  </button>
-                  <button onClick={() => showModalDelete(data)}>
-                    <DeleteIcon fontSize="large" className="mx-2" />
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {listCouponBill ? (
+              listCouponBill.map((data, index) => (
+                <tr
+                  className=""
+                  style={{ backgroundColor: colors.primary[400] }}
+                  key={index}>
+                  <td className="w-4 p-4">
+                    <div className="flex items-center">
+                      <input
+                        id="checkbox-table-search-1"
+                        type="checkbox"
+                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                      />
+                      <label
+                        htmlFor="checkbox-table-search-1"
+                        className="sr-only">
+                        checkbox
+                      </label>
+                    </div>
+                  </td>
+                  <td
+                    style={{ color: colors.greenAccent[300] }}
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    {data.stt}
+                  </td>
+                  <td
+                    style={{ color: colors.greenAccent[300] }}
+                    className="px-6 py-4">
+                    {data.goodsDeliveryCode}
+                  </td>
+                  <td
+                    style={{ color: colors.greenAccent[300] }}
+                    className="px-6 py-4">
+                    {data.staff.name}
+                  </td>
+                  <td
+                    style={{ color: colors.greenAccent[300] }}
+                    className="px-6 py-4">
+                    {data.receiveDate ? (
+                      format(parseISO(data.receiveDate), "dd/MM/yyyy")
+                    ) : (
+                      <span>-</span>
+                    )}
+                  </td>
+                  <td
+                    style={{ color: colors.greenAccent[300] }}
+                    className="px-6 py-4">
+                    {data.status ? data.status : <strong>-</strong>}
+                  </td>
+                  <td className="px-6 py-4">
+                    <button onClick={() => showModal(data)}>
+                      <InfoIcon fontSize="large" className="mx-2" />
+                    </button>
+                    <button>
+                      <EditIcon fontSize="large" className="mx-2" />
+                    </button>
+                    <button onClick={() => showModalDelete(data)}>
+                      <DeleteIcon fontSize="large" className="mx-2" />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <div>
+                <span>Dữ liệu trống</span>
+              </div>
+            )}
           </tbody>
         </table>
       </div>
@@ -294,6 +266,8 @@ const handleReload = () => {
           open={modalAdd}
           handleCancel={handleCancel}
           handleReload={handleReload}
+          goodsDeliveryCode={modalId}
+          getListCuoponBill={getListCuoponBill}
         />
       )}
       {
@@ -304,6 +278,8 @@ const handleReload = () => {
             handleReload={handleReload}
             toggleEditMode={toggleEditMode}
             isEditMode={isEditMode}
+            data={detailCouponBill}
+            listPartCategory={listPartCategory}
           />
         )
         // alert("Hello")
@@ -312,7 +288,7 @@ const handleReload = () => {
         <Modal
           title="Xóa xe"
           open={modalDelete}
-          onOk={handleDelete}
+          // onOk={handleDelete}
           onCancel={handleCancel}
           footer={
             <>
@@ -345,7 +321,8 @@ const handleReload = () => {
                   fontSize: "14px",
                   alignItems: "center",
                 }}
-                onClick={handleDelete}>
+                // onClick={handleDelete}
+              >
                 <span className="ml-1">Xóa</span>
               </button>
             </>
