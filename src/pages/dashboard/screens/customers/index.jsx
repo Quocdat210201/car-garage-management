@@ -10,28 +10,36 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
+import { useState, useEffect } from "react";
+import { getAccount } from "../../../../service/UserService";
+import * as TYPES from "../../common/constant";
+import formatPhoneNumber from "../../components/FormatPhoneNumber"
 
-export const mockDataListCustomer = [
-  {
-    id: 1,
-    name: "Jon Snow",
-    phone: "(665)121-5454",
-    email: "jonsnow@gmail.com",
-    dateOfBirth: "21/02/2001",
-    action: "",
-  },
-  {
-    id: 2,
-    name: "Jon Snow",
-    phone: "(665)121-5454",
-    email: "jonsnow@gmail.com",
-    dateOfBirth: "21/02/2001",
-    action: "",
-  },
-];
+
 function Customer() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+  const [listCustomer, setListCustomer] = useState([]);
+
+  const addNumbering = (data) => {
+    return data.map((item, index) => ({ ...item, stt: index + 1 }));
+  };
+
+
+  const getListCustomer = async () => {
+    try {
+      const { data } = await getAccount(TYPES.CUSTOMER_ROLE);
+      const newData = addNumbering(data.data);
+      setListCustomer(newData);
+    } catch (error) {
+      console.error();
+    }
+  };
+
+  useEffect(() => {
+    getListCustomer();
+  }, []);
 
   return (
     <div className="m-5">
@@ -96,14 +104,11 @@ function Customer() {
               <th scope="col" className="px-6 py-3">
                 Email
               </th>
-              <th scope="col" className="px-6 py-3">
-                Ngày sinh
-              </th>
               <th scope="col" className="px-6 py-3"></th>
             </tr>
           </thead>
           <tbody>
-            {mockDataListCustomer.map((data, index) => (
+            {listCustomer.map((data, index) => (
               <tr
                 className=""
                 style={{ backgroundColor: colors.primary[400] }}
@@ -126,7 +131,7 @@ function Customer() {
                   style={{ color: colors.greenAccent[300] }}
                   scope="row"
                   className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {data.id}
+                  {data.stt}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
@@ -136,17 +141,12 @@ function Customer() {
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.phone}
+                  {formatPhoneNumber(data.phoneNumber)}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
                   {data.email}
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  {data.dateOfBirth}
                 </td>
                 <td className="px-6 py-4">
                   <button>

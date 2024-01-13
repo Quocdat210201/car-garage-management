@@ -222,23 +222,13 @@ function Appointments() {
                       <span
                         style={{
                           color: colors.redAccent[100],
-                          background: colors.greenAccent[700],
-                          padding: "6px 10px",
-                          borderRadius: "4px",
-                        }}>
-                        Đã xác nhận
-                      </span>
-                    ) : data.status === 2 ? (
-                      <span
-                        style={{
-                          color: colors.redAccent[100],
                           background: colors.blueAccent[600],
                           padding: "6px 10px",
                           borderRadius: "4px",
                         }}>
                         Đang thực hiện
                       </span>
-                    ) : data.status === 3 ? (
+                    ) : data.status === 2 ? (
                       <span
                         style={{
                           color: colors.redAccent[100],

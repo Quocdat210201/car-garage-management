@@ -7,10 +7,12 @@ import { useState, useEffect } from "react";
 import {
   getcarTypeApi,
   getAccount,
-  AssignSchedule,
+  serviceApi,
 } from "../../../../service/UserService";
 import { toast } from "react-toastify";
 import AddIcon from "@mui/icons-material/Add";
+import * as TYPES from "../../common/constant";
+import formatCurrency from "../../components/formatMoney";
 
 function BillDetail(props) {
   const {
@@ -23,6 +25,68 @@ function BillDetail(props) {
   } = props;
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [carType, setCarType] = useState([]);
+  const [listStaff, setListStaff] = useState([]);
+  const [services, setServices] = useState([]);
+  console.log({ data });
+
+  const getCarType = async () => {
+    try {
+      const { data } = await getcarTypeApi();
+      setCarType(data.data);
+    } catch {
+      console.error();
+    }
+  };
+
+  const getListStaff = async () => {
+    try {
+      const { data } = await getAccount(TYPES.STAFF_ROLE);
+      setListStaff(data.data);
+    } catch (error) {
+      console.error();
+    }
+  };
+
+  const getService = async () => {
+    try {
+      const { data } = await serviceApi();
+      setServices(data.data);
+    } catch {
+      console.error();
+    }
+  };
+
+  useEffect(() => {
+    getCarType();
+    getListStaff();
+    getService();
+  }, []);
+
+  const getCarTypeName = (carTypeId) => {
+    const foundCarType = carType.find((item) => item.id === carTypeId);
+    return foundCarType ? foundCarType.name : "";
+  };
+
+  const getStaffName = (staffId) => {
+    const foundStaffName = listStaff.find((item) => item.id === staffId);
+    return foundStaffName ? foundStaffName.name : "";
+  };
+
+  const getServiceName = (serviceId) => {
+    const foundserviceName = services.find((item) => item.id === serviceId);
+    return foundserviceName ? foundserviceName.name : "";
+  };
+
+  const getServicePrice = (serviceId) => {
+    const foundserviceName = services.find((item) => item.id === serviceId);
+    return foundserviceName ? foundserviceName.price : "";
+  };
+
+  // const getAutomotivePart = (automoviPartId) => {
+  //   const foundserviceName = services.find((item) => item.id === automoviPartId);
+  //   return foundserviceName ? foundserviceName.price : "";
+  // };
 
   return (
     <Modal
@@ -64,7 +128,7 @@ function BillDetail(props) {
             // GOij owr dday
             // onClick={handleSubmitAssign}
           >
-            <span className="ml-1">Giao việc</span>
+            <span className="ml-1">Chỉnh sửa</span>
           </button>
         </>
       }>
@@ -87,10 +151,9 @@ function BillDetail(props) {
             </span>
             <Input
               placeholder="Biển số xe"
-              value={data && data.car.name}
+              value={data && data.car.registrationNumber}
               className="p-2 mr-6"
               disabled={!isEditModal}
-              on
             />
           </Form.Item>
           <Form.Item
@@ -105,14 +168,12 @@ function BillDetail(props) {
             <span>Loại xe</span>
             <select
               className="input-appoint text-14 padding-10 opacity-8"
-              // defaultValue={data.car.carTypeId}
               name="carBrandId"
               id="carBrand"
               disabled={!isEditModal}>
               <option value="default">
-                {/* {getCarTypeName(data.car.carTypeId)} */}
+                {getCarTypeName(data.car.carTypeId)}
               </option>
-              {/* <option value="">{data.car.carTypeId}</option> */}
             </select>
           </Form.Item>
           <Form.Item
@@ -131,10 +192,13 @@ function BillDetail(props) {
               name="carBrandId"
               id="carBrand"
               disabled={!isEditModal}>
-              <option value="default">
-                {/* {getCarTypeName(data.car.carTypeId)} */}
-              </option>
-              {/* <option value="">{data.car.carTypeId}</option> */}
+              {data &&
+                data.details &&
+                data.details.map((item, index) => (
+                  <option value="default" key={index}>
+                    {getServiceName(item.repairServiceId)}
+                  </option>
+                ))}
             </select>
           </Form.Item>
           <Form.Item
@@ -147,28 +211,12 @@ function BillDetail(props) {
               },
             ]}>
             <span>Nhân viên thực hiện</span>
-            <select
-              className="input-appoint text-14"
-              defaultValue="default"
-              name="staffId"
-              id="staffId"
-              onChange={(event) => {
-                const index = event.target.selectedIndex;
-                const optionElement = event.target.childNodes[index];
-                const optionElementId = optionElement.getAttribute("id");
-                console.log(optionElementId);
-                // setAssign({
-                //   ...assign,
-                //   staffId: optionElementId,
-                // });
-              }}>
-              {/* <option value="default">--Chọn nhân viên--</option> */}
-              {/* {listStaff && listStaff.map((item) => (
-                <option key={item.id} id={item.id}>
-                  {item.name}
-                </option>
-              ))} */}
-            </select>
+            <Input
+              placeholder="Biển số xe"
+              value={getStaffName(data.staffId)}
+              className="p-2 mr-6"
+              disabled={!isEditModal}
+            />
           </Form.Item>
         </div>
         <div className="flex">
@@ -187,7 +235,7 @@ function BillDetail(props) {
             </span>
             <Input
               placeholder="Tên khách hàng"
-              value={data && data.car.owner.name}
+              value={data && data.customer.name}
               className="p-2 mr-6"
               disabled={!isEditModal}
               on
@@ -206,7 +254,7 @@ function BillDetail(props) {
             <Input
               placeholder="Số điện thoại"
               className=" p-2"
-              value={data && data.car.owner.phoneNumber}
+              value={data && data.customer.phoneNumber}
               disabled={!isEditModal}
             />
           </Form.Item>
@@ -224,7 +272,7 @@ function BillDetail(props) {
               <Input
                 placeholder="Địa chỉ"
                 className=" p-2"
-                // value={data.receiveCarAddress}
+                value={data.customer.address}
                 disabled={!isEditModal}
               />
             </Form.Item>
@@ -243,7 +291,7 @@ function BillDetail(props) {
               <Input
                 type="date"
                 className=" p-2"
-                // value={data.receiveCarAddress}
+                value={data.receiveCarDate.substring(0, 10)}
                 disabled={!isEditModal}
               />
             </Form.Item>
@@ -262,7 +310,7 @@ function BillDetail(props) {
               <Input
                 type="date"
                 className=" p-2"
-                // value={data.receiveCarAddress}
+                value={data.returnCarDate.substring(0, 10)}
                 disabled={!isEditModal}
               />
             </Form.Item>
@@ -308,20 +356,18 @@ function BillDetail(props) {
                   style={{ color: colors.greenAccent[300] }}>
                   Chi phí dịch vụ:
                 </span>
-                <span
-                  className="text-[16px] font-bold ml-3"
-                  style={{ color: colors.greenAccent[300] }}>
-                  {" "}
-                  1.499.000 VND
-                </span>
+
+                {data &&
+                  data.details &&
+                  data.details.map((item, index) => (
+                    <span
+                      className="text-[16px] font-bold ml-3"
+                      style={{ color: colors.greenAccent[300] }}
+                      key={index}>
+                      {formatCurrency(getServicePrice(item.repairServiceId))}{" "}
+                    </span>
+                  ))}
               </div>
-              {/* <Input
-              type="number"
-                placeholder=""
-                className=" p-2"
-                // value={data.receiveCarAddress}
-                disabled={!isEditModal}
-              /> */}
             </Form.Item>
           </Form.Item>
         </div>
@@ -333,125 +379,92 @@ function BillDetail(props) {
             <AddIcon />
           </div>
         </div>
-        <div className="flex justify-between">
-          <Form.Item
-            style={{ width: 210 }}
-            name="id"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên lớp!",
-              },
-            ]}>
-            <span>Loại phụ tùng</span>
-            <select
-              className="input-appoint text-14 padding-10 opacity-8"
-              // defaultValue={data.car.carTypeId}
-              name="carBrandId"
-              id="carBrand"
-              disabled={!isEditModal}>
-              <option value="default">
-                {/* {getCarTypeName(data.car.carTypeId)} */}
-              </option>
-              {/* <option value="">{data.car.carTypeId}</option> */}
-            </select>
-          </Form.Item>
-          <Form.Item
-            style={{ width: 210 }}
-            name="id"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên lớp!",
-              },
-            ]}>
-            <span>Tên phụ tùng</span>
-            <select
-              className="input-appoint text-14 padding-10 opacity-8"
-              // defaultValue={data.car.carTypeId}
-              name="carBrandId"
-              id="carBrand"
-              disabled={!isEditModal}>
-              <option value="default">
-                {/* {getCarTypeName(data.car.carTypeId)} */}
-              </option>
-              {/* <option value="">{data.car.carTypeId}</option> */}
-            </select>
-          </Form.Item>
-          <Form.Item
-            //   style={{ width: 450 }}
-            name="id"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên khách hàng",
-              },
-            ]}>
-            <span>
-              Số lượng
-              {/* <span style={{ color: "red" }}>*</span> */}
-            </span>
-            <Input
-              type="number"
-              style={{ width: 100 }}
-              placeholder="Số lượng"
-              // value=""
-              className="p-2"
-              name="adminWorkDetail"
-              //   onChange={handleChangeInput}
-            />
-          </Form.Item>
-          <Form.Item
-            //   style={{ width: 450 }}
-            name="id"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên khách hàng",
-              },
-            ]}>
-            <span>
-              Đơn giá
-              {/* <span style={{ color: "red" }}>*</span> */}
-            </span>
-            <Input
-              type="number"
-              style={{ width: 180 }}
-              placeholder="Đơn giá"
-              // value=""
-              className="p-2"
-              name="adminWorkDetail"
-              //   onChange={handleChangeInput}
-            />
-          </Form.Item>
-          <Form.Item
-            //   style={{ width: 450 }}
-            name="id"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên khách hàng",
-              },
-            ]}>
-            <span>
-              Thành tiền
-              {/* <span style={{ color: "red" }}>*</span> */}
-            </span>
-            <Input
-              type="number"
-              style={{ width: 180 }}
-              placeholder="Thành tiền"
-              // value=""
-              className="p-2"
-              name="adminWorkDetail"
-              //   onChange={handleChangeInput}
-            />
-          </Form.Item>
-        </div>
+        {data &&
+          data.details &&
+          data.details.map((item, index) => (
+            <div className="flex justify-between" key={index}>
+              <Form.Item
+                style={{ width: 250 }}
+                name="id"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập tên lớp!",
+                  },
+                ]}>
+                <span>Tên phụ tùng</span>
+                <select
+                  className="input-appoint text-14 padding-10 opacity-8"
+                  name="carBrandId"
+                  id="carBrand"
+                  disabled={!isEditModal}>
+                  {/* <option value="">{data.car.carTypeId}</option> */}
+                </select>
+              </Form.Item>
+              <Form.Item
+                name="id"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập tên khách hàng",
+                  },
+                ]}>
+                <span>Số lượng</span>
+                <Input
+                  type="number"
+                  style={{ width: 150 }}
+                  placeholder="Số lượng"
+                  value={item.quantity}
+                  className="p-2"
+                  name="adminWorkDetail"
+                />
+              </Form.Item>
+              <Form.Item
+                name="id"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập tên khách hàng",
+                  },
+                ]}>
+                <span>Đơn giá</span>
+                <Input
+                  type="text"
+                  style={{ width: 220 }}
+                  placeholder="Đơn giá"
+                  // value=""
+                  className="p-2"
+                  name="adminWorkDetail"
+                />
+              </Form.Item>
+              <Form.Item
+                name="id"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập tên khách hàng",
+                  },
+                ]}>
+                <span>
+                  Thành tiền
+                  {/* <span style={{ color: "red" }}>*</span> */}
+                </span>
+                <Input
+                  type="number"
+                  style={{ width: 220 }}
+                  placeholder="Thành tiền"
+                  // value=""
+                  className="p-2"
+                  name="adminWorkDetail"
+                  //   onChange={handleChangeInput}
+                />
+              </Form.Item>
+            </div>
+          ))}
         <div>
           <Form.Item className="flex justify-end">
             <Form.Item
-            style={{marginTop:16}}
+              style={{ marginTop: 16 }}
               name="id"
               rules={[
                 {
@@ -468,8 +481,7 @@ function BillDetail(props) {
                 <span
                   className="text-[16px] font-bold ml-3"
                   style={{ color: colors.greenAccent[300] }}>
-                  {" "}
-                  1.499.000 VND
+                  {formatCurrency(data.total)}
                 </span>
               </div>
             </Form.Item>

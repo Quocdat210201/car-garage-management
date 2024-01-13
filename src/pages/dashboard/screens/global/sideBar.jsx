@@ -111,13 +111,13 @@ function SideBar() {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
+            {/* <Item
               title="Cá nhân"
               to="/admin/profile"
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            /> */}
             {roles === "System Administrator" ||
             roles === "Gara Administrator" ? (
               <Box>
@@ -177,13 +177,13 @@ function SideBar() {
                   selected={selected}
                   setSelected={setSelected}
                 />
-                <Item
+                {/* <Item
                   title="Thống kê"
                   to="/admin/pie"
                   icon={<BarChartOutlinedIcon />}
                   selected={selected}
                   setSelected={setSelected}
-                />
+                /> */}
                 <Item
                   title="Tài khoản"
                   to="/admin/accounts"

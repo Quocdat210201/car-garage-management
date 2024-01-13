@@ -45,7 +45,7 @@ function ModalAssign(props) {
   const handleSubmitAssign = async () => {
     try {
       const res = await AssignSchedule(assignId, assign);
-      toast.success("Xóa thành công", {
+      toast.success("Giao việc thành công", {
         position: "top-right",
         autoClose: 1000, // Đặt thời gian hiển thị trong 2 giây
         hideProgressBar: true,

@@ -2,7 +2,7 @@ import { useTheme } from "@mui/material";
 import { tokens } from "../../../../theme";
 import InfoIcon from "@mui/icons-material/Info";
 import Header from "../../components/Header";
-import ModalDetailSchedule from "./modalDetailSchedule";
+import ModalFinishSchedule from "./modalFinishSchedule";
 import Inventory2Icon from "@mui/icons-material/Inventory2";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 
@@ -13,9 +13,11 @@ import {
   FinishAssign,
 } from "../../../../service/UserService";
 import { format, parseISO } from "date-fns";
+import ModalDetail from "./modalDetail";
 function ScheduleStaff() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [modalFinish, setModalFinish] = useState(false);
   const [modalDetail, setModalDetail] = useState(false);
   const [dataWork, setDataWork] = useState([]);
   const [isEditMode, setIsEditMode] = useState(false);
@@ -68,16 +70,24 @@ function ScheduleStaff() {
     setIsEditMode(!isEditMode);
   };
   const handleShowModal = (data) => {
+    if (data.status === 1) {
+      setModalFinish(true);
+      setDataWork(data);
+    } else {
+      return;
+    }
+  };
+
+  const handleShowModalDetail = (data) => {
     setModalDetail(true);
     setDataWork(data);
   };
 
   const handleCancel = () => {
-    setModalDetail(false);
+    setModalFinish(false);
     setIsEditMode(false);
+    setModalDetail(false);
   };
-
-  console.log({listSchedule});
 
   return (
     <div className="m-5">
@@ -120,9 +130,6 @@ function ScheduleStaff() {
               </th>
               <th scope="col" className="px-6 py-3">
                 Trạng thái
-              </th>
-              <th scope="col" className="px-6 py-3">
-                Ghi chú
               </th>
               <th scope="col" className="px-6 py-3"></th>
             </tr>
@@ -189,7 +196,7 @@ function ScheduleStaff() {
                     className="px-6 py-4 w-[200px]">
                     {data.status === 1 ? (
                       <>
-                        <span
+                        <button
                           style={{
                             color: colors.redAccent[100],
                             background: colors.redAccent[600],
@@ -197,52 +204,31 @@ function ScheduleStaff() {
                             borderRadius: "4px",
                             cursor: "pointer",
                           }}
+                          className="hover:opacity-90"
                           onClick={() => handleShowModal(data)}>
-                          Nhận việc
-                        </span>
+                          <span>Hoàn thành</span>
+                        </button>
                       </>
                     ) : data.status === 2 ? (
-                      <span
-                        style={{
-                          color: colors.redAccent[100],
-                          background: colors.blueAccent[600],
-                          padding: "6px 10px",
-                          borderRadius: "4px",
-                          cursor: "pointer",
-                        }}
-                        onClick={() => handleShowModal(data)}>
-                        Hoàn thành
-                      </span>
-                    ) : data.status === 3 ? (
-                      <span
+                      <button
                         style={{
                           color: colors.redAccent[100],
                           background: colors.greenAccent[600],
                           padding: "6px 10px",
                           borderRadius: "4px",
-                          cursor: "pointer",
-                        }}>
-                        Đã hoàn thành
-                      </span>
+                          cursor: "not-allowed",
+                        }}
+                        onClick={() => handleShowModal(data)}>
+                        <span>Đã hoàn thành</span>
+                      </button>
                     ) : (
                       <></>
-                    )}
-                  </td>
-                  <td
-                    style={{ color: colors.greenAccent[300] }}
-                    className="px-6 py-4 w-[280px]">
-                    {data.note ? (
-                      data.note
-                    ) : (
-                      <span>
-                        <strong>-</strong>
-                      </span>
                     )}
                   </td>
                   <td className="px-6 py-4">
                     <button
                       onClick={() => {
-                        handleShowModal(data);
+                        handleShowModalDetail(data);
                       }}>
                       <InfoIcon fontSize="large" className="mx-2" />
                     </button>
@@ -258,9 +244,23 @@ function ScheduleStaff() {
           </tbody>
         </table>
       </div>
+      {modalFinish && (
+        <div className=" detail-modal flex-col">
+          <ModalFinishSchedule
+            isEditModal={isEditMode}
+            handleCancel={handleCancel}
+            toggleEditMode={toggleEditMode}
+            dataWork={dataWork}
+            open={modalFinish}
+            getListSchedule={getListSchedule}
+            staffId={staffId}
+          />
+        </div>
+      )}
+
       {modalDetail && (
         <div className=" detail-modal flex-col">
-          <ModalDetailSchedule
+          <ModalDetail
             isEditModal={isEditMode}
             handleCancel={handleCancel}
             toggleEditMode={toggleEditMode}

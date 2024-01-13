@@ -12,7 +12,7 @@
     list-style: none;
     /* justify-content: flex-start; */
     position: fixed !important;
-    bottom: 100px !important;
+    bottom: 50px !important;
     right: 3rem !important;
 }
 
@@ -83,6 +83,10 @@ thead>th {
 
 .w-90 {
     width: 90%;
+}
+
+.font-50{
+    font-size: 50px !important;
 }
 
 .border-bottom {

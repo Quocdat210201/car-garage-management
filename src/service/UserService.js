@@ -59,6 +59,13 @@ const FinishAssign = async (id, assign) => {
   return res;
 };
 
+
+const FinishAssignStaff = async (id) => {
+  const res = await put(`api/admin-appointment-schedule/staff-finish/${id}`);
+  return res;
+};
+
+
 const serviceApi = async () => {
   const res = await get("api/repair-service");
   return res;
@@ -131,8 +138,24 @@ const getAutomotivePartCategory = async () => {
   return res;
 };
 
+const getListAutomotivePart = async () => {
+  const res = await get(`api/automotive-part`);
+  return res;
+};
+
+
 const getAutomotivePartSupplier = async () => {
   const res = await get(`api/automotive-part-supplier`);
+  return res;
+};
+const getBill = async () => {
+  const res = await get(`api/admin-bill`);
+  return res;
+};
+
+
+const getBillDetail = async (id) => {
+  const res = await get(`api/admin-bill/${id}`);
   return res;
 };
 
@@ -147,6 +170,7 @@ export {
   getAppointmentSchedule,
   AssignSchedule,
   FinishAssign,
+  FinishAssignStaff,
   getAppointmentScheduleStaff,
   serviceApi,
   serviceDetailApi,
@@ -162,5 +186,8 @@ export {
   getAutomotivePartSupplier,
   getAutomotivePartCategory,
   getAutomotivePart,
-  getCarRegistrationNumber
+  getListAutomotivePart,
+  getCarRegistrationNumber,
+  getBill,
+  getBillDetail
 };

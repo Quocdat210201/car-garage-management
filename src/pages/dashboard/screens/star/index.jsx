@@ -1,55 +1,47 @@
 import { Box, Typography, useTheme } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { tokens } from "../../../../theme";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
-import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import InfoIcon from "@mui/icons-material/Info";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
+import { useEffect, useState } from "react";
+import { getAccount } from "../../../../service/UserService";
+import * as TYPES from "../../common/constant";
+import formatPhoneNumber from "../../components/FormatPhoneNumber"
 
-export const mockDataListStar = [
-  {
-    id: 1,
-    name: "Jon Snow",
-    phone: "(665)121-5454",
-    email: "jonsnow@gmail.com",
-    dateOfBirth: "21/02/2001",
-    location: "Nhân viên bảo trì",
-    action: "",
-  },
-  {
-    id: 2,
-    name: "Jon Snow",
-    phone: "(665)121-5454",
-    email: "jonsnow@gmail.com",
-    dateOfBirth: "21/02/2001",
-    location: "Nhân viên bảo trì",
-    action: "",
-  },
-  {
-    id: 3,
-    name: "Jon Snow",
-    phone: "(665)121-5454",
-    email: "jonsnow@gmail.com",
-    dateOfBirth: "21/02/2001",
-    location: "Nhân viên bảo trì",
-    action: "",
-  },
-];
 function Star() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [listStaff, setListStaff] = useState([]);
+
+  const addNumbering = (data) => {
+    return data.map((item, index) => ({ ...item, stt: index + 1 }));
+  };
+
+
+  const getListStaff = async () => {
+    try {
+      const { data } = await getAccount(TYPES.STAFF_ROLE);
+      const newData = addNumbering(data.data);
+      setListStaff(newData);
+    } catch (error) {
+      console.error();
+    }
+  };
+
+  useEffect(() => {
+    getListStaff();
+  }, []);
 
   return (
     <div className="m-5">
       <div className="flex justify-between ">
         <Header title="NHÂN VIÊN" subtitle="Quản lý thông tin nhân viên" />
         <div color={colors.grey[100]}>
-          <button
+          {/* <button
             style={{
               backgroundColor: colors.blueAccent[700],
               padding: "10px 16px",
@@ -61,7 +53,7 @@ function Star() {
             }}>
             <AddIcon />
             <span className="ml-1">Thêm mới nhân viên</span>
-          </button>
+          </button> */}
           <button
             style={{
               backgroundColor: colors.blueAccent[700],
@@ -108,16 +100,13 @@ function Star() {
                 Email
               </th>
               <th scope="col" className="px-6 py-3">
-                Ngày sinh
-              </th>
-              <th scope="col" className="px-6 py-3">
                 Vị trí làm việc
               </th>
               <th scope="col" className="px-6 py-3"></th>
             </tr>
           </thead>
           <tbody>
-            {mockDataListStar.map((data, index) => (
+            {listStaff.map((data, index) => (
               <tr
                 className=""
                 style={{ backgroundColor: colors.primary[400] }}
@@ -140,7 +129,7 @@ function Star() {
                   style={{ color: colors.greenAccent[300] }}
                   scope="row"
                   className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {data.id}
+                  {data.stt}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
@@ -150,17 +139,12 @@ function Star() {
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.phone}
+                  {formatPhoneNumber(data.phoneNumber)}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
                   {data.email}
-                </td>
-                <td
-                  style={{ color: colors.greenAccent[300] }}
-                  className="px-6 py-4">
-                  {data.dateOfBirth}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
