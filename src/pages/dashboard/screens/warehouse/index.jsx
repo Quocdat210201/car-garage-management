@@ -7,31 +7,53 @@ import InfoIcon from "@mui/icons-material/Info";
 import AddIcon from "@mui/icons-material/Add";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import Header from "../../components/Header";
-
-export const mockDataWarehouse = [
-  {
-    id: 1,
-    name: "Động cơ",
-    quantity: 20,
-    price: 100.0,
-    content: "Kiem tra dong co oto va bao duong gam xe",
-    status: "Còn hàng",
-    action: "",
-  },
-  {
-    id: 2,
-    name: "Máy lọc khí",
-    quantity: 0,
-    price: 499.0,
-    content: "Kiem tra dong co oto va bao duong gam xe",
-    status: "Hết hàng",
-    action: "",
-  },
-];
+import {
+  getAutomotivePartInWarehouse,
+  getAutomotivePart,
+} from "../../../../service/UserService";
+import { useEffect, useState } from "react";
+import formatCurrency from "../../components/formatMoney";
 
 function WareHouse() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [listPartWarehouse, setListPartWarehouse] = useState([]);
+  const [listPart, setListPart] = useState([]);
+
+  const addNumbering = (data) => {
+    return data.map((item, index) => ({ ...item, stt: index + 1 }));
+  };
+
+  const getPatrWarehouse = async () => {
+    try {
+      const { data } = await getAutomotivePartInWarehouse();
+      const newData = addNumbering(data.data);
+      setListPartWarehouse(newData);
+    } catch (error) {
+      console.error();
+    }
+  };
+
+  // const getListPart = async () => {
+  //   try {
+  //     const { data } = await getAutomotivePartInWarehouse();
+  //     const newData = addNumbering(data.data);
+  //     setListPart(newData);
+  //   } catch (error) {
+  //     console.error();
+  //   }
+  // };
+
+  // const getAutomotivePartName = (AutomotiveId) => {
+  //   const foundCarType = listPart.find((item) => item.id === AutomotiveId);
+  //   return foundCarType ? foundCarType.name : "";
+  // };
+
+  useEffect(() => {
+    getPatrWarehouse();
+  }, []);
+
+  console.log({ listPartWarehouse });
 
   return (
     <div className="m-5">
@@ -106,7 +128,7 @@ function WareHouse() {
             </tr>
           </thead>
           <tbody>
-            {mockDataWarehouse.map((data, index) => (
+            {listPartWarehouse.map((data, index) => (
               <tr
                 className=""
                 style={{ backgroundColor: colors.primary[400] }}
@@ -129,12 +151,12 @@ function WareHouse() {
                   style={{ color: colors.greenAccent[300] }}
                   scope="row"
                   className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  {data.id}
+                  {data.stt}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.name}
+                  {data.automotivePart.name}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
@@ -144,7 +166,7 @@ function WareHouse() {
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.price}
+                  {formatCurrency(data.receivePrice)}
                 </td>
                 <td
                   style={{ color: colors.greenAccent[300] }}
@@ -154,7 +176,27 @@ function WareHouse() {
                 <td
                   style={{ color: colors.greenAccent[300] }}
                   className="px-6 py-4">
-                  {data.status}
+                  {data.quantity && data.quantity > 0 ? (
+                    <span
+                      style={{
+                        color: colors.redAccent[100],
+                        background: colors.greenAccent[600],
+                        padding: "6px 10px",
+                        borderRadius: "4px",
+                      }}>
+                      Còn hàng
+                    </span>
+                  ) : (
+                    <span
+                      style={{
+                        color: colors.redAccent[100],
+                        background: colors.redAccent[500],
+                        padding: "6px 10px",
+                        borderRadius: "4px",
+                      }}>
+                      Hết hàng
+                    </span>
+                  )}
                 </td>
                 <td className="px-6 py-4">
                   <button>

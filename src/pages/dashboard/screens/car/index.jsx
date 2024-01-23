@@ -25,6 +25,8 @@ import { toast } from "react-toastify";
 
 import { useEffect, useState } from "react";
 
+import ReactPaginate from "react-paginate";
+
 function Star() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -39,6 +41,10 @@ function Star() {
   const [carType, setCarType] = useState([]);
   const [modalDelete, setModalDelete] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemOffset, setItemOffset] = useState(0);
+  const [currentItems, setCurrentItems] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
   };
@@ -96,7 +102,7 @@ function Star() {
     getListCar();
   }, []);
 
-  console.log({listCar});
+  console.log({ listCar });
 
   const handleCancel = () => {
     setIsModalVisible({ open: false, id: null });
@@ -144,6 +150,22 @@ function Star() {
   const getCarBrandName = (carBrandId) => {
     const foundCarBrand = carBrand.find((item) => item.id === carBrandId);
     return foundCarBrand ? foundCarBrand.name : "";
+  };
+
+  // Pagination
+  useEffect(() => {
+    const endOffset = itemOffset + itemsPerPage;
+    // console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    setCurrentItems(listCar.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(listCar.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, listCar]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % listCar.length;
+    // console.log(
+    //   `User requested page number ${event.selected}, which is offset ${newOffset}`
+    // );
+    setItemOffset(newOffset);
   };
 
   return (
@@ -216,7 +238,7 @@ function Star() {
             </tr>
           </thead>
           <tbody>
-            {listCar.map((data, index) => (
+            {currentItems.map((data, index) => (
               <tr
                 className=""
                 style={{ backgroundColor: colors.primary[400] }}
@@ -284,6 +306,26 @@ function Star() {
             ))}
           </tbody>
         </table>
+        <ReactPaginate
+          nextLabel="next >"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={3}
+          marginPagesDisplayed={2}
+          pageCount={pageCount}
+          previousLabel="< previous"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakLabel="..."
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+          renderOnZeroPageCount={null}
+        />
       </div>
 
       {

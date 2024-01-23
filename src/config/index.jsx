@@ -9,6 +9,9 @@ const routes = {
   sendAppointment: "/send-success",
   contact: "/contact",
   profile: "/profile",
+  notifyDetails: "/profile/:notifyId",
+  payment: "/payment",
+
 };
 
 export default routes;

@@ -8,6 +8,7 @@ import {
   getcarTypeApi,
   getAccount,
   serviceApi,
+  getListAutomotivePart,
 } from "../../../../service/UserService";
 import { toast } from "react-toastify";
 import AddIcon from "@mui/icons-material/Add";
@@ -28,12 +29,22 @@ function BillDetail(props) {
   const [carType, setCarType] = useState([]);
   const [listStaff, setListStaff] = useState([]);
   const [services, setServices] = useState([]);
+  const [automoviPart, setAutomoviPart] = useState([]);
   console.log({ data });
 
   const getCarType = async () => {
     try {
       const { data } = await getcarTypeApi();
       setCarType(data.data);
+    } catch {
+      console.error();
+    }
+  };
+
+  const getAutomotivePart = async () => {
+    try {
+      const { data } = await getListAutomotivePart();
+      setAutomoviPart(data.data);
     } catch {
       console.error();
     }
@@ -61,6 +72,7 @@ function BillDetail(props) {
     getCarType();
     getListStaff();
     getService();
+    getAutomotivePart();
   }, []);
 
   const getCarTypeName = (carTypeId) => {
@@ -83,14 +95,16 @@ function BillDetail(props) {
     return foundserviceName ? foundserviceName.price : "";
   };
 
-  // const getAutomotivePart = (automoviPartId) => {
-  //   const foundserviceName = services.find((item) => item.id === automoviPartId);
-  //   return foundserviceName ? foundserviceName.price : "";
-  // };
+  const getAutomotivePartName = (automoviPartId) => {
+    const foundserviceName = automoviPart.find(
+      (item) => item.id === automoviPartId
+    );
+    return foundserviceName ? foundserviceName.name : "";
+  };
 
   return (
     <Modal
-      title="Chi tiết hóa đơn"
+      title="Hóa đơn"
       open={open}
       onCancel={handleCancel}
       width={1100}
@@ -177,31 +191,6 @@ function BillDetail(props) {
             </select>
           </Form.Item>
           <Form.Item
-            style={{ width: 210, marginLeft: 40, paddingTop: 5 }}
-            name="id"
-            rules={[
-              {
-                required: true,
-                message: "Vui lòng nhập tên lớp!",
-              },
-            ]}>
-            <span>Dịch vụ thực hiện</span>
-            <select
-              className="input-appoint text-14 padding-10 opacity-8"
-              // defaultValue={data.car.carTypeId}
-              name="carBrandId"
-              id="carBrand"
-              disabled={!isEditModal}>
-              {data &&
-                data.details &&
-                data.details.map((item, index) => (
-                  <option value="default" key={index}>
-                    {getServiceName(item.repairServiceId)}
-                  </option>
-                ))}
-            </select>
-          </Form.Item>
-          <Form.Item
             style={{ width: 210, marginLeft: 40 }}
             name="id"
             rules={[
@@ -215,6 +204,23 @@ function BillDetail(props) {
               placeholder="Biển số xe"
               value={getStaffName(data.staffId)}
               className="p-2 mr-6"
+              disabled={!isEditModal}
+            />
+          </Form.Item>
+          <Form.Item
+            style={{ width: 210, marginLeft: 40, paddingTop: 5 }}
+            name="id"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập tên lớp!",
+              },
+            ]}>
+            <span>Ngày tạo hóa đơn</span>
+            <Input
+              type="date"
+              className=" p-2"
+              value={data.returnCarDate.substring(0, 10)}
               disabled={!isEditModal}
             />
           </Form.Item>
@@ -317,7 +323,7 @@ function BillDetail(props) {
           </Form.Item>
         </div>
 
-        <div className="flex justify-between">
+        <div className="w-full">
           <Form.Item
             //   style={{ width: 450 }}
             name="id"
@@ -332,7 +338,7 @@ function BillDetail(props) {
               {/* <span style={{ color: "red" }}>*</span> */}
             </span>
             <Input.TextArea
-              style={{ width: 620 }}
+              // style={{ width: 620 }}
               placeholder="Chi tiết công việc"
               // value=""
               className="p-2 mr-6"
@@ -340,49 +346,42 @@ function BillDetail(props) {
               //   onChange={handleChangeInput}
             />
           </Form.Item>
-          <Form.Item name="">
-            <Form.Item
-              style={{ marginTop: 60, marginLeft: 40 }}
-              name="id"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập tên lớp!",
-                },
-              ]}>
-              <div className="flex ">
-                <span
-                  className="text-[16px] font-bold"
-                  style={{ color: colors.greenAccent[300] }}>
-                  Chi phí dịch vụ:
-                </span>
-
-                {data &&
-                  data.details &&
-                  data.details.map((item, index) => (
-                    <span
-                      className="text-[16px] font-bold ml-3"
-                      style={{ color: colors.greenAccent[300] }}
-                      key={index}>
-                      {formatCurrency(getServicePrice(item.repairServiceId))}{" "}
-                    </span>
-                  ))}
-              </div>
-            </Form.Item>
-          </Form.Item>
         </div>
-        <div className="flex justify-between items-center text-black border-b-[1px] pb-2 mb-4">
+        <div className="flex justify-between items-center text-black border-b-[1px] pb-2 mb-4 mt-10">
           <span className="text-[16px] ml-[-10px]">
-            <strong>Phụ tùng thay thế</strong>
+            <strong>Chi tiết hóa đơn</strong>
           </span>
-          <div className="bg-[#ccc] rounded-full p-2 w-10 h-10 flex justify-center items-center">
+          {/* <div className="bg-[#ccc] rounded-full p-2 w-10 h-10 flex justify-center items-center">
             <AddIcon />
-          </div>
+          </div> */}
         </div>
         {data &&
           data.details &&
           data.details.map((item, index) => (
             <div className="flex justify-between" key={index}>
+              <Form.Item
+                style={{ width: 210 }}
+                name="id"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập tên lớp!",
+                  },
+                ]}>
+                <span>Dịch vụ thực hiện</span>
+                <select
+                  className="input-appoint text-14 padding-10 opacity-8"
+                  // defaultValue={data.car.carTypeId}
+                  name="carBrandId"
+                  id="carBrand"
+                  disabled={!isEditModal}>
+                  {
+                    <option value="default" key={index}>
+                      {getServiceName(item.repairServiceId)}
+                    </option>
+                  }
+                </select>
+              </Form.Item>
               <Form.Item
                 style={{ width: 250 }}
                 name="id"
@@ -398,7 +397,11 @@ function BillDetail(props) {
                   name="carBrandId"
                   id="carBrand"
                   disabled={!isEditModal}>
-                  {/* <option value="">{data.car.carTypeId}</option> */}
+                  <option value="">
+                    {getAutomotivePartName(
+                      item.automotivePartInWarehouse.automotivePartId
+                    )}
+                  </option>
                 </select>
               </Form.Item>
               <Form.Item
@@ -412,7 +415,7 @@ function BillDetail(props) {
                 <span>Số lượng</span>
                 <Input
                   type="number"
-                  style={{ width: 150 }}
+                  style={{ width: 100 }}
                   placeholder="Số lượng"
                   value={item.quantity}
                   className="p-2"
@@ -430,9 +433,11 @@ function BillDetail(props) {
                 <span>Đơn giá</span>
                 <Input
                   type="text"
-                  style={{ width: 220 }}
+                  style={{ width: 160 }}
                   placeholder="Đơn giá"
-                  // value=""
+                  value={formatCurrency(
+                    item.automotivePartInWarehouse.receivePrice
+                  )}
                   className="p-2"
                   name="adminWorkDetail"
                 />
@@ -450,10 +455,12 @@ function BillDetail(props) {
                   {/* <span style={{ color: "red" }}>*</span> */}
                 </span>
                 <Input
-                  type="number"
-                  style={{ width: 220 }}
+                  type="text"
+                  style={{ width: 160 }}
                   placeholder="Thành tiền"
-                  // value=""
+                  value={formatCurrency(
+                    item.quantity * item.automotivePartInWarehouse.receivePrice
+                  )}
                   className="p-2"
                   name="adminWorkDetail"
                   //   onChange={handleChangeInput}

@@ -3,8 +3,6 @@ import routerConfig from "../../config";
 import { FaCheck } from "react-icons/fa";
 import SendAppoint from "./sendAppoint";
 import { useEffect, useState } from "react";
-import { Radio } from "antd";
-import { Form, Input, Select, Button } from "antd/lib";
 import Modal from "antd/lib/modal/Modal";
 const { Option } = Select;
 import { toast } from "react-toastify";
@@ -21,6 +19,7 @@ import {
 } from "../../service/UserService";
 import DatePicker from "react-datepicker";
 import { set } from "date-fns";
+import { Form, Input, Select, Button, Radio } from "antd";
 
 function Appointment() {
   const [districts, setDistricts] = useState([]);
@@ -39,6 +38,50 @@ function Appointment() {
   const [carInfo, setCarInfo] = useState([]);
   const navigate = useNavigate();
 
+  const { Option } = Select;
+  const FormItem = Form.Item;
+  const { TextArea } = Input;
+  const [form] = Form.useForm();
+
+  const validationRules = {
+    registrationNumber: [
+      {
+        required: true,
+        message: "Vui lòng nhập biển số xe!",
+      },
+    ],
+    phoneNumber: [
+      {
+        required: true,
+        message: "Vui lòng nhập số điện thoại!",
+      },
+    ],
+    name: [
+      {
+        required: true,
+        message: "Vui lòng nhập họ tên đầy đủ!",
+      },
+    ],
+    email: [
+      {
+        required: true,
+        message: "Vui lòng nhập email!",
+      },
+    ],
+    address: [
+      {
+        required: true,
+        message: "Vui lòng nhập số nhà!",
+      },
+    ],
+    service: [
+      {
+        required: true,
+        message: "Vui lòng chọn ít nhất 1 dịch vụ!",
+      },
+    ],
+  };
+
   const [dataAppointment, setDataAppointment] = useState({
     phoneNumber: "",
     email: "",
@@ -46,7 +89,7 @@ function Appointment() {
     address: "",
     appointmentScheduleDate: new Date(),
     note: "",
-    registrationNumber:"",
+    registrationNumber: "",
     carTypeId: "",
     carBrandId: "",
     manufacturingYear: "",
@@ -55,13 +98,10 @@ function Appointment() {
   });
 
   const handleChangeInput = (e) => {
-    console.log({ e });
-    console.log({ dataAppointment });
     setDataAppointment((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
-    console.log({ dataAppointment });
   };
 
   const getService = async () => {
@@ -152,8 +192,13 @@ function Appointment() {
   }, [district]);
 
   const handleSubmitAppointment = async () => {
-    const res = await apiAppointmentSchedule(dataAppointment);
-    navigate("/send-success");
+    try {
+      await form.validateFields();
+      const res = await apiAppointmentSchedule(dataAppointment);
+      navigate("/send-success");
+    } catch (errorInfo) {
+      console.log("Validation Failed:", errorInfo);
+    }
   };
 
   const showDialog = () => {};
@@ -174,6 +219,34 @@ function Appointment() {
   const getCarBrandName = (carBrandId) => {
     const foundCarBrand = carBrand.find((item) => item.id === carBrandId);
     return foundCarBrand ? foundCarBrand.name : "";
+  };
+
+  const carBrandOptions = carBrand.map((item) => (
+    <Select.Option key={item.id} value={item.id}>
+      {item.name}
+    </Select.Option>
+  ));
+
+  const carTypeOptions = carType.map((item) => (
+    <Select.Option key={item.id} value={item.id}>
+      {item.name}
+    </Select.Option>
+  ));
+
+  const validatePhoneNumber = (_, value) => {
+    const phoneRegex = /^[0-9]{10,11}$/;
+    if (!value || phoneRegex.test(value)) {
+      return Promise.resolve();
+    }
+    return Promise.reject("Số điện thoại không hợp lệ");
+  };
+
+  const validateEmail = (_, value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!value || emailRegex.test(value)) {
+      return Promise.resolve();
+    }
+    return Promise.reject("Email không hợp lệ");
   };
 
   return (
@@ -208,7 +281,7 @@ function Appointment() {
             Đặt lịch hẹn với chúng tôi
           </h1>
         </div>
-        <div className="">
+        <Form>
           <div className="">
             <div className="flex items-center pt-8">
               <div className=" flex h-[28px] w-16">
@@ -221,83 +294,59 @@ function Appointment() {
             </div>
             <div className="flex">
               <div className="flex flex-col w-1/3 mt-4 pl-8">
-                <label className="text-[18px] mb-2">Biển số xe</label>
-                <input
-                  type="text"
-                  placeholder="Nhập biển số xe"
-                  className="input-appoint"
+                <label
+                  className="text-[18px] mb-2"
+                  style={{ fontSize: "18px" }}>
+                  Biển số xe <span style={{ color: "red" }}>*</span>
+                </label>
+                <FormItem
                   name="registrationNumber"
-                  onChange={
-                    handleChangeInput
-                    //(e) => {
-                    // setRegistration(e.target.value);
-                    //  }
-                }
-                />
+                  rules={validationRules.registrationNumber}>
+                  <Input
+                    type="text"
+                    placeholder="Nhập biển số xe"
+                    className="input-appoint"
+                    name="registrationNumber"
+                    onChange={handleChangeInput}
+                  />
+                </FormItem>
               </div>
               <div className="flex flex-col w-1/3 mt-4 pl-8">
-                <label className="text-[18px] mb-2">Hãng xe </label>
-                <select
+                <label
+                  className="text-[18px] mb-2"
+                  style={{ fontSize: "18px" }}>
+                  Hãng xe{" "}
+                </label>
+                <Select
                   className="input-appoint"
-                  name="carBrandId"
-                  id="carBrand"
-                  defaultValue="default"
-                  onChange={(event) => {
-                    const index = event.target.selectedIndex;
-                    const optionElement = event.target.childNodes[index];
-                    const optionElementId = optionElement.getAttribute("id");
-                    setCarBrandId(optionElementId);
+                  placeholder="--Chọn hãng xe--"
+                  onChange={(selectedCarBrandId) => {
+                    setCarBrandId(selectedCarBrandId);
                     setDataAppointment({
                       ...dataAppointment,
-                      carBrandId: optionElementId,
+                      carBrandId: selectedCarBrandId,
                     });
                   }}>
-                  <option>
-                    {carInfo && carInfo.carType
-                      ? getCarBrandName(carInfo.carType.carBrandId)
-                      : ""}
-                  </option>
-                  {/* <option value={carInfo.length === 0 ? "default" : ""}>--Chọn hãng xe--</option> */}
-                  {carBrand.map((item) => (
-                    <option key={item.id} id={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                  {/* {
-                      carBrands.map((item, i) => {
-                        <option value="" key={i}>{item.carBrandName}</option>
-                      })
-                    } */}
-                </select>
+                  {carBrandOptions}
+                </Select>
               </div>
               <div className="flex flex-col w-1/3 mt-4 pl-8">
-                <label className="text-[18px] mb-2">Loại xe</label>
-                <select
+                <label
+                  className="text-[18px] mb-2"
+                  style={{ fontSize: "18px" }}>
+                  Loại xe
+                </label>
+                <Select
                   className="input-appoint"
-                  name="carTypeId"
-                  id="carType"
-                  defaultValue="default"
-                  onChange={(event) => {
-                    const index = event.target.selectedIndex;
-                    const optionElement = event.target.childNodes[index];
-                    const optionElementId = optionElement.getAttribute("id");
+                  placeholder="--Chọn loại xe--"
+                  onChange={(selectedCarTypeId) => {
                     setDataAppointment({
                       ...dataAppointment,
-                      carTypeId: optionElementId,
+                      carTypeId: selectedCarTypeId,
                     });
                   }}>
-                  <option value="default">
-                    {carInfo && carInfo.carType ? carInfo.carType.name : ""}
-                  </option>
-                  {/* <option value={carInfo.length === 0 ? "default" : ""}>--Chọn loại xe--</option> */}
-                  {carType.map((item) => (
-                    <option key={item.id} id={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
-                  {/* <option value="dog">Xe mới</option>
-                  <option value="cat">Xe cũ</option> */}
-                </select>
+                  {carTypeOptions}
+                </Select>
               </div>
             </div>
           </div>
@@ -316,51 +365,91 @@ function Appointment() {
             <div>
               <div className="flex">
                 <div className="flex flex-col w-1/3 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Họ và tên</label>
-                  <input
-                    type="text"
-                    value={carInfo && carInfo.owner ? carInfo.owner.name : null}
-                    placeholder="Nhập họ và tên"
-                    className="input-appoint"
-                    id="name"
-                    name="userName"
-                    onChange={handleChangeInput}
-                  />
+                  <label
+                    className="text-[18px] mb-2"
+                    style={{ fontSize: "18px" }}>
+                    Họ và tên<span style={{ color: "red" }}>*</span>
+                  </label>
+                  <FormItem name="name" rules={validationRules.name}>
+                    <Input
+                      ype="text"
+                      value={
+                        carInfo && carInfo.owner ? carInfo.owner.name : null
+                      }
+                      placeholder="Nhập họ và tên"
+                      className="input-appoint"
+                      id="name"
+                      name="userName"
+                      onChange={handleChangeInput}
+                    />
+                  </FormItem>
                 </div>
                 <div className="flex flex-col w-1/3 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Số điện thoại</label>
-                  <input
-                    type="text"
-                    value={
-                      carInfo && carInfo.owner
-                        ? carInfo.owner.phoneNumber
-                        : null
-                    }
-                    placeholder="Nhập số điện thoại"
-                    className="input-appoint"
-                    id="phoneNumber"
+                  <label
+                    className="text-[18px] mb-2"
+                    style={{ fontSize: "18px" }}>
+                    Số điện thoại<span style={{ color: "red" }}>*</span>
+                  </label>
+                  <Form.Item
                     name="phoneNumber"
-                    onChange={handleChangeInput}
-                  />
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập số điện thoại",
+                      },
+                      { validator: validatePhoneNumber },
+                    ]}>
+                    <Input
+                      type="text"
+                      value={
+                        carInfo && carInfo.owner
+                          ? carInfo.owner.phoneNumber
+                          : null
+                      }
+                      placeholder="Nhập số điện thoại"
+                      className="input-appoint"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      onChange={handleChangeInput}
+                    />
+                  </Form.Item>
                 </div>
                 <div className="flex flex-col w-1/3 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Email</label>
-                  <input
-                    type="text"
-                    value={
-                      carInfo && carInfo.owner ? carInfo.owner.email : null
-                    }
-                    placeholder="Nhập email"
-                    className="input-appoint"
-                    id="email"
+                  <label
+                    className="text-[18px] mb-2"
+                    style={{ fontSize: "18px" }}>
+                    Email <span style={{ color: "red" }}>*</span>
+                  </label>
+                  <Form.Item
                     name="email"
-                    onChange={handleChangeInput}
-                  />
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập email",
+                      },
+                      { validator: validateEmail },
+                    ]}>
+                    <Input
+                      type="text"
+                      value={
+                        carInfo && carInfo.owner ? carInfo.owner.email : null
+                      }
+                      placeholder="Nhập email"
+                      className="input-appoint"
+                      id="email"
+                      name="email"
+                      onChange={handleChangeInput}
+                    />
+                  </Form.Item>
                 </div>
               </div>
               <div className="flex">
                 <div className="flex flex-col w-1/3 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Quận/Huyện</label>
+                  <label
+                    className="text-[18px] mb-2"
+                    style={{ fontSize: "18px" }}>
+                    Quận/Huyện
+                  </label>
                   <select
                     className="input-appoint"
                     defaultValue="default"
@@ -376,7 +465,11 @@ function Appointment() {
                   </select>
                 </div>
                 <div className="flex flex-col w-1/3 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Phường/xã</label>
+                  <label
+                    className="text-[18px] mb-2"
+                    style={{ fontSize: "18px" }}>
+                    Phường/xã
+                  </label>
                   <select
                     className="input-appoint"
                     defaultValue="default"
@@ -384,7 +477,6 @@ function Appointment() {
                       const index = event.target.selectedIndex;
                       const optionElement = event.target.childNodes[index];
                       const optionElementId = optionElement.getAttribute("id");
-                      console.log(optionElementId);
                       setDataAppointment({
                         ...dataAppointment,
                         wardId: optionElementId,
@@ -401,7 +493,11 @@ function Appointment() {
                   </select>
                 </div>
                 <div className="flex flex-col w-1/3 mt-4 pl-8">
-                  <label className="text-[18px] mb-2">Đường/ Số nhà</label>
+                  <label
+                    className="text-[18px] mb-2"
+                    style={{ fontSize: "18px" }}>
+                    Đường/ Số nhà
+                  </label>
                   <input
                     type="text"
                     placeholder="Nhập địa chỉ cụ thể"
@@ -428,7 +524,11 @@ function Appointment() {
               <div className="flex flex-col w-full">
                 <div className="flex">
                   <div className="flex flex-col w-1/2 mt-4 pl-8">
-                    <label className="text-[18px] mb-2">Thời gian hẹn</label>
+                    <label
+                      className="text-[18px] mb-2"
+                      style={{ fontSize: "18px" }}>
+                      Thời gian hẹn
+                    </label>
                     <DatePicker
                       selected={dataAppointment.appointmentScheduleDate}
                       onChange={(date) => {
@@ -436,7 +536,6 @@ function Appointment() {
                           ...dataAppointment,
                           appointmentScheduleDate: date,
                         });
-                        console.log(date);
                       }}
                       showTimeSelect
                       timeFormat="HH:mm"
@@ -447,34 +546,42 @@ function Appointment() {
                     />
                   </div>
                   <div className="flex flex-col w-1/2 mt-4 pl-8">
-                    <label className="text-[18px] mb-2">Dịch vụ</label>
-                    <select
-                      className="input-appoint"
-                      defaultValue="default"
+                    <label
+                      className="text-[18px] mb-2"
+                      style={{ fontSize: "18px" }}>
+                      Dịch vụ <span style={{ color: "red" }}>*</span>
+                    </label>
+                    <FormItem
                       name="repairServiceIds"
-                      onChange={(event) => {
-                        const index = event.target.selectedIndex;
-                        const optionElement = event.target.childNodes[index];
-                        const optionElementId =
-                          optionElement.getAttribute("id");
-                        setDataAppointment({
-                          ...dataAppointment,
-                          repairServiceIds: [optionElementId],
-                        });
-                      }}>
-                      <option value="default">--Chọn dịch vụ--</option>
-                      {services?.map((item) => {
-                        return (
-                          <option key={item.id} value={item.name} id={item.id}>
+                      rules={validationRules.service}>
+                      <Select
+                        placeholder="--Chọn dịch vụ--"
+                        mode="multiple"
+                        maxTagCount={1}
+                        maxTagPlaceholder={(values) =>
+                          `+${values.length - 0} `
+                        }
+                        onChange={(selectedServices) => {
+                          setDataAppointment({
+                            ...dataAppointment,
+                            repairServiceIds: selectedServices,
+                          });
+                        }}>
+                        {services?.map((item) => (
+                          <Option key={item.id} value={item.id}>
                             {item.name}
-                          </option>
-                        );
-                      })}
-                    </select>
+                          </Option>
+                        ))}
+                      </Select>
+                    </FormItem>
                   </div>
                 </div>
                 <div className="mt-4 pl-8">
-                  <label className="text-[18px] mb-2 ">Gửi xe</label>
+                  <label
+                    className="text-[18px] mb-2 "
+                    style={{ fontSize: "18px" }}>
+                    Gửi xe
+                  </label>
                   <Radio.Group
                     onChange={handleChangeInput}
                     name="receiveCarAt"
@@ -486,7 +593,9 @@ function Appointment() {
                 </div>
               </div>
               <div className="flex flex-col w-1/2 mt-4 pl-8">
-                <label className="text-[18px] mb-2">
+                <label
+                  className="text-[18px] mb-2"
+                  style={{ fontSize: "18px" }}>
                   Yêu cầu của khách hàng
                 </label>
                 <textarea
@@ -506,9 +615,8 @@ function Appointment() {
             onClick={handleSubmitAppointment}>
             Gửi lịch hẹn
           </button>
-        </div>
+        </Form>
       </div>
-      {/* <SendAppoint /> */}
     </div>
   );
 }

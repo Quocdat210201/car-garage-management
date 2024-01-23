@@ -1,7 +1,7 @@
 import Login from "./pages/Login/login";
 import Register from "./pages/Register/register";
 import Appointment from "./pages/Appointment/appointment";
-import SendAppoint  from "./pages/Appointment/sendAppoint";
+import SendAppoint from "./pages/Appointment/sendAppoint";
 import Service from "./pages/Services/services";
 import ServiceDetails from "./pages/Services/servicesDetails";
 import Contact from "./pages/Contact/contact";
@@ -27,10 +27,12 @@ import CalendarWork from "./pages/dashboard/screens/calendarwork";
 import AppointmentAdmin from "./pages/dashboard/screens/appointments";
 import Customer from "./pages/dashboard/screens/customers";
 import Bill from "./pages/dashboard/screens/bill";
-import CouponBill from "./pages/dashboard/screens/couponBill"
+import CouponBill from "./pages/dashboard/screens/couponBill";
 import Pie from "./pages/dashboard/screens/pie";
-import WareHouse from "./pages/dashboard/screens/warehouse"
-import ScheduleStaff from "./pages/dashboard/screens/ScheduleStar"
+import WareHouse from "./pages/dashboard/screens/warehouse";
+import ScheduleStaff from "./pages/dashboard/screens/ScheduleStar";
+import NotifyDetail from "./pages/notify/notifyDetail";
+import Payment from "./pages/payment/payment"
 
 function App() {
   const [user, setUser] = useState("user");
@@ -69,9 +71,15 @@ function App() {
                         element={<CalendarWork />}
                       />
                       <Route path="/admin/accounts" element={<Accounts />} />
-                      <Route path="/staff/schedule" element={<ScheduleStaff />} />
+                      <Route
+                        path="/staff/schedule"
+                        element={<ScheduleStaff />}
+                      />
                       <Route path="/admin/bill" element={<Bill />} />
-                      <Route path="/admin/coupon-bill" element={<CouponBill />} />
+                      <Route
+                        path="/admin/coupon-bill"
+                        element={<CouponBill />}
+                      />
                       <Route path="/admin/pie" element={<Pie />} />
                       <Route path="/admin/warehouse" element={<WareHouse />} />
                     </Routes>
@@ -115,7 +123,13 @@ function App() {
               />
               <Route exact path={routerConfig.contact} element={<Contact />} />
               <Route exact path={routerConfig.profile} element={<Profile />} />
+              <Route exact path={routerConfig.payment} element={<Payment />} />
+              <Route
+                path={routerConfig.notifyDetails}
+                element={<NotifyDetail />}
+              />
             </Routes>
+            
             <Footer />
           </BrowserRouter>
         )}

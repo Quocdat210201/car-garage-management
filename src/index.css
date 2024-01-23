@@ -85,7 +85,7 @@ thead>th {
     width: 90%;
 }
 
-.font-50{
+.font-50 {
     font-size: 50px !important;
 }
 
@@ -501,7 +501,7 @@ thead>th {
 }
 
 .padding-x-10 {
-    padding:24px  10px !important;
+    padding: 24px 10px !important;
 }
 
 .border-none {
@@ -565,4 +565,46 @@ thead>th {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+
+/* Định dạng chung của Select */
+.ant-select {
+    width: 100%;
+}
+
+.ant-select-selector {
+    border: 1px solid #d9d9d9;
+    border-radius: 4px;
+    height: 36px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    outline: none;
+    box-shadow: none;
+}
+
+.ant-select-selection-item {
+    border-radius: 4px;
+    margin-right: 4px;
+}
+
+.ant-select-selection-item-remove {
+    margin-left: 4px;
+}
+
+.ant-select-dropdown {
+    border-radius: 4px;
+}
+
+.ant-select-item {
+    padding: 8px 12px;
+}
+
+.ant-select-item-option-selected {
+    background-color: #e6f7ff;
+}
+
+.ant-select-item-option:hover {
+    background-color: #f0f0f0;
 }

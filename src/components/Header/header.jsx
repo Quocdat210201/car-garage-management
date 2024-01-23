@@ -6,9 +6,9 @@ import { GoSearch } from "react-icons/go";
 import { useState, useEffect, useRef } from "react";
 import Login from "../../Layout/Login/login";
 import * as React from "react";
-import Notify from "../notify/notify";
+import Notify from "../../pages/notify/notify";
 
-import { loginApi, userApi } from "../../service/UserService";
+import { loginApi, userApi, getNotification } from "../../service/UserService";
 import { toast } from "react-toastify";
 
 import { selectDep, setDependence } from "../../store/reducers/depReducer";
@@ -25,6 +25,7 @@ function Header() {
   const [password, setPassword] = useState("");
   const [isLogged, setIsLogged] = useState(false);
   const navigate = useNavigate();
+  const [listNotify, setListNotify] = useState([]);
 
   const dep = useSelector(selectDep);
   const dispatch = useDispatch();
@@ -72,6 +73,19 @@ function Header() {
     }
   }, [dep]);
 
+  const getListNotifications = async () => {
+    try {
+      const { data } = await getNotification();
+      setListNotify(data.data);
+    } catch {
+      console.error();
+    }
+  };
+
+  React.useEffect(() => {
+    getListNotifications();
+  }, []);
+
   // useEffect(() => {
   //   let handler = (e) => {
   //     if (!menuRef.current.contains(e.target)) {
@@ -108,9 +122,9 @@ function Header() {
             onClick={() => setNoify((prev) => !prev)}>
             <IoMdNotifications className="hover:text-[#767676] cursor-pointer" />
             <span className="absolute w-4 h-4 bg-red-600 text-[10px] text-white font-medium top-0 right-0.5 rounded-full flex justify-center items-center">
-              1
+              {listNotify.length}
             </span>
-            {notify ? <Notify /> : <div></div>}
+            {notify ? <Notify data={listNotify} /> : <div></div>}
           </div>
           <div className="relative">
             {isLogged ? (

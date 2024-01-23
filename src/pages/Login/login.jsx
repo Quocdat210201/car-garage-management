@@ -53,7 +53,7 @@ function Login() {
       dispatch(setDependence({}));
       navigate("/")
 
-      if (roles === "Gara Administrator") {
+      if (roles === "Gara Administrator" || roles === "Staff") {
         navigate("/admin");
         window.location.reload();
       }

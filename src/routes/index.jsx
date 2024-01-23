@@ -12,6 +12,8 @@ import Contact from '../pages/Contact/contact'
 import Service from '../pages/Services/services'
 import ServiceDetails from '../pages/Services/servicesDetails'
 import Profile from '../pages/profile/profile';
+import NotifyDetail from '../pages/notify/notifyDetail';
+import Payment from "../pages/payment/payment"
 
 // Public Routes
 const publciRoutes = [
@@ -25,6 +27,8 @@ const publciRoutes = [
     { path: routesConfig.services, component: Service },
     { path: routesConfig.servicesDetails, component: ServiceDetails },
     { path: routesConfig.profile, component: Profile },
+    { path: routesConfig.notifyDetails, component: NotifyDetail },
+    { path: routesConfig.payment, component: Payment },
 ];
 
 // Pivate Routes

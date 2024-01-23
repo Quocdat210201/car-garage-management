@@ -14,6 +14,7 @@ import {
 } from "../../../../service/UserService";
 import { toast } from "react-toastify";
 import AddIcon from "@mui/icons-material/Add";
+import { list } from "postcss";
 
 function ModalFinishSchedule(props) {
   const {
@@ -25,33 +26,31 @@ function ModalFinishSchedule(props) {
     getListSchedule,
     staffId,
   } = props;
-  console.log({ dataWork });
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [form] = Form.useForm();
   const [carType, setCarType] = useState([]);
   const [assignId, setAssignId] = useState(dataWork.id);
-  const [listPart, setListPart] = useState([]);
+  // const [listPart, setListPart] = useState({});
   const [listPartSupplier, setListPartSupplier] = useState([]);
   const [listPartCategory, setListPartCategory] = useState([]);
-  const [partCategoryId, setPartCategoryId] = useState("");
-  const [partSupplierId, setPartSupplierId] = useState("");
-  const [repairServiceId, setRepairServiceId] = useState();
   const [automotivePartId, setAutomotivePartId] = useState(null);
   const [errors, setErrors] = useState([]);
+  const [repairServiceUpdateRequests, setRepairServiceUpdateRequests] = useState([{
+    partSupplierId: "",
+    listPart: [],
+    automotivePartId: "",
+    quantity: 0,
+    repairServiceId: "",
+  }]);
+
   const [finishAssign, setFinishAssign] = useState({
     id: assignId,
-    repairServiceUpdateRequests: [
-      {
-        automotivePartId: "",
-        quantity: 0,
-        repairServiceId: repairServiceId,
-      },
-    ],
+    staffWorkDetail: "",
+    repairServiceUpdateRequests: [],
     status: 1,
   });
 
-  console.log({ repairServiceId });
   const getCarType = async () => {
     try {
       const { data } = await getcarTypeApi();
@@ -61,7 +60,6 @@ function ModalFinishSchedule(props) {
     }
   };
 
-  console.log({ dataWork });
   const getlistPartSupplier = async () => {
     try {
       const { data } = await getAutomotivePartSupplier();
@@ -79,28 +77,34 @@ function ModalFinishSchedule(props) {
     }
   };
 
-  useEffect(() => {
-    const getlistPart = async () => {
-      try {
-        const { data } = await getAutomotivePart(
-          partCategoryId,
-          partSupplierId
-        );
-        setListPart(data.data);
-      } catch (error) {
-        console.error();
-      }
-    };
-    getlistPart();
-  }, [partCategoryId, partSupplierId]);
+  const getlistPart = async (index, partCategoryId) => {
+    try {
+      var partSupplierId = repairServiceUpdateRequests[index].partSupplierId;
+      const { data } = await getAutomotivePart(
+        partCategoryId,
+        partSupplierId
+      );
+      setRepairServiceUpdateRequests((prevData) => (
+        prevData.map(
+          (item, i) =>
+            i === index
+              ? {
+                  ...item,
+                  listPart: data.data,
+                }
+              : item
+        )
+      ))
+    } catch (error) {
+      console.error();
+    }
+  };
 
   useEffect(() => {
     getCarType();
     getlistPartSupplier();
     getlistPartCategory();
   }, []);
-
-  const handleAddNew = () => {};
 
   const handleSubmit = async () => {
     console.log({ finishAssign });
@@ -114,7 +118,7 @@ function ModalFinishSchedule(props) {
     //     pauseOnHover: false,
     //     draggable: true,
     //   });
-    //   handleCancel();
+    //   // handleCancel();
     //   getListSchedule(staffId);
 
     //   return res;
@@ -147,48 +151,47 @@ function ModalFinishSchedule(props) {
     return foundCarType ? foundCarType.name : "";
   };
 
+  const handleAddNew = () => {
+    // Tạo một đối tượng mới với các giá trị khởi tạo
+    const newRequest = {
+      automotivePartId: null,
+      quantity: 0,
+      repairServiceId: null,
+      partSupplierId: null, // Thêm biến riêng cho nhà cung cấp
+      listPart: [],
+    };
+    
+    setRepairServiceUpdateRequests((prevData) => ([
+      ...prevData,
+      newRequest
+   ]))
+  };
+
   const handleInputChange = (e, index) => {
     const { name, value } = e.target;
 
     // Nếu input là một chi tiết của goodsDeliveryNoteDetails
-    if (index !== undefined) {
+    if (value) {
       const updatedDetails = [...finishAssign.repairServiceUpdateRequests];
       updatedDetails[index][name] = value;
 
-      // Cập nhật giá trị automotivePartId khi có thay đổi
-      if (name === "automotivePartId") {
-        setAutomotivePartId(value);
-      }
-      setFinishAssign({
-        ...finishAssign,
-        repairServiceUpdateRequests: updatedDetails,
-      });
-    } else {
-      // Nếu input là ở mức cao hơn (không phải trong goodsDeliveryNoteDetails)
-      setFinishAssign({
-        ...finishAssign,
-        [name]: value,
-      });
+      setRepairServiceUpdateRequests((prevData) => (
+        prevData.map(
+          (item, i) =>
+            i === index
+              ? {
+                  ...item,
+                  quantity: value
+                }
+              : item
+        )
+      ));
     }
-
-    // Bao loi khi nhap so luong nho hon 0
-    if (name === "quantity" && parseInt(value, 10) < 0) {
-      setErrors([
-        {
-          name: "quantity",
-          message: "Quantity must be greater than or equal to 0",
-        },
-      ]);
-    } else {
-      setErrors([]);
-    }
-
-    form.setFieldsValue({ [name]: value });
-  };
+};
 
   return (
     <Modal
-      title="Chi tiết giao việc"
+      title="Chi tiết công việc"
       open={open}
       onCancel={handleCancel}
       width={1100}
@@ -230,22 +233,24 @@ function ModalFinishSchedule(props) {
             </button>
           </>
         ) : (
-          <><button
-          type="submit"
-          style={{
-            backgroundColor: colors.blueAccent[700],
-            padding: "10px 16px",
-            borderRadius: "4px",
-            marginRight: "10px",
-            marginTop: "0px",
-            display: "inline-flex",
-            justifyContent: "center",
-            fontSize: "14px",
-            alignItems: "center",
-          }}
-          onClick={handleCancel}>
-          <span className="ml-1">Hủy</span>
-        </button></>
+          <>
+            <button
+              type="submit"
+              style={{
+                backgroundColor: colors.blueAccent[700],
+                padding: "10px 16px",
+                borderRadius: "4px",
+                marginRight: "10px",
+                marginTop: "0px",
+                display: "inline-flex",
+                justifyContent: "center",
+                fontSize: "14px",
+                alignItems: "center",
+              }}
+              onClick={handleCancel}>
+              <span className="ml-1">Hủy</span>
+            </button>
+          </>
         )
       }>
       <Form
@@ -399,7 +404,7 @@ function ModalFinishSchedule(props) {
               style={{ width: "100%" }}
               placeholder="Chi tiết công việc"
               className="p-2 mr-6"
-              // value={dataWork.adminWorkDetail}
+              value={dataWork.quantity}
             />
           </Form.Item>
         </div>
@@ -411,7 +416,7 @@ function ModalFinishSchedule(props) {
             <AddIcon />
           </button>
         </div>
-        {finishAssign.repairServiceUpdateRequests.map((detail, index) => (
+        {repairServiceUpdateRequests.map((detail, index) => (
           <div
             className="border-t-[1px] mt-1 pt-6 flex justify-between"
             key={index}>
@@ -431,30 +436,30 @@ function ModalFinishSchedule(props) {
               <select
                 className="input-appoint text-14"
                 defaultValue="default"
-                name="automotivePartId"
+                name="repairServiceId"
                 onChange={(event) => {
-                  const index = event.target.selectedIndex;
-                  const optionElement = event.target.childNodes[index];
-                  const optionElementId = optionElement.getAttribute("id");
-                  console.log({ optionElementId });
-                  setRepairServiceId(optionElementId);
-
-                  // Cập nhật giá trị automotivePartId
-                  setFinishAssign({
-                    ...finishAssign,
-                    repairServiceUpdateRequests: [
-                      {
-                        ...finishAssign.repairServiceUpdateRequests[0],
-                        repairServiceId: optionElementId,
-                      },
-                    ],
-                  });
+                  const index = event.target.selectedIndex - 1;
+                  const repairServiceId =
+                    // event.target.childNodes[index].getAttribute("id");
+                    event.target.value;
+                    setRepairServiceUpdateRequests((prevData) => (
+                      prevData.map(
+                        (item, i) =>
+                          i === index
+                            ? {
+                                ...item,
+                                repairServiceId
+                              }
+                            : item
+                      )
+                    ));
                 }}>
                 <option value="default">--Dịch vụ--</option>
                 {dataWork &&
                   dataWork.appointmentScheduleDetails &&
                   dataWork.appointmentScheduleDetails.map((item) => (
                     <option
+                      value={item.repairServiceId}
                       key={item.repairServiceId}
                       id={item.repairServiceId}>
                       {item.repairService.name}
@@ -468,15 +473,22 @@ function ModalFinishSchedule(props) {
                 className="input-appoint text-14"
                 defaultValue="default"
                 onChange={(event) => {
-                  const index = event.target.selectedIndex;
-                  const optionElement = event.target.childNodes[index];
-                  const optionElementId = optionElement.getAttribute("id");
-                  console.log(optionElementId);
-                  setPartSupplierId(optionElementId);
+                  const partSupplierId = event.target.value;
+                  setRepairServiceUpdateRequests((prevData) => (
+                    prevData.map(
+                      (item, i) =>
+                        i === index
+                          ? {
+                              ...item,
+                              partSupplierId
+                            }
+                          : item
+                    )
+                  ))
                 }}>
                 <option value="default">--Chọn nhà cung cấp</option>
                 {listPartSupplier.map((item) => (
-                  <option key={item.id} id={item.id}>
+                  <option key={item.id} id={item.id} value={item.id}>
                     {item.name}
                   </option>
                 ))}
@@ -488,15 +500,14 @@ function ModalFinishSchedule(props) {
                 className="input-appoint text-14"
                 defaultValue="default"
                 onChange={(event) => {
-                  const index = event.target.selectedIndex;
-                  const optionElement = event.target.childNodes[index];
-                  const optionElementId = optionElement.getAttribute("id");
-                  console.log(optionElementId);
-                  setPartCategoryId(optionElementId);
+                  const partCategoryId =
+                    event.target.value;
+                    getlistPart(index, partCategoryId)
+
                 }}>
                 <option value="default">--Chọn loại phụ tùng</option>
                 {listPartCategory.map((item) => (
-                  <option key={item.id} id={item.id}>
+                  <option key={item.id} id={item.id} value={item.id}>
                     {item.name}
                   </option>
                 ))}
@@ -509,30 +520,32 @@ function ModalFinishSchedule(props) {
                 defaultValue="default"
                 name="automotivePartId"
                 onChange={(event) => {
-                  const index = event.target.selectedIndex;
-                  const optionElement = event.target.childNodes[index];
-                  const optionElementId = optionElement.getAttribute("id");
-                  console.log({ optionElementId });
-                  setAutomotivePartId(optionElementId);
-
-                  // Cập nhật giá trị automotivePartId
-                  setFinishAssign({
-                    ...finishAssign,
-                    repairServiceUpdateRequests: [
-                      {
-                        ...finishAssign.repairServiceUpdateRequests[0],
-                        automotivePartId: optionElementId,
-                      },
-                    ],
-                  });
+                  const index = event.target.selectedIndex - 1;
+                  const automotivePartId =
+                    // event.target.childNodes[index].getAttribute("id");
+                    event.target.value;
+                  console.log({ automotivePartId });
+                  setRepairServiceUpdateRequests((prevData) => (
+                    prevData.map(
+                      (item, i) =>
+                        i === index
+                          ? {
+                              ...item,
+                              automotivePartId
+                            }
+                          : item
+                    )
+                  ));
                 }}>
-                <option value="default">--Chọn tên phụ tùng</option>
-                {listPart &&
-                  listPart.map((item) => (
-                    <option key={item.id} id={item.id}>
-                      {item.name}
-                    </option>
-                  ))}
+                <option value="default">--Chọn tên phụ tùng--</option>
+                {detail.listPart.length > 0 &&
+                  detail.listPart.map(
+                    (item) => (
+                      <option key={item.id} id={item.id} value={item.id}>
+                        {item.name}
+                      </option>
+                    )
+                  )}
               </select>
             </Form.Item>
             <Form.Item style={{ width: 150, marginLeft: "16px" }} name="id">

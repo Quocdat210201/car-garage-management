@@ -1,9 +1,5 @@
-import { Box, Typography, useTheme } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import {  useTheme } from "@mui/material";
 import { tokens } from "../../../../theme";
-import AdminPanelSettingsOutlinedIcon from "@mui/icons-material/AdminPanelSettingsOutlined";
-import LockOpenOutlinedIcon from "@mui/icons-material/LockOpenOutlined";
-import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -13,19 +9,21 @@ import Header from "../../components/Header";
 import { useState, useEffect } from "react";
 import { getAccount } from "../../../../service/UserService";
 import * as TYPES from "../../common/constant";
-import formatPhoneNumber from "../../components/FormatPhoneNumber"
-
+import formatPhoneNumber from "../../components/FormatPhoneNumber";
+import ReactPaginate from "react-paginate";
 
 function Customer() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
   const [listCustomer, setListCustomer] = useState([]);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemOffset, setItemOffset] = useState(0);
+  const [currentItems, setCurrentItems] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
 
   const addNumbering = (data) => {
     return data.map((item, index) => ({ ...item, stt: index + 1 }));
   };
-
 
   const getListCustomer = async () => {
     try {
@@ -40,6 +38,22 @@ function Customer() {
   useEffect(() => {
     getListCustomer();
   }, []);
+
+  // Pagination
+  useEffect(() => {
+    const endOffset = itemOffset + itemsPerPage;
+    // console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    setCurrentItems(listCustomer.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(listCustomer.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, listCustomer]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % listCustomer.length;
+    // console.log(
+    //   `User requested page number ${event.selected}, which is offset ${newOffset}`
+    // );
+    setItemOffset(newOffset);
+  };
 
   return (
     <div className="m-5">
@@ -108,7 +122,7 @@ function Customer() {
             </tr>
           </thead>
           <tbody>
-            {listCustomer.map((data, index) => (
+            {currentItems.map((data, index) => (
               <tr
                 className=""
                 style={{ backgroundColor: colors.primary[400] }}
@@ -163,6 +177,26 @@ function Customer() {
             ))}
           </tbody>
         </table>
+        <ReactPaginate
+          nextLabel="next >"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={3}
+          marginPagesDisplayed={2}
+          pageCount={pageCount}
+          previousLabel="< previous"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakLabel="..."
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+          renderOnZeroPageCount={null}
+        />
       </div>
     </div>
   );

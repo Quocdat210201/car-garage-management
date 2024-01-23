@@ -6,11 +6,7 @@ import { Form, Input } from "antd/lib";
 import { useState, useEffect } from "react";
 import {
   getcarTypeApi,
-  FinishAssign,
-  getAutomotivePartSupplier,
-  getAutomotivePartCategory,
-  getAutomotivePart,
-  FinishAssignStaff,
+  getListAutomotivePart,
 } from "../../../../service/UserService";
 import { toast } from "react-toastify";
 import AddIcon from "@mui/icons-material/Add";
@@ -30,6 +26,7 @@ function ModalDetail(props) {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [carType, setCarType] = useState([]);
+  const [part, setPart] = useState([]);
 
   const getCarType = async () => {
     try {
@@ -39,19 +36,35 @@ function ModalDetail(props) {
       console.error();
     }
   };
+
+  const getListPart = async () => {
+    try {
+      const { data } = await getListAutomotivePart();
+      setPart(data.data);
+    } catch {
+      console.error();
+    }
+  };
   useEffect(() => {
     getCarType();
+    getListPart();
     // getlistPartSupplier();
     // getlistPartCategory();
   }, []);
+
+  console.log({ part });
 
   const getCarTypeName = (carTypeId) => {
     const foundCarType = carType.find((item) => item.id === carTypeId);
     return foundCarType ? foundCarType.name : "";
   };
+  const getPartName = (automotivePartId) => {
+    const foundCarType = part.find((item) => item.id === automotivePartId);
+    return foundCarType ? foundCarType.name : "";
+  };
   return (
     <Modal
-      title="Chi tiết giao việc"
+      title="Chi tiết công việc"
       open={open}
       onCancel={handleCancel}
       width={1100}
@@ -252,8 +265,15 @@ function ModalDetail(props) {
             <Form.Item name="" style={{ width: 350, marginLeft: "16px" }}>
               <span>Tên phụ tùng</span>
               <Input
+                style={{ color: "black" }}
                 className="input-appoint text-14"
-                value={item.automotivePartInWarehouse.automotivePartId}
+                value={
+                  item.automotivePartInWarehouse
+                    ? getPartName(
+                        item.automotivePartInWarehouse.automotivePartId
+                      )
+                    : null
+                }
                 disabled={!isEditModal}
               />
             </Form.Item>

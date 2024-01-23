@@ -19,63 +19,6 @@ import { toast } from "react-toastify";
 import { get } from "lodash";
 import DetailModalAccount from "./detailAccount";
 
-// export const mockDataTeam = [
-//   {
-//     id: 1,
-//     name: "Jon Snow",
-//     email: "jonsnow@gmail.com",
-//     dateOfBirth: 35,
-//     phone: "(665)121-5454",
-//     access: "admin",
-//     action: "",
-//   },
-//   {
-//     id: 2,
-//     name: "Cersei Lannister",
-//     email: "cerseilannister@gmail.com",
-//     dateOfBirth: 42,
-//     phone: "(421)314-2288",
-//     access: "manager",
-//     action: "",
-//   },
-//   {
-//     id: 3,
-//     name: "Jaime Lannister",
-//     email: "jaimelannister@gmail.com",
-//     dateOfBirth: 45,
-//     phone: "(422)982-6739",
-//     access: "user",
-//     action: "",
-//   },
-//   {
-//     id: 4,
-//     name: "Anya Stark",
-//     email: "anyastark@gmail.com",
-//     dateOfBirth: 16,
-//     phone: "(921)425-6742",
-//     access: "admin",
-//     action: "",
-//   },
-//   {
-//     id: 5,
-//     name: "Daenerys Targaryen",
-//     email: "daenerystargaryen@gmail.com",
-//     dateOfBirth: 31,
-//     phone: "(421)445-1189",
-//     access: "user",
-//     action: "",
-//   },
-//   {
-//     id: 6,
-//     name: "Ever Melisandre",
-//     email: "evermelisandre@gmail.com",
-//     dateOfBirth: 150,
-//     phone: "(232)545-6483",
-//     access: "manager",
-//     action: "",
-//   },
-// ];
-
 function Accounts() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -83,9 +26,9 @@ function Accounts() {
   const [account, setAccount] = useState([]);
   const [accountDelete, setAccountDelete] = useState([]);
   const [accountEdit, setAccountEdit] = useState([]);
-  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [pageCount, setPageCount] = useState(0);
   const [currentItems, setCurrentItems] = useState([]);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   const [itemOffset, setItemOffset] = useState(0);
   const [modalDelete, setModalDelete] = useState(false);
   const [modalDetail, setModalDetail] = useState(false);

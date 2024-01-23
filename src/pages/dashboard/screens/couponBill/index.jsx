@@ -25,6 +25,7 @@ import { get } from "lodash";
 import { toast } from "react-toastify";
 
 import { useEffect, useState, useRef } from "react";
+import ReactPaginate from "react-paginate";
 
 function CouponBill() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -42,8 +43,11 @@ function CouponBill() {
   const [listPart, setListPart] = useState([]);
   const [listgoodsDeliveryNoteDetails, setListgoodsDeliveryNoteDetails] =
     useState([]);
-
   const [modalId, setModalId] = useState(generateRandomId());
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemOffset, setItemOffset] = useState(0);
+  const [currentItems, setCurrentItems] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
 
   function generateRandomId() {
     const prefix = "PN_";
@@ -113,8 +117,22 @@ function CouponBill() {
     getListCuoponBill();
     getlistPartCategory();
   }, []);
-  // console.log({ listCouponBill });
-  // console.log({ listgoodsDeliveryNoteDetails });
+
+  // Pagination
+  useEffect(() => {
+    const endOffset = itemOffset + itemsPerPage;
+    // console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    setCurrentItems(listCouponBill.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(listCouponBill.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, listCouponBill]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % listCouponBill.length;
+    // console.log(
+    //   `User requested page number ${event.selected}, which is offset ${newOffset}`
+    // );
+    setItemOffset(newOffset);
+  };
 
   return (
     <div className="m-5">
@@ -190,76 +208,90 @@ function CouponBill() {
             </tr>
           </thead>
           <tbody>
-            {listCouponBill ? (
-              listCouponBill.map((data, index) => (
-                <tr
-                  className=""
-                  style={{ backgroundColor: colors.primary[400] }}
-                  key={index}>
-                  <td className="w-4 p-4">
-                    <div className="flex items-center">
-                      <input
-                        id="checkbox-table-search-1"
-                        type="checkbox"
-                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                      />
-                      <label
-                        htmlFor="checkbox-table-search-1"
-                        className="sr-only">
-                        checkbox
-                      </label>
-                    </div>
-                  </td>
-                  <td
-                    style={{ color: colors.greenAccent[300] }}
-                    scope="row"
-                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                    {data.stt}
-                  </td>
-                  <td
-                    style={{ color: colors.greenAccent[300] }}
-                    className="px-6 py-4">
-                    {data.goodsDeliveryCode}
-                  </td>
-                  <td
-                    style={{ color: colors.greenAccent[300] }}
-                    className="px-6 py-4">
-                    {data.staff.name}
-                  </td>
-                  <td
-                    style={{ color: colors.greenAccent[300] }}
-                    className="px-6 py-4">
-                    {data.receiveDate ? (
-                      format(parseISO(data.receiveDate), "dd/MM/yyyy")
-                    ) : (
-                      <span>-</span>
-                    )}
-                  </td>
-                  <td
-                    style={{ color: colors.greenAccent[300] }}
-                    className="px-6 py-4">
-                    {data.status ? data.status : <strong>-</strong>}
-                  </td>
-                  <td className="px-6 py-4">
-                    <button onClick={() => showModal(data)}>
-                      <InfoIcon fontSize="large" className="mx-2" />
-                    </button>
-                    <button>
-                      <EditIcon fontSize="large" className="mx-2" />
-                    </button>
-                    <button onClick={() => showModalDelete(data)}>
-                      <DeleteIcon fontSize="large" className="mx-2" />
-                    </button>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <div>
-                <span>Dữ liệu trống</span>
-              </div>
-            )}
+            {currentItems.map((data, index) => (
+              <tr
+                className=""
+                style={{ backgroundColor: colors.primary[400] }}
+                key={index}>
+                <td className="w-4 p-4">
+                  <div className="flex items-center">
+                    <input
+                      id="checkbox-table-search-1"
+                      type="checkbox"
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    />
+                    <label
+                      htmlFor="checkbox-table-search-1"
+                      className="sr-only">
+                      checkbox
+                    </label>
+                  </div>
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  scope="row"
+                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  {data.stt}
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  {data.goodsDeliveryCode}
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  {data.staff.name}
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  {data.receiveDate ? (
+                    format(parseISO(data.receiveDate), "dd/MM/yyyy")
+                  ) : (
+                    <span>-</span>
+                  )}
+                </td>
+                <td
+                  style={{ color: colors.greenAccent[300] }}
+                  className="px-6 py-4">
+                  {data.status ? data.status : <strong>-</strong>}
+                </td>
+                <td className="px-6 py-4">
+                  <button onClick={() => showModal(data)}>
+                    <InfoIcon fontSize="large" className="mx-2" />
+                  </button>
+                  <button>
+                    <EditIcon fontSize="large" className="mx-2" />
+                  </button>
+                  <button onClick={() => showModalDelete(data)}>
+                    <DeleteIcon fontSize="large" className="mx-2" />
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
+        <ReactPaginate
+          nextLabel="next >"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={3}
+          marginPagesDisplayed={2}
+          pageCount={pageCount}
+          previousLabel="< previous"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakLabel="..."
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+          renderOnZeroPageCount={null}
+        />
       </div>
       {modalAdd && (
         <AddNewCouponBill

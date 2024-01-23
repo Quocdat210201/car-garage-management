@@ -11,6 +11,7 @@ import AddNewBill from "./addBillDetail";
 import { useState, useEffect } from "react";
 import { getBill } from "../../.././../service/UserService";
 import { format, parseISO } from "date-fns";
+import ReactPaginate from "react-paginate";
 
 function Bill() {
   const theme = useTheme();
@@ -19,6 +20,10 @@ function Bill() {
   const [showmodalAddNew, setShowModalAddNew] = useState(false);
   const [bill, setBill] = useState([]);
   const [billDetail, setBillDetail] = useState([]);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemOffset, setItemOffset] = useState(0);
+  const [currentItems, setCurrentItems] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
 
   const addNumbering = (data) => {
     return data.map((item, index) => ({ ...item, stt: index + 1 }));
@@ -41,7 +46,7 @@ function Bill() {
 
   const handleShowDetail = (data) => {
     setModalDetail(true);
-    setBillDetail(data)
+    setBillDetail(data);
   };
 
   const handleShowAddNew = () => {
@@ -52,6 +57,23 @@ function Bill() {
     setModalDetail(false);
     setShowModalAddNew(false);
   };
+
+   // Pagination
+   useEffect(() => {
+    const endOffset = itemOffset + itemsPerPage;
+    // console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    setCurrentItems(bill.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(bill.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, bill]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % bill.length;
+    // console.log(
+    //   `User requested page number ${event.selected}, which is offset ${newOffset}`
+    // );
+    setItemOffset(newOffset);
+  };
+
 
   return (
     <div className="m-5">
@@ -127,8 +149,8 @@ function Bill() {
             </tr>
           </thead>
           <tbody>
-            {bill &&
-              bill.map((data, index) => (
+            {currentItems &&
+              currentItems.map((data, index) => (
                 <tr
                   className=""
                   style={{ backgroundColor: colors.primary[400] }}
@@ -172,9 +194,25 @@ function Bill() {
                     style={{ color: colors.greenAccent[300] }}
                     className="px-6 py-4">
                     {data.paymentStatus === 0 ? (
-                      <span>Chưa thanh toán</span>
+                      <span
+                        style={{
+                          color: colors.redAccent[100],
+                          background: colors.redAccent[800],
+                          padding: "6px 10px",
+                          borderRadius: "4px",
+                        }}>
+                        Chưa thanh toán
+                      </span>
                     ) : data.paymentStatus === 1 ? (
-                      <span>Đã thanh toán</span>
+                      <span
+                        style={{
+                          color: colors.redAccent[100],
+                          background: colors.greenAccent[500],
+                          padding: "6px 10px",
+                          borderRadius: "4px",
+                        }}>
+                        Đã thanh toán
+                      </span>
                     ) : (
                       <></>
                     )}
@@ -208,6 +246,26 @@ function Bill() {
               ))}
           </tbody>
         </table>
+        <ReactPaginate
+          nextLabel="next >"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={3}
+          marginPagesDisplayed={2}
+          pageCount={pageCount}
+          previousLabel="< previous"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakLabel="..."
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+          renderOnZeroPageCount={null}
+        />
       </div>
       {modalDetail && (
         <BillDetail

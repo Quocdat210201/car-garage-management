@@ -159,6 +159,24 @@ const getBillDetail = async (id) => {
   return res;
 };
 
+const getAutomotivePartInWarehouse = async () => {
+  const res = await get(`api/automotive-part-in-warehouse`);
+  return res;
+};
+
+const getNotification = async () => {
+  const res = await get(`api/notification`);
+  return res;
+};
+
+
+const getNotificationDetail = async (id) => {
+  const res = await get(`api/notification/${id}`);
+  return res;
+};
+
+
+
 export {
   loginApi,
   registerApi,
@@ -189,5 +207,8 @@ export {
   getListAutomotivePart,
   getCarRegistrationNumber,
   getBill,
-  getBillDetail
+  getBillDetail,
+  getAutomotivePartInWarehouse,
+  getNotification,
+  getNotificationDetail
 };
