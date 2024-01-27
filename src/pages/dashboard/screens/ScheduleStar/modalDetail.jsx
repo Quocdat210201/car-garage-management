@@ -51,8 +51,6 @@ function ModalDetail(props) {
     // getlistPartCategory();
   }, []);
 
-  console.log({ part });
-
   const getCarTypeName = (carTypeId) => {
     const foundCarType = carType.find((item) => item.id === carTypeId);
     return foundCarType ? foundCarType.name : "";
@@ -230,49 +228,51 @@ function ModalDetail(props) {
               style={{ width: "100%" }}
               placeholder="Chi tiết công việc"
               className="p-2 mr-6"
+              value={dataWork.staffWorkDetail}
             />
           </Form.Item>
         </div>
         <div className="flex justify-between items-center mt-6">
           <span className="text-black">Phụ tùng thay</span>
         </div>
-        {dataWork.appointmentScheduleDetails.map((item, index) =>
-          item.quantity > 0 ? (
-            <div className=" pt-6 flex justify-start" key={index}>
-              <Form.Item name="id" style={{ width: 350 }}>
-                <span>Dịch vụ</span>
-                <Input
-                  className="input-appoint text-14"
-                  value={item.repairService.name}
-                  disabled={!isEditModal}
-                />
-              </Form.Item>
-              <Form.Item name="" style={{ width: 200, marginLeft: "16px" }}>
-                <span>Tên phụ tùng</span>
-                <select
-                  disabled
-                  className="input-appoint text-14 cursor-not-allowed"
-                  defaultValue="default"
-                  name="automotivePartId">
-                  <option>{}</option>
-                </select>
-              </Form.Item>
-              <Form.Item style={{ width: 80, marginLeft: "16px" }} name="id">
-                <span>Số lượng</span>
-                <Input
-                  disabled
-                  type="number"
-                  className="text-black p-2 cursor-not-allowed"
-                  name="quantity"
-                  value={item.quantity}
-                />
-              </Form.Item>
-            </div>
-          ) : ( 
-            <div key={index} className="flex justify-center mt-4">
-              <strong>Không có phụ tùng thay thế</strong>
-            </div>
-          )
+        {dataWork.appointmentScheduleDetails.map(
+          (item, index) =>
+            item.quantity > 0 && (
+              <div className=" pt-6 flex justify-start" key={index}>
+                <Form.Item name="id" style={{ width: 350 }}>
+                  <span>Dịch vụ</span>
+                  <Input
+                    className="input-appoint text-14"
+                    value={item.repairService.name}
+                    disabled={!isEditModal}
+                  />
+                </Form.Item>
+                <Form.Item name="" style={{ width: 200, marginLeft: "16px" }}>
+                  <span>Tên phụ tùng</span>
+                  <select
+                    disabled
+                    className="input-appoint text-14 cursor-not-allowed"
+                    defaultValue="default"
+                    name="automotivePartId">
+                    <option>
+                      {getPartName(
+                        item.automotivePartInWarehouse.automotivePartId
+                      )}
+                    </option>
+                  </select>
+                </Form.Item>
+                <Form.Item style={{ width: 80, marginLeft: "16px" }} name="id">
+                  <span>Số lượng</span>
+                  <Input
+                    disabled
+                    type="number"
+                    className="text-black p-2 cursor-not-allowed"
+                    name="quantity"
+                    value={item.quantity}
+                  />
+                </Form.Item>
+              </div>
+            )
         )}
       </div>
     </Modal>

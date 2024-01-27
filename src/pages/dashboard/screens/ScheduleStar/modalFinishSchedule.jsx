@@ -10,6 +10,7 @@ import {
   getAutomotivePartSupplier,
   getAutomotivePartCategory,
   getAutomotivePart,
+  getListAutomotivePart,
   FinishAssignStaff,
   serviceApi,
 } from "../../../../service/UserService";
@@ -28,6 +29,7 @@ function ModalFinishSchedule(props) {
   const [listPartCategory, setListPartCategory] = useState([]);
   const [services, setServices] = useState([]);
   const [modalFinish, setModalFinish] = useState(false);
+  const [part, setPart] = useState([]);
   const [repairServiceUpdateRequests, setRepairServiceUpdateRequests] =
     useState([
       {
@@ -39,6 +41,9 @@ function ModalFinishSchedule(props) {
       },
     ]);
 
+  useEffect(() => {
+    console.log({ repairServiceUpdateRequests });
+  }, [repairServiceUpdateRequests]);
   const [finishAssign, setFinishAssign] = useState({
     id: assignId,
     staffWorkDetail: "",
@@ -50,6 +55,14 @@ function ModalFinishSchedule(props) {
     try {
       const { data } = await serviceApi();
       setServices(data.data);
+    } catch {
+      console.error();
+    }
+  };
+  const getListPart = async () => {
+    try {
+      const { data } = await getListAutomotivePart();
+      setPart(data.data);
     } catch {
       console.error();
     }
@@ -81,13 +94,13 @@ function ModalFinishSchedule(props) {
     }
   };
 
-  const handleCancelModalFinish =  () => {
-    setModalFinish(false)
-  }
+  const handleCancelModalFinish = () => {
+    setModalFinish(false);
+  };
 
-  const showModalFinish =  () => {
-    setModalFinish(true)
-  }
+  const showModalFinish = () => {
+    setModalFinish(true);
+  };
 
   const getlistPart = async (index, partCategoryId) => {
     try {
@@ -113,6 +126,7 @@ function ModalFinishSchedule(props) {
     getlistPartSupplier();
     getlistPartCategory();
     getService();
+    getListPart();
   }, []);
 
   const handleSubmit = async () => {
@@ -170,6 +184,11 @@ function ModalFinishSchedule(props) {
   const getServiceName = (serviceId) => {
     const foundserviceName = services.find((item) => item.id === serviceId);
     return foundserviceName ? foundserviceName.name : "";
+  };
+
+  const getPartName = (automotivePartId) => {
+    const foundCarType = part.find((item) => item.id === automotivePartId);
+    return foundCarType ? foundCarType.name : "";
   };
   const handleAddNew = () => {
     const newRequest = {
@@ -403,12 +422,13 @@ function ModalFinishSchedule(props) {
               placeholder="Chi tiết công việc"
               className="p-2 mr-6"
               name=""
-              value={dataWork.quantity}
+              value={dataWork ? dataWork.staffWorkDetail : null}
+              // value={dataWork.quantity}
               onChange={(e) =>
-                setFinishAssign((prevData) => ({
-                  ...prevData,
+                setFinishAssign({
+                  ...finishAssign,
                   staffWorkDetail: e.target.value,
-                }))
+                })
               }
             />
           </Form.Item>
@@ -424,8 +444,9 @@ function ModalFinishSchedule(props) {
         {dataWork.appointmentScheduleDetails.map(
           (item, index) =>
             item.quantity > 0 && (
-              <div className=" pt-6 flex justify-start" key={index}>
+              <div className=" flex justify-start" key={index}>
                 <Form.Item
+                  style={{ width: 350 }}
                   name="id"
                   rules={[
                     {
@@ -442,17 +463,21 @@ function ModalFinishSchedule(props) {
                     <option>{getServiceName(item.repairServiceId)}</option>
                   </select>
                 </Form.Item>
-                <Form.Item name="" style={{ width: 200, marginLeft: "16px" }}>
+                <Form.Item name="" style={{ width: 250, marginLeft: "16px" }}>
                   <span>Tên phụ tùng</span>
                   <select
                     disabled
                     className="input-appoint text-14 cursor-not-allowed"
                     defaultValue="default"
                     name="automotivePartId">
-                    <option>{}</option>
+                    <option>
+                      {getPartName(
+                        item.automotivePartInWarehouse.automotivePartId
+                      )}
+                    </option>
                   </select>
                 </Form.Item>
-                <Form.Item style={{ width: 80, marginLeft: "16px" }} name="id">
+                <Form.Item style={{ width: 100, marginLeft: "16px" }} name="id">
                   <span>Số lượng</span>
                   <Input
                     disabled
@@ -558,7 +583,6 @@ function ModalFinishSchedule(props) {
                 defaultValue="default"
                 name="automotivePartId"
                 onChange={(event) => {
-                  const index = event.target.selectedIndex - 1;
                   const automotivePartId = event.target.value;
                   console.log({ automotivePartId });
                   setRepairServiceUpdateRequests((prevData) =>

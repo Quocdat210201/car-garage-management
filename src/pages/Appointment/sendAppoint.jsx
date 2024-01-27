@@ -4,7 +4,7 @@ import { FaCheck } from "react-icons/fa";
 
 function SendAppoint() {
   return (
-    <div className="flex justify-center flex-col items-center my-10">
+    <div className="flex justify-center flex-col items-center my-20">
       <FaCheck className="w-16 h-16 p-3 bg-[#349034] text-white rounded-full" />
       <p className="text-[20px] font-semibold mt-2 text-center">
         Lịch hẹn của bạn đã được gửi đi. Chúng tôi sẽ xác nhận và phản hồi lại

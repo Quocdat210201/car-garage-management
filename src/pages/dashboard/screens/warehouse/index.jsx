@@ -13,12 +13,16 @@ import {
 } from "../../../../service/UserService";
 import { useEffect, useState } from "react";
 import formatCurrency from "../../components/formatMoney";
+import ReactPaginate from "react-paginate";
 
 function WareHouse() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [listPartWarehouse, setListPartWarehouse] = useState([]);
-
+  const [itemsPerPage, setItemsPerPage] = useState(5);
+  const [itemOffset, setItemOffset] = useState(0);
+  const [currentItems, setCurrentItems] = useState([]);
+  const [pageCount, setPageCount] = useState(0);
   const addNumbering = (data) => {
     return data.map((item, index) => ({ ...item, stt: index + 1 }));
   };
@@ -44,6 +48,22 @@ function WareHouse() {
   useEffect(() => {
     getPatrWarehouse();
   }, []);
+
+   // Pagination
+   useEffect(() => {
+    const endOffset = itemOffset + itemsPerPage;
+    // console.log(`Loading items from ${itemOffset} to ${endOffset}`);
+    setCurrentItems(listPartWarehouse.slice(itemOffset, endOffset));
+    setPageCount(Math.ceil(listPartWarehouse.length / itemsPerPage));
+  }, [itemOffset, itemsPerPage, listPartWarehouse]);
+
+  const handlePageClick = (event) => {
+    const newOffset = (event.selected * itemsPerPage) % listPartWarehouse.length;
+    // console.log(
+    //   `User requested page number ${event.selected}, which is offset ${newOffset}`
+    // );
+    setItemOffset(newOffset);
+  };
 
   return (
     <div className="m-5">
@@ -106,7 +126,7 @@ function WareHouse() {
             </tr>
           </thead>
           <tbody>
-            {listPartWarehouse.map((data, index) => (
+            {currentItems.map((data, index) => (
               <tr
                 className=""
                 style={{ backgroundColor: colors.primary[400] }}
@@ -191,6 +211,25 @@ function WareHouse() {
             ))}
           </tbody>
         </table>
+        <ReactPaginate
+          nextLabel="next >"
+          onPageChange={handlePageClick}
+          pageRangeDisplayed={3}
+          marginPagesDisplayed={2}
+          pageCount={pageCount}
+          previousLabel="< previous"
+          pageClassName="page-item"
+          pageLinkClassName="page-link"
+          previousClassName="page-item"
+          previousLinkClassName="page-link"
+          nextClassName="page-item"
+          nextLinkClassName="page-link"
+          breakLabel="..."
+          breakClassName="page-item"
+          breakLinkClassName="page-link"
+          containerClassName="pagination"
+          activeClassName="active"
+          />
       </div>
     </div>
   );
