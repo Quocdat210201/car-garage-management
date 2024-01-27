@@ -10,9 +10,9 @@ function SendAppoint() {
         Lịch hẹn của bạn đã được gửi đi. Chúng tôi sẽ xác nhận và phản hồi lại
         cho bạn sớm nhất. <br></br>Cảm ơn bạn đã quan tâm đến gara chúng tôi.{" "}
       </p>
-      <Link href="" to={routerConfig.profile}>
+      <Link href="" to={routerConfig.home}>
         <button className="bg-red-500 text-white py-2 mt-6 px-4 rounded ">
-          Xem lịch hẹn
+          Trang chủ
         </button>
       </Link>
     </div>

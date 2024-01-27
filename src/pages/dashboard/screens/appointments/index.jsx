@@ -57,8 +57,10 @@ function Appointments() {
 
   const getDataAppoint = async () => {
     try {
-      const response = await getAppointmentSchedule("");
-      const newData = addNumbering(response.data?.data);
+      const res = await getAppointmentSchedule("");
+      const data = res.data?.data;
+      const sortedProducts = data.reverse();
+      const newData = addNumbering(sortedProducts);
       setAppoint(newData);
     } catch {
       console.error();
@@ -102,18 +104,6 @@ function Appointments() {
             <AddIcon />
             <span className="ml-1">Thêm mới lịch hẹn</span>
           </button> */}
-          <button
-            style={{
-              backgroundColor: colors.blueAccent[700],
-              padding: "10px 16px",
-              borderRadius: "4px",
-              display: "inline-flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <FileUploadIcon />
-            <span className="ml-1">Xuất file excel</span>
-          </button>
         </div>
       </div>
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">

@@ -66,10 +66,10 @@ function App() {
                       />
                       <Route path="/admin/star" element={<Star />} />
                       <Route path="/admin/customer" element={<Customer />} />
-                      <Route
+                      {/* <Route
                         path="/admin/calendar"
                         element={<CalendarWork />}
-                      />
+                      /> */}
                       <Route path="/admin/accounts" element={<Accounts />} />
                       <Route
                         path="/staff/schedule"

@@ -13,6 +13,7 @@ import {
 } from "../../../../service/UserService";
 import { toast } from "react-toastify";
 import * as TYPES from "../../common/constant";
+import formatCurrency from "../../components/formatMoney";
 
 const AddNewCouponBill = (props) => {
   const {
@@ -34,6 +35,8 @@ const AddNewCouponBill = (props) => {
   const [partCategoryId, setPartCategoryId] = useState("");
   const [partSupplierId, setPartSupplierId] = useState("");
   const [automotivePartId, setAutomotivePartId] = useState(null);
+  const [quantity, setQuantity] = useState([]);
+  const [price, setPrice] = useState([]);
 
   const [deliveryData, setDeliveryData] = useState({
     goodsDeliveryCode: goodsDeliveryCode,
@@ -333,7 +336,10 @@ const AddNewCouponBill = (props) => {
                   placeholder="16"
                   className="text-black p-2  "
                   name="quantity"
-                  onChange={(e) => handleInputChange(e, index)}
+                  onChange={(e) => {
+                    handleInputChange(e, index);
+                    setQuantity(e.target.value);
+                  }}
                 />
               </Form.Item>
               <Form.Item style={{ width: 120, marginLeft: "16px" }} name="id">
@@ -343,7 +349,10 @@ const AddNewCouponBill = (props) => {
                   placeholder="16"
                   className="text-black p-2  "
                   name="price"
-                  onChange={(e) => handleInputChange(e, index)}
+                  onChange={(e) => {
+                    handleInputChange(e, index);
+                    setPrice(e.target.value);
+                  }}
                 />
               </Form.Item>
             </div>
@@ -368,8 +377,7 @@ const AddNewCouponBill = (props) => {
                   <span
                     className="text-[16px] font-bold ml-3"
                     style={{ color: colors.greenAccent[300] }}>
-                    {" "}
-                    1.499.000 VND
+                    {quantity && price ? formatCurrency(quantity * price) : 0}
                   </span>
                 </div>
               </Form.Item>

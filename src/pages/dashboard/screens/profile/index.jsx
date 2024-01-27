@@ -55,9 +55,9 @@ const Profile = () => {
     try {
       await updateUserApi(user);
       toast.success("Lưu thành công !");
-      setTimeout(() => {
         setIsEditMode(false); // Set edit mode to false after saving
-      }, 0);
+      // setTimeout(() => {
+      // }, 0);
     } catch (error) {
       toast.error("Error updating user information");
       console.error(error);

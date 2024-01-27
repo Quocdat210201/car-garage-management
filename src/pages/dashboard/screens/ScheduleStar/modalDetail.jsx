@@ -22,7 +22,6 @@ function ModalDetail(props) {
     staffId,
   } = props;
 
-  console.log({ dataWork });
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [carType, setCarType] = useState([]);
@@ -237,63 +236,44 @@ function ModalDetail(props) {
         <div className="flex justify-between items-center mt-6">
           <span className="text-black">Phụ tùng thay</span>
         </div>
-        {dataWork.appointmentScheduleDetails.map((item, index) => (
-          <div
-            className="border-t-[1px] mt-1 pt-6 flex justify-between"
-            key={index}>
-            <Form.Item name="id" style={{ width: 350 }}>
-              <span>Dịch vụ</span>
-              <Input
-                className="input-appoint text-14"
-                value={item.repairService.name}
-                disabled={!isEditModal}
-              />
-            </Form.Item>
-            {/* <Form.Item name="" style={{ width: 250, marginLeft: "16px" }}>
-              <span>Nhà cung cấp</span>
-              <select className="input-appoint text-14" defaultValue="default">
-                <option value="default">--Chọn nhà cung cấp</option>
-              </select>
-            </Form.Item>
-            <Form.Item name="" style={{ width: 250, marginLeft: "16px" }}>
-              <span>Loại phụ tùng</span>
-              <select className="input-appoint text-14" defaultValue="default">
-                <option value="default">--Chọn loại phụ tùng</option>
-              </select>
-            </Form.Item> */}
-
-            <Form.Item name="" style={{ width: 350, marginLeft: "16px" }}>
-              <span>Tên phụ tùng</span>
-              <Input
-                style={{ color: "black" }}
-                className="input-appoint text-14"
-                value={
-                  item.automotivePartInWarehouse
-                    ? getPartName(
-                        item.automotivePartInWarehouse.automotivePartId
-                      )
-                    : null
-                }
-                disabled={!isEditModal}
-              />
-            </Form.Item>
-            <Form.Item style={{ width: 150, marginLeft: "16px" }} name="id">
-              <span>Số lượng</span>
-              <Input
-                type="number"
-                className="text-black p-2  "
-                name="quantity"
-                value={item.quantity}
-                disabled={!isEditModal}
-              />
-            </Form.Item>
-          </div>
-        ))}
-        {/* {dataWork &&
-          dataWork.appointmentScheduleDetails &&
-          dataWork.appointmentScheduleDetails.map((item, index) => {
-            console.log("Item:", item);
-          })} */}
+        {dataWork.appointmentScheduleDetails.map((item, index) =>
+          item.quantity > 0 ? (
+            <div className=" pt-6 flex justify-start" key={index}>
+              <Form.Item name="id" style={{ width: 350 }}>
+                <span>Dịch vụ</span>
+                <Input
+                  className="input-appoint text-14"
+                  value={item.repairService.name}
+                  disabled={!isEditModal}
+                />
+              </Form.Item>
+              <Form.Item name="" style={{ width: 200, marginLeft: "16px" }}>
+                <span>Tên phụ tùng</span>
+                <select
+                  disabled
+                  className="input-appoint text-14 cursor-not-allowed"
+                  defaultValue="default"
+                  name="automotivePartId">
+                  <option>{}</option>
+                </select>
+              </Form.Item>
+              <Form.Item style={{ width: 80, marginLeft: "16px" }} name="id">
+                <span>Số lượng</span>
+                <Input
+                  disabled
+                  type="number"
+                  className="text-black p-2 cursor-not-allowed"
+                  name="quantity"
+                  value={item.quantity}
+                />
+              </Form.Item>
+            </div>
+          ) : ( 
+            <div key={index} className="flex justify-center mt-4">
+              <strong>Không có phụ tùng thay thế</strong>
+            </div>
+          )
+        )}
       </div>
     </Modal>
   );

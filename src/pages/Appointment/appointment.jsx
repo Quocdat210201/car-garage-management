@@ -94,7 +94,7 @@ function Appointment() {
     carBrandId: "",
     manufacturingYear: "",
     repairServiceIds: [],
-    receiveCarAt: 1,
+    receiveCarAt: 2,
   });
 
   const handleChangeInput = (e) => {
@@ -351,7 +351,7 @@ function Appointment() {
             </div>
           </div>
           <div className="">
-            <div className="flex items-center pt-8">
+            <div className="flex items-center pt-2">
               <div className=" flex h-[28px] w-16">
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/5/55/Yemen_Coast_Guard_racing_stripe.svg"
@@ -444,7 +444,7 @@ function Appointment() {
                 </div>
               </div>
               <div className="flex">
-                <div className="flex flex-col w-1/3 mt-4 pl-8">
+                <div className="flex flex-col w-1/3 mt-2 pl-8">
                   <label
                     className="text-[18px] mb-2"
                     style={{ fontSize: "18px" }}>
@@ -464,7 +464,7 @@ function Appointment() {
                     })}
                   </select>
                 </div>
-                <div className="flex flex-col w-1/3 mt-4 pl-8">
+                <div className="flex flex-col w-1/3 mt-2 pl-8">
                   <label
                     className="text-[18px] mb-2"
                     style={{ fontSize: "18px" }}>
@@ -492,7 +492,7 @@ function Appointment() {
                     })}
                   </select>
                 </div>
-                <div className="flex flex-col w-1/3 mt-4 pl-8">
+                <div className="flex flex-col w-1/3 mt-2 pl-8">
                   <label
                     className="text-[18px] mb-2"
                     style={{ fontSize: "18px" }}>
@@ -511,7 +511,7 @@ function Appointment() {
             </div>
           </div>
           <div className="">
-            <div className="flex items-center pt-8">
+            <div className="flex items-center pt-2">
               <div className=" flex h-[28px] w-16">
                 <img
                   src="https://upload.wikimedia.org/wikipedia/commons/5/55/Yemen_Coast_Guard_racing_stripe.svg"
@@ -558,9 +558,7 @@ function Appointment() {
                         placeholder="--Chọn dịch vụ--"
                         mode="multiple"
                         maxTagCount={1}
-                        maxTagPlaceholder={(values) =>
-                          `+${values.length - 0} `
-                        }
+                        maxTagPlaceholder={(values) => `+${values.length - 0} `}
                         onChange={(selectedServices) => {
                           setDataAppointment({
                             ...dataAppointment,
@@ -576,7 +574,7 @@ function Appointment() {
                     </FormItem>
                   </div>
                 </div>
-                <div className="mt-4 pl-8">
+                {/* <div className="mt-4 pl-8">
                   <label
                     className="text-[18px] mb-2 "
                     style={{ fontSize: "18px" }}>
@@ -590,7 +588,7 @@ function Appointment() {
                     <Radio value={1}>Tại Gara</Radio>
                     <Radio value={2}>Tại nhà</Radio>
                   </Radio.Group>
-                </div>
+                </div> */}
               </div>
               <div className="flex flex-col w-1/2 mt-4 pl-8">
                 <label
@@ -602,19 +600,20 @@ function Appointment() {
                   name="note"
                   onChange={handleChangeInput}
                   id=""
-                  cols="3"
-                  rows="3"
+                  cols="1"
+                  rows="4"
                   placeholder="Nhập yêu cầu"
                   className="input-appoint"></textarea>
               </div>
             </div>
+            <div className="flex justify-end">
+              <button
+                onClick={handleSubmitAppointment}
+                className="bg-red-500 text-white py-2 px-4 rounded mt-4">
+                Gửi lịch hẹn
+              </button>
+            </div>
           </div>
-          <button
-            type="submit"
-            className="btn btn-primary ml-8 mt-10 action flex justify-end"
-            onClick={handleSubmitAppointment}>
-            Gửi lịch hẹn
-          </button>
         </Form>
       </div>
     </div>

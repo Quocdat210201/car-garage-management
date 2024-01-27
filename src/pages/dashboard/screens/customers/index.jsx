@@ -1,4 +1,4 @@
-import {  useTheme } from "@mui/material";
+import { useTheme } from "@mui/material";
 import { tokens } from "../../../../theme";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -60,7 +60,7 @@ function Customer() {
       <div className="flex justify-between ">
         <Header title="KHÁCH HÀNG" subtitle="Quản lý thông tin khách hàng" />
         <div color={colors.grey[100]}>
-          <button
+          {/* <button
             style={{
               backgroundColor: colors.blueAccent[700],
               padding: "10px 16px",
@@ -72,19 +72,7 @@ function Customer() {
             }}>
             <AddIcon />
             <span className="ml-1">Thêm mới khách hàng</span>
-          </button>
-          <button
-            style={{
-              backgroundColor: colors.blueAccent[700],
-              padding: "10px 16px",
-              borderRadius: "4px",
-              display: "inline-flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <FileUploadIcon />
-            <span className="ml-1">Xuất file excel</span>
-          </button>
+          </button> */}
         </div>
       </div>
 

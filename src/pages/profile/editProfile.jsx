@@ -9,17 +9,17 @@ import DatePicker from "react-datepicker";
 import { userApi, updateUserApi } from "../../service/UserService";
 import { toast } from "react-toastify";
 
-const EditProfile = ({ open, handleCancel, handleReload }) => {
+const EditProfile = ({
+  data,
+  open,
+  handleCancel,
+  handleReload,
+  handleUpdateUser,
+}) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [isEditMode, setIsEditMode] = useState(false);
-  const [user, setUser] = useState({
-    name: "",
-    phoneNumber: "",
-    dateOfBirth: new Date(),
-    email: "",
-    address: "",
-  });
+  const [user, setUser] = useState(data);
 
   const handleInputChange = (event, field) => {
     setUser({
@@ -28,40 +28,11 @@ const EditProfile = ({ open, handleCancel, handleReload }) => {
     });
   };
 
-  useEffect(() => {
-    getUser();
-  }, []);
 
-  const getUser = async () => {
-    try {
-      const { data } = await userApi();
-      setUser(data);
-    } catch {
-      console.error();
-    }
-  };
-
-  const handleUpdateUser = async () => {
-    try {
-      await updateUserApi(user);
-      toast.success("Lưu thành công !");
-      handleCancel();
-      // window.location.reload()
-      getUser(); // Fetch updated user data
-    } catch (error) {
-      toast.error("Error updating user information");
-      console.error(error);
-    }
-    // console.log({ user });
-  };
   return (
     <>
       <Modal
-        title={
-          // classId ?
-          // "Cập nhật thông tin lớp học"
-          "Chi tiết xe"
-        }
+        title={"Chi tiết xe"}
         open={open}
         onCancel={handleCancel}
         onOk={handleReload}
@@ -98,7 +69,8 @@ const EditProfile = ({ open, handleCancel, handleReload }) => {
                 fontSize: "14px",
                 alignItems: "center",
               }}
-              onClick={handleUpdateUser}>
+              onClick={() => handleUpdateUser(user)}
+              >
               <span className="ml-1">Lưu</span>
             </button>
           </>
@@ -121,9 +93,9 @@ const EditProfile = ({ open, handleCancel, handleReload }) => {
             </span>
             <Input
               placeholder="Họ và tên"
-              value={user && user.name}
+              value={user.name}
               className="p-2"
-              on
+              onChange={(event) => handleInputChange(event, "dateOfBirth")}
             />
           </Form.Item>
           <Form.Item
@@ -142,25 +114,6 @@ const EditProfile = ({ open, handleCancel, handleReload }) => {
               onChange={(event) => handleInputChange(event, "dateOfBirth")}
               className="w-full border-[1px] border-[#d9d9d9] rounded-[6px] p-2"
             />
-            {/* <input
-              // selected={formattedDateString}
-              type="date"
-              value={user.dateOfBirth}
-              onChange={(date) => {
-                console.log(date);
-                setUser({
-                  ...user,
-                  dateOfBirth: date,
-                });
-                // setSelectedDate(date)
-              }}
-              // showTimeSelect
-              // timeFormat="HH:mm"
-              // timeIntervals={15}
-              // timeCaption="time"
-              // dateFormat="dd/MM/yyyy"
-              className="w-full border-[1px] border-[#d9d9d9] rounded-[6px] p-2"
-            /> */}
           </Form.Item>
 
           <Form.Item name="">
@@ -169,7 +122,7 @@ const EditProfile = ({ open, handleCancel, handleReload }) => {
               placeholder="Nhập số điện thoại..."
               onChange={(event) => handleInputChange(event, "phoneNumber")}
               className=" p-2"
-              value={user && user.phoneNumber}
+              value={user.phoneNumber}
             />
           </Form.Item>
           <Form.Item name="">
@@ -178,14 +131,14 @@ const EditProfile = ({ open, handleCancel, handleReload }) => {
               placeholder="Nhập email..."
               className=" p-2"
               onChange={(event) => handleInputChange(event, "email")}
-              value={user && user.email}
+              value={user.email}
             />
           </Form.Item>
           <Form.Item name="">
             <span>Địa chỉ</span>
             <Input
               onChange={(event) => handleInputChange(event, "address")}
-              value={user && user.address}
+              value={user.address}
               placeholder="Địa chỉ"
               className="text-black p-2"
             />

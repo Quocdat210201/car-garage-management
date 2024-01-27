@@ -18,7 +18,6 @@ function WareHouse() {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [listPartWarehouse, setListPartWarehouse] = useState([]);
-  const [listPart, setListPart] = useState([]);
 
   const addNumbering = (data) => {
     return data.map((item, index) => ({ ...item, stt: index + 1 }));
@@ -26,41 +25,32 @@ function WareHouse() {
 
   const getPatrWarehouse = async () => {
     try {
-      const { data } = await getAutomotivePartInWarehouse();
-      const newData = addNumbering(data.data);
-      setListPartWarehouse(newData);
+      try {
+        const res = await getAutomotivePartInWarehouse();
+        const data = res.data?.data;
+        const sortedProducts = data.reverse();
+        const newData = addNumbering(sortedProducts);
+        setListPartWarehouse(newData);
+      } catch {
+        console.error();
+      }
     } catch (error) {
       console.error();
     }
   };
 
-  // const getListPart = async () => {
-  //   try {
-  //     const { data } = await getAutomotivePartInWarehouse();
-  //     const newData = addNumbering(data.data);
-  //     setListPart(newData);
-  //   } catch (error) {
-  //     console.error();
-  //   }
-  // };
-
-  // const getAutomotivePartName = (AutomotiveId) => {
-  //   const foundCarType = listPart.find((item) => item.id === AutomotiveId);
-  //   return foundCarType ? foundCarType.name : "";
-  // };
+  console.log({ listPartWarehouse });
 
   useEffect(() => {
     getPatrWarehouse();
   }, []);
-
-  console.log({ listPartWarehouse });
 
   return (
     <div className="m-5">
       <div className="flex justify-between ">
         <Header title=" KHO" subtitle="Quản lý phụ tùng" />
         <div color={colors.grey[100]}>
-          <button
+          {/* <button
             style={{
               backgroundColor: colors.blueAccent[700],
               padding: "10px 16px",
@@ -72,19 +62,7 @@ function WareHouse() {
             }}>
             <AddIcon />
             <span className="ml-1">Thêm mới lịch hẹn</span>
-          </button>
-          <button
-            style={{
-              backgroundColor: colors.blueAccent[700],
-              padding: "10px 16px",
-              borderRadius: "4px",
-              display: "inline-flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <FileUploadIcon />
-            <span className="ml-1">Xuất file excel</span>
-          </button>
+          </button> */}
         </div>
       </div>
 

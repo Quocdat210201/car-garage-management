@@ -89,6 +89,8 @@ function ScheduleStaff() {
     setModalDetail(false);
   };
 
+  console.log({listSchedule});
+
   return (
     <div className="m-5">
       <div className="flex justify-between ">

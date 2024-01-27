@@ -1,26 +1,46 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaEdit } from "react-icons/fa";
 import { format, parseISO } from "date-fns";
 import EditProfile from "./editProfile";
-import { selectDep, setDependence } from "../../store/reducers/depReducer";
-import { useSelector, useDispatch } from "react-redux";
+import { userApi, updateUserApi } from "../../service/UserService";
+import { toast } from "react-toastify";
 
-const MyProfile = ({ data }) => {
+const MyProfile = () => {
   const [modalEdit, setModalEdit] = useState(false);
-  const dep = useSelector(selectDep);
-  const dispatch = useDispatch();
+  const [user, setUser] = useState([]);
 
   const handleCancel = () => {
     setModalEdit(false);
   };
   const handleReload = async () => {
     setModalEdit(false);
-    dispatch(setDependence({}));
   };
-  // React.useEffect(() => {
-  //   handleReload();
-  // }, [dep]);
+
+  const getUser = async () => {
+    try {
+      const { data } = await userApi();
+      setUser(data);
+    } catch {
+      console.error();
+    }
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  const handleUpdateUser = async (userEdit) => {
+    try {
+      await updateUserApi(userEdit);
+      toast.success("Lưu thành công !");
+      handleCancel()
+      getUser();
+    } catch (error) {
+      toast.error("Error updating user information");
+      console.error(error);
+    }
+  };
   return (
     <div className="w-full flex min-h-[350px]">
       <div className="flex flex-col justify-center pr-16">
@@ -38,7 +58,7 @@ const MyProfile = ({ data }) => {
           />
 
           <h3 className="text-[20px] p-2">
-            <strong>{data && data.name}</strong>
+            <strong>{user && user.name}</strong>
           </h3>
         </div>
       </div>
@@ -47,8 +67,8 @@ const MyProfile = ({ data }) => {
           <span className="w-[150px]">Ngày sinh</span>
           <span>
             <strong>
-              {data.dateOfBirth ? (
-                format(parseISO(data.dateOfBirth), "dd/MM/yyyy")
+              {user.dateOfBirth ? (
+                format(parseISO(user.dateOfBirth), "dd/MM/yyyy")
               ) : (
                 <span>-</span>
               )}
@@ -58,19 +78,19 @@ const MyProfile = ({ data }) => {
         <div className="flex justify-between my-3">
           <span className="w-[150px]">Số điện thoại</span>
           <span>
-            <strong>{data.phoneNumber}</strong>
+            <strong>{user.phoneNumber}</strong>
           </span>
         </div>
         <div className="flex justify-between my-3">
           <span className="w-[150px]">Email</span>
           <span>
-            <strong>{data.email}</strong>
+            <strong>{user.email}</strong>
           </span>
         </div>
         <div className="flex justify-between my-3">
           <span className="w-[150px]">Địa chỉ </span>
           <span>
-            <strong>{data.address}</strong>
+            <strong>{user.address}</strong>
           </span>
         </div>
       </div>
@@ -78,10 +98,11 @@ const MyProfile = ({ data }) => {
         <div className="detail-modal flex-col">
           <EditProfile
             open={modalEdit}
-            data={data}
+            data={user}
             handleCancel={handleCancel}
             handleReload={handleReload}
             modal={modalEdit}
+            handleUpdateUser={handleUpdateUser}
           />
         </div>
       )}

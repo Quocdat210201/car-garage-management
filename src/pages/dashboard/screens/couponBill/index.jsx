@@ -95,9 +95,9 @@ function CouponBill() {
     try {
       const res = await getAdminGoodsDeliveryNote();
       const data = res.data?.data;
-      const newData = addNumbering(data);
+      const sortedProducts = data.reverse();
+      const newData = addNumbering(sortedProducts);
       setListCouponBill(newData);
-
       setListgoodsDeliveryNoteDetails(data.goodsDeliveryNoteDetails);
     } catch (error) {
       console.error(error);
@@ -155,18 +155,6 @@ function CouponBill() {
             }}>
             <AddIcon className="ml-1" />
             Thêm mới phiếu nhập
-          </button>
-          <button
-            style={{
-              backgroundColor: colors.blueAccent[700],
-              padding: "10px 16px",
-              borderRadius: "4px",
-              display: "inline-flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <FileUploadIcon />
-            <span className="ml-1">Xuất file excel</span>
           </button>
         </div>
       </div>

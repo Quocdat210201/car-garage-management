@@ -31,8 +31,10 @@ function Bill() {
 
   const getListBill = async () => {
     try {
-      const { data } = await getBill();
-      const newData = addNumbering(data.data);
+      const res = await getBill();
+      const data = res.data?.data;
+      const sortedProducts = data.reverse();
+      const newData = addNumbering(sortedProducts);
       setBill(newData);
     } catch {
       console.error();
@@ -58,8 +60,8 @@ function Bill() {
     setShowModalAddNew(false);
   };
 
-   // Pagination
-   useEffect(() => {
+  // Pagination
+  useEffect(() => {
     const endOffset = itemOffset + itemsPerPage;
     // console.log(`Loading items from ${itemOffset} to ${endOffset}`);
     setCurrentItems(bill.slice(itemOffset, endOffset));
@@ -73,7 +75,6 @@ function Bill() {
     // );
     setItemOffset(newOffset);
   };
-
 
   return (
     <div className="m-5">
@@ -94,18 +95,6 @@ function Bill() {
             <AddIcon />
             <span className="ml-1">Thêm mới hóa đơn</span>
           </button> */}
-          <button
-            style={{
-              backgroundColor: colors.blueAccent[700],
-              padding: "10px 16px",
-              borderRadius: "4px",
-              display: "inline-flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <FileUploadIcon />
-            <span className="ml-1">Xuất file excel</span>
-          </button>
         </div>
       </div>
 

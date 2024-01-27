@@ -54,18 +54,6 @@ function Star() {
             <AddIcon />
             <span className="ml-1">Thêm mới nhân viên</span>
           </button> */}
-          <button
-            style={{
-              backgroundColor: colors.blueAccent[700],
-              padding: "10px 16px",
-              borderRadius: "4px",
-              display: "inline-flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <FileUploadIcon />
-            <span className="ml-1">Xuất file excel</span>
-          </button>
         </div>
       </div>
 

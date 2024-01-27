@@ -173,7 +173,7 @@ function Star() {
       <div className="flex justify-between ">
         <Header title="XE" subtitle="Quản lý xe" />
         <div color={colors.grey[100]}>
-          <button
+          {/* <button
             style={{
               backgroundColor: colors.blueAccent[700],
               padding: "10px 16px",
@@ -185,19 +185,7 @@ function Star() {
             }}>
             <AddIcon className="ml-1" />
             Thêm mới xe
-          </button>
-          <button
-            style={{
-              backgroundColor: colors.blueAccent[700],
-              padding: "10px 16px",
-              borderRadius: "4px",
-              display: "inline-flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
-            <FileUploadIcon />
-            <span className="ml-1">Xuất file excel</span>
-          </button>
+          </button> */}
         </div>
       </div>
 

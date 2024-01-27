@@ -357,117 +357,131 @@ function BillDetail(props) {
         </div>
         {data &&
           data.details &&
-          data.details.map((item, index) => (
-            <div className="flex justify-between" key={index}>
-              <Form.Item
-                style={{ width: 210 }}
-                name="id"
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập tên lớp!",
-                  },
-                ]}>
-                <span>Dịch vụ thực hiện</span>
-                <select
-                  className="input-appoint text-14 padding-10 opacity-8"
-                  // defaultValue={data.car.carTypeId}
-                  name="carBrandId"
-                  id="carBrand"
-                  disabled={!isEditModal}>
-                  {
-                    <option value="default" key={index}>
-                      {getServiceName(item.repairServiceId)}
-                    </option>
-                  }
-                </select>
-              </Form.Item>
-              <Form.Item
-                style={{ width: 250 }}
-                name="id"
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập tên lớp!",
-                  },
-                ]}>
-                <span>Tên phụ tùng</span>
-                <select
-                  className="input-appoint text-14 padding-10 opacity-8"
-                  name="carBrandId"
-                  id="carBrand"
-                  disabled={!isEditModal}>
-                  <option value="">
-                    {getAutomotivePartName(
-                      item.automotivePartInWarehouse.automotivePartId
-                    )}
-                  </option>
-                </select>
-              </Form.Item>
-              <Form.Item
-                name="id"
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập tên khách hàng",
-                  },
-                ]}>
-                <span>Số lượng</span>
-                <Input
-                  type="number"
-                  style={{ width: 100 }}
-                  placeholder="Số lượng"
-                  value={item.quantity}
-                  className="p-2"
-                  name="adminWorkDetail"
-                />
-              </Form.Item>
-              <Form.Item
-                name="id"
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập tên khách hàng",
-                  },
-                ]}>
-                <span>Đơn giá</span>
-                <Input
-                  type="text"
-                  style={{ width: 160 }}
-                  placeholder="Đơn giá"
-                  value={formatCurrency(
-                    item.automotivePartInWarehouse.receivePrice
-                  )}
-                  className="p-2"
-                  name="adminWorkDetail"
-                />
-              </Form.Item>
-              <Form.Item
-                name="id"
-                rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng nhập tên khách hàng",
-                  },
-                ]}>
-                <span>
-                  Thành tiền
-                  {/* <span style={{ color: "red" }}>*</span> */}
-                </span>
-                <Input
-                  type="text"
-                  style={{ width: 160 }}
-                  placeholder="Thành tiền"
-                  value={formatCurrency(
-                    item.quantity * item.automotivePartInWarehouse.receivePrice
-                  )}
-                  className="p-2"
-                  name="adminWorkDetail"
-                  //   onChange={handleChangeInput}
-                />
-              </Form.Item>
-            </div>
-          ))}
+          data.details.map(
+            (item, index) =>
+              item.quantity > 0 && (
+                <div className="flex justify-between" key={index}>
+                  <Form.Item
+                    style={{ width: 210 }}
+                    name="id"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập tên lớp!",
+                      },
+                    ]}>
+                    <span>Dịch vụ thực hiện</span>
+                    <select
+                      className="input-appoint text-14 padding-10 opacity-8"
+                      // defaultValue={data.car.carTypeId}
+                      name="carBrandId"
+                      id="carBrand"
+                      disabled={!isEditModal}>
+                      {
+                        <option value="default" key={index}>
+                          {getServiceName(item.repairServiceId)}
+                        </option>
+                      }
+                    </select>
+                  </Form.Item>
+                  <Form.Item
+                    style={{ width: 250 }}
+                    name="id"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập tên lớp!",
+                      },
+                    ]}>
+                    <span>Tên phụ tùng</span>
+                    <select
+                      className="input-appoint text-14 padding-10 opacity-8"
+                      name="carBrandId"
+                      id="carBrand"
+                      disabled={!isEditModal}>
+                      <option value="">
+                        {item.automotivePartInWarehouse
+                          ? getAutomotivePartName(
+                              item.automotivePartInWarehouse.automotivePartId
+                            )
+                          : ""}
+                      </option>
+                    </select>
+                  </Form.Item>
+                  <Form.Item
+                    name="id"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập tên khách hàng",
+                      },
+                    ]}>
+                    <span>Số lượng</span>
+                    <Input
+                      type="number"
+                      style={{ width: 100 }}
+                      placeholder="Số lượng"
+                      value={item.quantity}
+                      className="p-2"
+                      name="adminWorkDetail"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="id"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập tên khách hàng",
+                      },
+                    ]}>
+                    <span>Đơn giá</span>
+                    <Input
+                      type="text"
+                      style={{ width: 160 }}
+                      placeholder="Đơn giá"
+                      value={
+                        item.automotivePartInWarehouse
+                          ? formatCurrency(
+                              item.automotivePartInWarehouse.receivePrice
+                            )
+                          : ""
+                      }
+                      className="p-2"
+                      name="adminWorkDetail"
+                    />
+                  </Form.Item>
+                  <Form.Item
+                    name="id"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Vui lòng nhập tên khách hàng",
+                      },
+                    ]}>
+                    <span>
+                      Thành tiền
+                      {/* <span style={{ color: "red" }}>*</span> */}
+                    </span>
+                    <Input
+                      type="text"
+                      style={{ width: 160 }}
+                      placeholder="Thành tiền"
+                      value={
+                        item.automotivePartInWarehouse
+                          ? formatCurrency(
+                              item.quantity *
+                                item.automotivePartInWarehouse.receivePrice
+                            )
+                          : ""
+                      }
+                      className="p-2"
+                      name="adminWorkDetail"
+                      //   onChange={handleChangeInput}
+                    />
+                  </Form.Item>
+                </div>
+              )
+          )}
         <div>
           <Form.Item className="flex justify-end">
             <Form.Item

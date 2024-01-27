@@ -121,9 +121,13 @@ function Header() {
             className="mr-4 pr-1 text-[30px] relative"
             onClick={() => setNoify((prev) => !prev)}>
             <IoMdNotifications className="hover:text-[#767676] cursor-pointer" />
-            <span className="absolute w-4 h-4 bg-red-600 text-[10px] text-white font-medium top-0 right-0.5 rounded-full flex justify-center items-center">
-              {listNotify.length}
-            </span>
+            {listNotify.length > 0 ? (
+              <span className="absolute w-4 h-4 bg-red-600 text-[10px] text-white font-medium top-0 right-0.5 rounded-full flex justify-center items-center">
+                {listNotify.length}
+              </span>
+            ) : (
+              <></>
+            )}
             {notify ? <Notify data={listNotify} /> : <div></div>}
           </div>
           <div className="relative">
